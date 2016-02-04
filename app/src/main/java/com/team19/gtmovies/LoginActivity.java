@@ -65,6 +65,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mRegisterView;
+    private Button mRegisterButton;
     private View mProgressView;
     private View mLoginFormView;
     private static String emailName = "null";
@@ -102,6 +104,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptLogin();
             }
         });
+        mRegisterButton = (Button) findViewById(R.id.register_button);
+        mRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptRegister(view);
+            }
+        });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -112,7 +121,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
     }
-
+    private void attemptRegister(View view) {
+        View b = findViewById(R.id.register_button);
+        b.setVisibility(View.GONE);
+        View field = findViewById(R.id.pwRegister);
+        field.setVisibility(View.VISIBLE);
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                    attemptLogin();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -213,8 +237,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void updateEmail(String str) {
-        String strq1 = getResources().getString(R.string.email);
-        strq1 = str;
+    ///
     }
 
     private boolean isEmailValid(String email) {
