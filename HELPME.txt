@@ -1,5 +1,0 @@
-Guess what.
-My Linux completely lost access to the graphic cards or smth and can only be run from terminal mode.
-Even this is being written from terminal vim.
-I don't like my life these days.
--Jinu
