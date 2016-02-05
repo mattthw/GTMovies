@@ -23,6 +23,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
 
     <string name="welcometext">Go ahead and press continue to see what the buzz is all about.</string>
 </resources>

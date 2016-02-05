@@ -1,5 +1,7 @@
 package com.team19.gtmovies;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -70,6 +72,14 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_logout) {
+            SharedPreferences state = getSharedPreferences(LoginActivity.APP_PREF, 0);
+            SharedPreferences.Editor editor = state.edit();
+            editor.putBoolean("verifiedMode", false);
+            editor.commit();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -86,11 +96,13 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
+
+//        } else if (id == R.id.nav_share) {
+//
+//        } else if (id == R.id.nav_send) {
+//
+//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
