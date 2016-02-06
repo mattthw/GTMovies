@@ -17,4 +17,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public void userLogin(View view) {
         finish();
     }
+    @Override
+    public void onBackPressed() {
+    }
 }

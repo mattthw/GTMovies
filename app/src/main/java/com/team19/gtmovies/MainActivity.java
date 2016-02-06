@@ -21,6 +21,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //ensure user is logged in
+        SharedPreferences state = getSharedPreferences(LoginActivity.APP_PREF, 0);
+        if (!state.getBoolean("verifiedMode", false)) {
+            startActivityForResult(new Intent(this, LoginActivity.class), 1);
+        }
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -70,7 +76,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            startActivity(new Intent(this, SettingsActivity.class));
         }
         if (id == R.id.action_logout) {
             SharedPreferences state = getSharedPreferences(LoginActivity.APP_PREF, 0);
@@ -78,7 +84,7 @@ public class MainActivity extends AppCompatActivity
             editor.putBoolean("verifiedMode", false);
             editor.commit();
             startActivity(new Intent(this, LoginActivity.class));
-            finish();
+//            finish();
         }
 
         return super.onOptionsItemSelected(item);

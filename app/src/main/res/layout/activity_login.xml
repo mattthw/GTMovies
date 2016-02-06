@@ -23,7 +23,8 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="258dp"
+        android:paddingTop="0dp">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -95,30 +96,53 @@
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Firstname Lastname"
+                    android:hint="@string/promt_display_name"
+                    android:inputType="textPersonName"
                     android:maxLines="1"
                     android:singleLine="true" />
+                <!--<EditTextPreference-->
+                    <!--android:capitalize="words"-->
+                    <!--android:defaultValue="@string/pref_default_display_name"-->
+                    <!--android:inputType="textCapWords"-->
+                    <!--android:key="example_text"-->
+                    <!--android:maxLines="1"-->
+                    <!--android:selectAllOnFocus="true"-->
+                    <!--android:singleLine="true"-->
+                    <!--android:title="@string/pref_title_display_name" />-->
 
             </android.support.design.widget.TextInputLayout>
-            <Button
-                android:visibility="visible"
-                android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
-                android:textStyle="bold" />
-            <Button
-                android:visibility="visible"
-                android:id="@+id/register_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/action_register"
-                android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:visibility="visible"
+        android:id="@+id/email_sign_in_button"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/action_sign_in"
+        android:textStyle="bold" />
+
+    <Button
+        android:visibility="visible"
+        android:id="@+id/register_button"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/action_register"
+        android:textStyle="bold" />
+
+    <Button
+        android:visibility="gone"
+        android:id="@+id/cancel_button"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="cancel"
+        android:text="@string/action_cancel"
+        android:textStyle="bold" />
 </LinearLayout>
