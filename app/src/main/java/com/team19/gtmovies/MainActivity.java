@@ -21,13 +21,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         //ensure user is logged in
         SharedPreferences state = getSharedPreferences(LoginActivity.APP_PREF, 0);
         if (!state.getBoolean("verifiedMode", false)) {
             startActivityForResult(new Intent(this, LoginActivity.class), 1);
         }
 
-        setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
