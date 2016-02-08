@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +29,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -35,21 +37,12 @@ import java.util.Map;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "user:pass", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+    //Keep track of the login task to ensure we can cancel it if requested.
     private UserLoginTask mAuthTask = null;
-
-
     // UI references.
     private TextView mEmailView;
+
+
     private EditText mPasswordView;
     private EditText mPassConfirmView;
     private EditText mNameView;
@@ -59,36 +52,43 @@ public class LoginActivity extends AppCompatActivity {
     //storage
     public static final String APP_PREF = "AppSharedPrefs";
     protected static final String USER_DB = "RemoteUserDB";
-    private Map<Integer, User> localUserDB = new HashMap<>();
+
+    //USER THIGNS
+    protected static HashSet<User> accounts;
+    protected static IOActions ioa;
+    protected static User currentUser;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    private GoogleApiClient client;
+//    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
 
+        setContentView(R.layout.activity_login);
         //load login info
         SharedPreferences state = getSharedPreferences(APP_PREF, 0);
         boolean verifiedUser = state.getBoolean("verifiedMode", false);
         if (verifiedUser) {
-//            startActivity(new Intent(this, MainActivity.class));
             finish();
         } else {
             startActivity(new Intent(this, WelcomeActivity.class));
         }
         //load existing users
-//        SharedPreferences users = getSharedPreferences(USER_DB, 0);
+        try {
+            ioa = new IOActions(this);
+            accounts = ioa.getAccounts();
+        } catch (Exception e) {
+            Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
+        }
 
         // Set up the login form.
         mEmailView = (TextView) findViewById(R.id.email);
-        //populateAutoComplete();
         mNameView = (EditText) findViewById(R.id.name);
-
+        mPassConfirmView = (EditText) findViewById(R.id.passwordConfirm);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -100,8 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
         });
-        mPassConfirmView = (EditText) findViewById(R.id.passwordConfirm);
-
+        //buttons
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -126,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-//        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        // client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
     }
 
@@ -197,6 +196,12 @@ public class LoginActivity extends AppCompatActivity {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+        } else if (name.length() > 0) {
+            mAuthTask = new UserLoginTask(email, password, name);
+            mAuthTask.execute((Void) null);
+            mPasswordView.setText("");
+            mPassConfirmView.setText("");
+            mNameView.setText("");
         } else {
 //            showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
@@ -264,22 +269,45 @@ public class LoginActivity extends AppCompatActivity {
         private final String mEmail;
         private final String mPassword;
 
+        private String mName = "";
+
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
         }
+        //use when registering
+        UserLoginTask(String email, String password, String name) {
+            mEmail = email;
+            mPassword = password;
+            mName = name;
+        }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                // Account exists, rGONEeturn true if the password matches.
-                if (pieces[0].equals(mEmail)) {
-                    return pieces[1].equals(mPassword);
+            if (mName.length() == 0) {
+                //log in
+                try {
+                    ioa.getUserByUsername(mEmail);
+                    if (ioa.loginUser(mEmail, mPassword) != null) {
+                        currentUser = ioa.loginUser(mEmail, mPassword);
+                        return true;
+                    }
+                } catch (NullUserException e) {
+                    Log.e("GTMovies", e.getMessage());
+                }
+            } else {
+                //register
+                try {
+                    User u = new User(mEmail,mPassword, mName);
+                    ioa.addUser(u);
+                    ioa.commit();
+                    return true;
+                } catch (NullUserException e) {
+                    Log.e("GTMovies", e.getMessage());
+                } catch (DuplicateUserException d) {
+                    Log.e("GTMovies", d.getMessage());
                 }
             }
-            //TODO: complete correct user registration
-            String newUser = mEmail + ":" + mPassword;
             return false;
         }
 
@@ -294,7 +322,6 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = state.edit();
                 editor.putBoolean("verifiedMode", true);
                 editor.commit();
-//                startActivity(main);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -305,7 +332,6 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-//            showProgress(false);
         }
     }
 }

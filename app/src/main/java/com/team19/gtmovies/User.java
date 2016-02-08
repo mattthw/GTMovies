@@ -1,20 +1,28 @@
 package com.team19.gtmovies;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Created by matt on 2/5/16.
  * User is object for storing acocunt info
  */
-public class User<T extends Comparable<T>> implements Comparable<User<T>>  {
-    private String username;
-    private String password;//TODO: yeah maybe plaintext is bad.....
-    private String name;
+public class User<T extends Comparable<T>>
+        implements Comparable<User<T>>, Serializable {
 
-    public User (String u, String p, String n) {
+    private String username;
+    private String password;
+    private String name;
+    private static final long serialVersionUID = 1L;
+
+    public User (String u, String p, String n)
+            throws NullUserException {
         username = u;
         password = p;
         name = n;
+        if (u.length() < 4 || p.length() < 4) {
+            throw new NullUserException("Username and Password must be >= 4 chars");
+        }
     }
 
     public String getCredentials() {
@@ -25,6 +33,9 @@ public class User<T extends Comparable<T>> implements Comparable<User<T>>  {
     }
     public String getName() {
         return name;
+    }
+    protected String getPassword() {
+        return this.password;
     }
     public void setUsername(String u) {
         username = u;
@@ -50,10 +61,10 @@ public class User<T extends Comparable<T>> implements Comparable<User<T>>  {
     }
 
     public boolean equals(Object obj) {
-        int temp = this.compareTo((User)obj);
-        if (obj == null) {
+        if (!(obj instanceof User)) {
             return false;
-        } else if (temp == 0) {
+        }
+        if (this.compareTo((User)obj) == 0) {
             return true;
         }
         return false;
@@ -61,5 +72,11 @@ public class User<T extends Comparable<T>> implements Comparable<User<T>>  {
     public int hashCode() {
         return getUsername().hashCode();
     }
+    public String toString() {
+        return this.getUsername()
+                + ":" + this.getPassword()
+                + " " + this.getName();
+    }
+
 
 }

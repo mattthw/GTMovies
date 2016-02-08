@@ -6,7 +6,7 @@ package com.team19.gtmovies;
  */
 public class NullUserException extends Exception {
     public NullUserException() {
-        super();
+        super("User not found");
     }
     public NullUserException(String message) {
         super(message);
