@@ -1,10 +1,13 @@
 package com.team19.gtmovies;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,21 +17,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     protected static User currentUser;
+    protected static IOActions ioa;
+    protected static TextView userName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //ensure user is logged in
+
+        //LOGIN THINGS
         SharedPreferences state = getSharedPreferences(LoginActivity.APP_PREF, 0);
+        try {
+            ioa = new IOActions(this);
+        } catch (Exception e) {
+            Log.e("GTMovies", e.getMessage());
+        }
         if (!state.getBoolean("verifiedMode", false)) {
-            startActivityForResult(new Intent(this, LoginActivity.class), 1);
+            this.startActivityForResult(new Intent(this, LoginActivity.class), Activity.RESULT_OK);
         }
 
+        //LAYOUT THINGS
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -49,6 +62,21 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
+                View headerView = LayoutInflater.from(MainActivity.this).inflate(R.layout.nav_header_main, null);
+                userName = (TextView) headerView.findViewById(R.id.emailView);
+                User userTemp = (User)data.getExtras().getSerializable("user");
+                currentUser = userTemp;
+                Log.println(Log.INFO, "GTMovies", "onActivtyResult yes");
+//                userName.setText(userTemp.getUsername());
+            }
+        }
     }
 
     @Override

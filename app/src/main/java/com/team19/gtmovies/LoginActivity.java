@@ -3,6 +3,7 @@ package com.team19.gtmovies;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -28,6 +29,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -119,19 +121,13 @@ public class LoginActivity extends AppCompatActivity {
                 ((Button) findViewById(R.id.email_sign_in_button)).setText("Create account");
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-
+        //mLoginFormView = findViewById(R.id.login_form);
+        //mProgressView = findViewById(R.id.login_progress);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         // client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
     }
 
-    public void accountDialog() {
-
-    }
     public void cancel(View view) {
         findViewById(R.id.register_button).setVisibility(View.VISIBLE);
         findViewById(R.id.pwRegister).setVisibility(View.GONE);
@@ -190,7 +186,6 @@ public class LoginActivity extends AppCompatActivity {
                 focusView = mNameView;
                 cancel = true;
             }
-            accountDialog();
         }
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -203,7 +198,6 @@ public class LoginActivity extends AppCompatActivity {
             mPassConfirmView.setText("");
             mNameView.setText("");
         } else {
-//            showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
             mPasswordView.setText("");
@@ -259,6 +253,20 @@ public class LoginActivity extends AppCompatActivity {
 //        AppIndex.AppIndexApi.end(client, viewAction);
 //        client.disconnect();
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SharedPreferences state = getSharedPreferences(APP_PREF, 0);
+        SharedPreferences.Editor editor = state.edit();
+        editor.putBoolean("verifiedMode", true);
+        editor.putString("username", currentUser.getUsername());
+        editor.commit();
+
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("user", (Serializable)ioa.currentUser);
+        setResult(Activity.RESULT_OK, returnIntent);
+
+    }
 
 
     /**
@@ -268,7 +276,6 @@ public class LoginActivity extends AppCompatActivity {
 
         private final String mEmail;
         private final String mPassword;
-
         private String mName = "";
 
         UserLoginTask(String email, String password) {
@@ -281,15 +288,15 @@ public class LoginActivity extends AppCompatActivity {
             mPassword = password;
             mName = name;
         }
-
         @Override
         protected Boolean doInBackground(Void... params) {
             if (mName.length() == 0) {
                 //log in
                 try {
                     ioa.getUserByUsername(mEmail);
-                    if (ioa.loginUser(mEmail, mPassword) != null) {
-                        currentUser = ioa.loginUser(mEmail, mPassword);
+                    currentUser = ioa.loginUser(mEmail, mPassword);
+                    if (currentUser != null) {
+                        MainActivity.currentUser = ioa.currentUser;
                         return true;
                     }
                 } catch (NullUserException e) {
@@ -298,9 +305,9 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 //register
                 try {
-                    User u = new User(mEmail,mPassword, mName);
-                    ioa.addUser(u);
+                    ioa.addUser(new User(mEmail,mPassword, mName));
                     ioa.commit();
+                    MainActivity.currentUser = ioa.currentUser;
                     return true;
                 } catch (NullUserException e) {
                     Log.e("GTMovies", e.getMessage());
@@ -310,25 +317,25 @@ public class LoginActivity extends AppCompatActivity {
             }
             return false;
         }
-
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-//            showProgress(false);
-
             if (success) {
-//                Intent main = new Intent(LoginActivity.this, MainActivity.class);
-                SharedPreferences state = getSharedPreferences(APP_PREF, 0);
-                SharedPreferences.Editor editor = state.edit();
-                editor.putBoolean("verifiedMode", true);
-                editor.commit();
+//                SharedPreferences state = getSharedPreferences(APP_PREF, 0);
+//                SharedPreferences.Editor editor = state.edit();
+//                editor.putBoolean("verifiedMode", true);
+//                editor.putString("username", currentUser.getUsername());
+//                editor.commit();
+//
+//                Intent returnIntent = new Intent();
+//                returnIntent.putExtra("user", (Serializable)ioa.currentUser);
+//                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
         }
-
         @Override
         protected void onCancelled() {
             mAuthTask = null;

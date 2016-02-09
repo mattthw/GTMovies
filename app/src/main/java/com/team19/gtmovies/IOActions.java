@@ -18,13 +18,15 @@ import java.util.HashSet;
  * used for data retrieval etc
  */
 public class IOActions {
-    protected static HashSet<User> accounts;
     private FileInputStream fileIn;
     private FileOutputStream fileOut;
     private ObjectInputStream objectIn;
     private ObjectOutputStream objectOut;
     private Context context;
+
     private final String FNAME = "ACCOUNTS.txt";
+    protected static HashSet<User> accounts;
+    protected static User currentUser;
 
     public IOActions(Context c) throws Exception {
         context = c;
@@ -89,8 +91,6 @@ public class IOActions {
             throw new DuplicateUserException();
         } else {
             accounts.add(user);
-            Log.println(Log.INFO, "GTMovies", "USER: " + user);
-            Log.println(Log.INFO, "GTMovies", "ACCOUNTS: " + accounts);
             Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
             this.commit();
         }
@@ -117,6 +117,8 @@ public class IOActions {
             throws NullUserException {
         User u = this.getUserByUsername(username);
         if (u.getPassword().equals(password)) {
+            this.currentUser = u;
+            Log.println(Log.INFO, "GTMovies", u.getUsername() + " signed in.");
             return u;
         }
         return null;
