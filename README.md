@@ -15,14 +15,11 @@ Team Number: 18
  - `M1`, `M2`,...`M(x)`: Branch we work off of for target milestone.
  -  Example:
 
-`master`
-
-  |-> `M3`
-        |-> `login`
-        
-  |-> `M4`
-        |-> `profile`
-        
-        |-> `registration`
+* `master`
+    * `M3`
+        * `login`
+    * `M4`
+        * `profile`
+        * `registration`
 
 
