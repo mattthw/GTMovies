@@ -18,11 +18,9 @@ Team Number: 18
 `master`
 
   |-> `M3`
-  
         |-> `login`
         
   |-> `M4`
-  
         |-> `profile`
         
         |-> `registration`
