@@ -22,7 +22,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    protected static User currentUser;
+//    protected static User currentUser;
     protected static IOActions ioa;
     protected static TextView userName;
     @Override
@@ -67,16 +67,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Activity.RESULT_OK) {
-            if (resultCode == Activity.RESULT_OK) {
-                View headerView = LayoutInflater.from(MainActivity.this).inflate(R.layout.nav_header_main, null);
-                userName = (TextView) headerView.findViewById(R.id.emailView);
-                User userTemp = (User)data.getExtras().getSerializable("user");
-                currentUser = userTemp;
-                Log.println(Log.INFO, "GTMovies", "onActivtyResult yes");
-//                userName.setText(userTemp.getUsername());
-            }
-        }
+        View headerView = LayoutInflater.from(MainActivity.this).inflate(R.layout.nav_header_main, null);
+        userName = (TextView) headerView.findViewById(R.id.emailView);
+//        User userTemp = (User)data.getExtras().getSerializable("user");
+        Log.println(Log.INFO, "GTMovies", "onActivtyResult yes");
+        userName.setText(IOActions.currentUser.getUsername());
+//        if (requestCode == Activity.RESULT_OK) {
+//            if (resultCode == Activity.RESULT_OK) {
+//            }
+//        }
     }
 
     @Override

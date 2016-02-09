@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     //USER THIGNS
     protected static HashSet<User> accounts;
     protected static IOActions ioa;
-    protected static User currentUser;
+//    protected static User currentUser;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -259,11 +259,11 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences state = getSharedPreferences(APP_PREF, 0);
         SharedPreferences.Editor editor = state.edit();
         editor.putBoolean("verifiedMode", true);
-        editor.putString("username", currentUser.getUsername());
+        editor.putString("username", IOActions.currentUser.getUsername());
         editor.commit();
 
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("user", (Serializable)ioa.currentUser);
+        returnIntent.putExtra("user", IOActions.currentUser);
         setResult(Activity.RESULT_OK, returnIntent);
 
     }
@@ -293,21 +293,22 @@ public class LoginActivity extends AppCompatActivity {
             if (mName.length() == 0) {
                 //log in
                 try {
-                    ioa.getUserByUsername(mEmail);
-                    currentUser = ioa.loginUser(mEmail, mPassword);
-                    if (currentUser != null) {
-                        MainActivity.currentUser = ioa.currentUser;
-                        return true;
-                    }
+                    IOActions.getUserByUsername(mEmail);
+                    IOActions.loginUser(mEmail, mPassword);
+                    //if (IOActions.currentUser != null) {
+                    //    MainActivity.currentUser = ioa.currentUser;
+                    //    return true;
+                    //}
+                    return true;
                 } catch (NullUserException e) {
                     Log.e("GTMovies", e.getMessage());
                 }
             } else {
                 //register
                 try {
-                    ioa.addUser(new User(mEmail,mPassword, mName));
-                    ioa.commit();
-                    MainActivity.currentUser = ioa.currentUser;
+                    IOActions.addUser(new User(mEmail,mPassword, mName));
+                    IOActions.commit();
+                    //MainActivity.currentUser = ioa.currentUser;
                     return true;
                 } catch (NullUserException e) {
                     Log.e("GTMovies", e.getMessage());

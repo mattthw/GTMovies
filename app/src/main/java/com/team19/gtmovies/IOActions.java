@@ -18,32 +18,33 @@ import java.util.HashSet;
  * used for data retrieval etc
  */
 public class IOActions {
-    private FileInputStream fileIn;
-    private FileOutputStream fileOut;
-    private ObjectInputStream objectIn;
-    private ObjectOutputStream objectOut;
-    private Context context;
+    private static FileInputStream fileIn;
+    private static FileOutputStream fileOut;
+    private static ObjectInputStream objectIn;
+    private static ObjectOutputStream objectOut;
+    private static Context ioaContext;
 
-    private final String FNAME = "ACCOUNTS.txt";
+    private static final String FNAME = "ACCOUNTS.txt";
     protected static HashSet<User> accounts;
     protected static User currentUser;
 
     public IOActions(Context c) throws Exception {
-        context = c;
+        currentUser = new User("null", "null", "null");
+        ioaContext = c;
         onCreate(FNAME, c);
 
     }
 
-    protected void onCreate(String fn, Context context) {
+    protected static void onCreate(String fn, Context context) {
         try {
-            fileIn = context.openFileInput(fn);
+            fileIn = ioaContext.openFileInput(fn);
             objectIn = new ObjectInputStream(fileIn);
             accounts = (HashSet<User>) objectIn.readObject();
             objectIn.close();
             Log.println(Log.INFO, "GTMovies", "ACCOUNTS: " + accounts);
         } catch (FileNotFoundException f) {
             accounts = new HashSet<>();
-            this.commit();
+            commit();
             Log.println(Log.INFO, "GTMovies", "Created new empty set for user accounts");
         } catch (IOException i) {
             Log.e("GTMovies", "IOException: "+Log.getStackTraceString(i));
@@ -52,7 +53,7 @@ public class IOActions {
         }
     }
 
-    protected void onClose(String filename, Context context) {
+    protected static void onClose(String filename, Context context) {
         try {
             fileOut = context.openFileOutput(filename, context.MODE_PRIVATE);
             objectOut = new ObjectOutputStream(fileOut);
@@ -66,9 +67,9 @@ public class IOActions {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }
     }
-    protected void commit() {
+    protected static void commit() {
         try {
-            fileOut = context.openFileOutput(FNAME, Context.MODE_PRIVATE);
+            fileOut = ioaContext.openFileOutput(FNAME, Context.MODE_PRIVATE);
             objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(accounts);
             objectOut.close();
@@ -82,21 +83,21 @@ public class IOActions {
         }
     }
 
-    public HashSet<User> getAccounts() {
-        return this.accounts;
+    public static HashSet<User> getAccounts() {
+        return accounts;
     }
-    public void addUser(User user)
+    public static void addUser(User user)
             throws DuplicateUserException {
         if (accounts.contains(user)) {
             throw new DuplicateUserException();
         } else {
             accounts.add(user);
             Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
-            this.commit();
+            commit();
         }
     }
 
-    public User getUserByUsername(String un)
+    public static User getUserByUsername(String un)
             throws NullUserException {
         for (User u: accounts) {
 //            Log.println(Log.INFO, "GTMovies", "u: " + u.getUsername())
@@ -113,14 +114,14 @@ public class IOActions {
      * @return User object if valid,null if invalid
      * @throws NullUserException if user does not exist
      */
-    public User loginUser(String username, String password)
+    public static void loginUser(String username, String password)
             throws NullUserException {
-        User u = this.getUserByUsername(username);
+        User u = getUserByUsername(username);
         if (u.getPassword().equals(password)) {
-            this.currentUser = u;
+            currentUser = u;
             Log.println(Log.INFO, "GTMovies", u.getUsername() + " signed in.");
-            return u;
+//            return u;
         }
-        return null;
+//        return null;
     }
 }
