@@ -18,32 +18,35 @@ import java.util.HashSet;
  * used for data retrieval etc
  */
 public class IOActions {
-    private FileInputStream fileIn;
-    private FileOutputStream fileOut;
-    private ObjectInputStream objectIn;
-    private ObjectOutputStream objectOut;
-    private Context context;
+    private static FileInputStream fileIn;
+    private static FileOutputStream fileOut;
+    private static ObjectInputStream objectIn;
+    private static ObjectOutputStream objectOut;
+    private static Context ioaContext;
 
-    private final String FNAME = "ACCOUNTS.txt";
+    private static final String AFILE = "ACCOUNTS.txt";
+    private static final String UFILE = "USER.txt";
     protected static HashSet<User> accounts;
     protected static User currentUser;
 
     public IOActions(Context c) throws Exception {
-        context = c;
-        onCreate(FNAME, c);
-
+        ioaContext = c;
+        onCreate();
+        if (userSignedIn()) {
+            Log.println(Log.ASSERT, "GTMovies", currentUser.getUsername() + " signed in.");
+        } else {
+            currentUser = new User("null", "null", "null");
+            Log.println(Log.ASSERT, "GTMovies", "no user signed in.");
+        }
     }
 
-    protected void onCreate(String fn, Context context) {
+    protected static void onCreate() {
         try {
-            fileIn = context.openFileInput(fn);
-            objectIn = new ObjectInputStream(fileIn);
-            accounts = (HashSet<User>) objectIn.readObject();
-            objectIn.close();
-            Log.println(Log.INFO, "GTMovies", "ACCOUNTS: " + accounts);
+            loadAccounts();
+            loadUser();
         } catch (FileNotFoundException f) {
             accounts = new HashSet<>();
-            this.commit();
+            commit();
             Log.println(Log.INFO, "GTMovies", "Created new empty set for user accounts");
         } catch (IOException i) {
             Log.e("GTMovies", "IOException: "+Log.getStackTraceString(i));
@@ -51,13 +54,48 @@ public class IOActions {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }
     }
+    protected static void loadAccounts()
+            throws ClassNotFoundException, IOException {
+        fileIn = ioaContext.openFileInput(AFILE);
+        objectIn = new ObjectInputStream(fileIn);
+        accounts = (HashSet<User>) objectIn.readObject();
+        objectIn.close();
+        //DEBUG:
+        Log.println(Log.INFO, "GTMovies", "ACCOUNTS: " + accounts);
+    }
 
-    protected void onClose(String filename, Context context) {
+    protected static void loadUser()
+            throws ClassNotFoundException, IOException {
+        fileIn = ioaContext.openFileInput(UFILE);
+        objectIn = new ObjectInputStream(fileIn);
+        currentUser = (User) objectIn.readObject();
+        objectIn.close();
+        //DEBUG:
+        Log.println(Log.INFO, "GTMovies", "USER: " + currentUser);
+    }
+
+    protected static void saveAccounts()
+            throws ClassNotFoundException, IOException {
+        fileOut = ioaContext.openFileOutput(AFILE, Context.MODE_PRIVATE);
+        objectOut = new ObjectOutputStream(fileOut);
+        objectOut.writeObject(accounts);
+        objectOut.close();
+        Log.println(Log.INFO, "GTMovies", AFILE + " saved.");
+    }
+
+    protected static void saveUser()
+            throws ClassNotFoundException, IOException {
+        fileOut = ioaContext.openFileOutput(UFILE, Context.MODE_PRIVATE);
+        objectOut = new ObjectOutputStream(fileOut);
+        objectOut.writeObject(currentUser);
+        objectOut.close();
+        Log.println(Log.INFO, "GTMovies", UFILE + " saved with user: " + currentUser.getUsername());
+    }
+
+    protected static void commit() {
         try {
-            fileOut = context.openFileOutput(filename, context.MODE_PRIVATE);
-            objectOut = new ObjectOutputStream(fileOut);
-            objectOut.writeObject(accounts);
-            objectOut.close();
+            saveAccounts();
+            saveUser();
         } catch (FileNotFoundException f) {
             Log.e("GTMovies", "FileNotFoundException: "+Log.getStackTraceString(f));
         } catch (IOException i) {
@@ -66,61 +104,68 @@ public class IOActions {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }
     }
-    protected void commit() {
-        try {
-            fileOut = context.openFileOutput(FNAME, Context.MODE_PRIVATE);
-            objectOut = new ObjectOutputStream(fileOut);
-            objectOut.writeObject(accounts);
-            objectOut.close();
-            Log.println(Log.INFO, "GTMovies", FNAME + " saved.");
-        } catch (FileNotFoundException f) {
-            Log.e("GTMovies", "FileNotFoundException: "+Log.getStackTraceString(f));
-        } catch (IOException i) {
-            Log.e("GTMovies", "IOException: "+Log.getStackTraceString(i));
-        } catch (Exception e) {
-            Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
-        }
-    }
 
-    public HashSet<User> getAccounts() {
-        return this.accounts;
+    public static HashSet<User> getAccounts() {
+        return accounts;
     }
-    public void addUser(User user)
+    public static void addUser(User user)
             throws DuplicateUserException {
-        if (accounts.contains(user)) {
+        if (accounts.contains(user) || user.getUsername().equals("null")) {
             throw new DuplicateUserException();
         } else {
             accounts.add(user);
             Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
-            this.commit();
+            commit();
         }
     }
 
-    public User getUserByUsername(String un)
+    public static User getUserByUsername(String un)
             throws NullUserException {
         for (User u: accounts) {
-//            Log.println(Log.INFO, "GTMovies", "u: " + u.getUsername())
             if (u.getUsername().equals(un))
                 return u;
         }
         throw new NullUserException();
     }
 
+    public static boolean userSignedIn() {
+        if (currentUser == null || currentUser.getUsername().equals("null"))
+            return false;
+        return true;
+    }
+
     /**
-     * logs user in to GTMovies
-     * @param username username
-     * @param password password
-     * @return User object if valid,null if invalid
-     * @throws NullUserException if user does not exist
+     * updates currentUser to user if their credentials match
+     * @param username user
+     * @param password pass
+     * @return true if success, false on failure
+     * @throws NullUserException getUSerByUsername()
      */
-    public User loginUser(String username, String password)
+    public static boolean loginUser(String username, String password)
             throws NullUserException {
-        User u = this.getUserByUsername(username);
+        User u = getUserByUsername(username);
         if (u.getPassword().equals(password)) {
-            this.currentUser = u;
-            Log.println(Log.INFO, "GTMovies", u.getUsername() + " signed in.");
-            return u;
+            currentUser = u;
+            Log.println(Log.ASSERT, "GTMovies", currentUser.getUsername() + " signed in.");
+            commit();
+            return true;
         }
-        return null;
+        return false;
+    }
+
+    /**
+     * reset user to default null
+     * @return true if currentUser set
+     */
+    public static boolean logoutUser() {
+        try {
+            Log.println(Log.ASSERT, "GTMovies", currentUser.getUsername() + " signed out.");
+            currentUser = new User("null", "null", "logged-out-action-taken");
+            commit();
+            return true;
+        } catch (NullUserException e) {
+            Log.println(Log.INFO, "GTMovies", "NullUserException when logout.");
+        }
+        return false;
     }
 }

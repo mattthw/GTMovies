@@ -22,23 +22,23 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    protected static User currentUser;
     protected static IOActions ioa;
-    protected static TextView userName;
+
+    protected static NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //LOGIN THINGS
-        SharedPreferences state = getSharedPreferences(LoginActivity.APP_PREF, 0);
         try {
             ioa = new IOActions(this);
         } catch (Exception e) {
             Log.e("GTMovies", e.getMessage());
         }
-        if (!state.getBoolean("verifiedMode", false)) {
-            this.startActivityForResult(new Intent(this, LoginActivity.class), Activity.RESULT_OK);
+        if (IOActions.userSignedIn() == false) {
+            Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
+            startActivity(new Intent(this, LoginActivity.class));
         }
 
         //LAYOUT THINGS
@@ -60,23 +60,23 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Activity.RESULT_OK) {
-            if (resultCode == Activity.RESULT_OK) {
-                View headerView = LayoutInflater.from(MainActivity.this).inflate(R.layout.nav_header_main, null);
-                userName = (TextView) headerView.findViewById(R.id.emailView);
-                User userTemp = (User)data.getExtras().getSerializable("user");
-                currentUser = userTemp;
-                Log.println(Log.INFO, "GTMovies", "onActivtyResult yes");
-//                userName.setText(userTemp.getUsername());
-            }
-        }
+//        View headerView = LayoutInflater.from(MainActivity.this).inflate(R.layout.nav_header_main, null);
+//        userName = (TextView) headerView.findViewById(R.id.emailView);
+//        User userTemp = (User)data.getExtras().getSerializable("user");
+        Log.println(Log.INFO, "GTMovies", "onActivtyResult yes");
+//        userName.setText(IOActions.currentUser.getUsername());
+//        if (requestCode == Activity.RESULT_OK) {
+//            if (resultCode == Activity.RESULT_OK) {
+//            }
+//        }
+        //View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        //((TextView)headerView.findViewById(R.id.emailView)).setText(IOActions.currentUser.getUsername());
     }
 
     @Override
@@ -108,12 +108,11 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, SettingsActivity.class));
         }
         if (id == R.id.action_logout) {
-            SharedPreferences state = getSharedPreferences(LoginActivity.APP_PREF, 0);
-            SharedPreferences.Editor editor = state.edit();
-            editor.putBoolean("verifiedMode", false);
-            editor.commit();
-            startActivity(new Intent(this, LoginActivity.class));
-//            finish();
+            IOActions.logoutUser();
+            //startActivity(new Intent(this, LoginActivity.class));
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -132,12 +131,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         }
-
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

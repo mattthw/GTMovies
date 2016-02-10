@@ -48,23 +48,20 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private EditText mPassConfirmView;
     private EditText mNameView;
-    private View mProgressView;
-    private View mLoginFormView;
+    //private View mProgressView;
+    //private View mLoginFormView;
 
-    //storage
-    public static final String APP_PREF = "AppSharedPrefs";
-    protected static final String USER_DB = "RemoteUserDB";
+    //is user logged in
+    public static final String USER_STATUS = "USER";
 
-    //USER THIGNS
+    //USER DB
     protected static HashSet<User> accounts;
-    protected static IOActions ioa;
-    protected static User currentUser;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-//    private GoogleApiClient client;
+    //private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,17 +69,12 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
         //load login info
-        SharedPreferences state = getSharedPreferences(APP_PREF, 0);
-        boolean verifiedUser = state.getBoolean("verifiedMode", false);
-        if (verifiedUser) {
-            finish();
-        } else {
-            startActivity(new Intent(this, WelcomeActivity.class));
-        }
+        //SharedPreferences pref = getSharedPreferences(USER_STATUS, 0);
+        //String USER = pref.getString("USER", "null");
+        startActivity(new Intent(this, WelcomeActivity.class));
         //load existing users
         try {
-            ioa = new IOActions(this);
-            accounts = ioa.getAccounts();
+            accounts = IOActions.getAccounts();
         } catch (Exception e) {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }
@@ -256,14 +248,14 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SharedPreferences state = getSharedPreferences(APP_PREF, 0);
-        SharedPreferences.Editor editor = state.edit();
-        editor.putBoolean("verifiedMode", true);
-        editor.putString("username", currentUser.getUsername());
-        editor.commit();
+//        SharedPreferences state = getSharedPreferences(USER_STATUS, 0);
+//        SharedPreferences.Editor editor = state.edit();
+//        editor.putString("USER", "");
+//        editor.putString("username", IOActions.currentUser.getUsername());
+//        editor.commit();
 
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("user", (Serializable)ioa.currentUser);
+        //returnIntent.putExtra("user", IOActions.currentUser);
         setResult(Activity.RESULT_OK, returnIntent);
 
     }
@@ -293,21 +285,22 @@ public class LoginActivity extends AppCompatActivity {
             if (mName.length() == 0) {
                 //log in
                 try {
-                    ioa.getUserByUsername(mEmail);
-                    currentUser = ioa.loginUser(mEmail, mPassword);
-                    if (currentUser != null) {
-                        MainActivity.currentUser = ioa.currentUser;
-                        return true;
-                    }
+                    IOActions.getUserByUsername(mEmail);
+                    IOActions.loginUser(mEmail, mPassword);
+                    //if (IOActions.currentUser != null) {
+                    //    MainActivity.currentUser = ioa.currentUser;
+                    //    return true;
+                    //}
+                    return true;
                 } catch (NullUserException e) {
                     Log.e("GTMovies", e.getMessage());
                 }
             } else {
                 //register
                 try {
-                    ioa.addUser(new User(mEmail,mPassword, mName));
-                    ioa.commit();
-                    MainActivity.currentUser = ioa.currentUser;
+                    IOActions.addUser(new User(mEmail,mPassword, mName));
+                    IOActions.commit();
+                    //MainActivity.currentUser = ioa.currentUser;
                     return true;
                 } catch (NullUserException e) {
                     Log.e("GTMovies", e.getMessage());
