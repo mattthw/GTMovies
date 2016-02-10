@@ -1,5 +1,6 @@
 package com.team19.gtmovies;
 
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -17,7 +18,7 @@ import java.util.HashSet;
  * Created by matt on 2/8/16.
  * used for data retrieval etc
  */
-public class IOActions {
+public class IOActions extends Application {
     private static FileInputStream fileIn;
     private static FileOutputStream fileOut;
     private static ObjectInputStream objectIn;
@@ -31,7 +32,7 @@ public class IOActions {
 
     public IOActions(Context c) throws Exception {
         ioaContext = c;
-        onCreate();
+        onStart();
         if (userSignedIn()) {
             Log.println(Log.ASSERT, "GTMovies", currentUser.getUsername() + " signed in.");
         } else {
@@ -40,7 +41,7 @@ public class IOActions {
         }
     }
 
-    protected static void onCreate() {
+    protected static void onStart() {
         try {
             loadAccounts();
             loadUser();
