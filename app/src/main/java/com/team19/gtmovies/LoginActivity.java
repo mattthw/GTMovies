@@ -248,14 +248,14 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SharedPreferences state = getSharedPreferences(USER_STATUS, 0);
-        SharedPreferences.Editor editor = state.edit();
-        editor.putString("USER", "");
-        editor.putString("username", IOActions.currentUser.getUsername());
-        editor.commit();
+//        SharedPreferences state = getSharedPreferences(USER_STATUS, 0);
+//        SharedPreferences.Editor editor = state.edit();
+//        editor.putString("USER", "");
+//        editor.putString("username", IOActions.currentUser.getUsername());
+//        editor.commit();
 
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("user", IOActions.currentUser);
+        //returnIntent.putExtra("user", IOActions.currentUser);
         setResult(Activity.RESULT_OK, returnIntent);
 
     }
