@@ -29,6 +29,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -299,7 +300,8 @@ public class LoginActivity extends AppCompatActivity {
                 //register
                 try {
                     IOActions.addUser(new User(mEmail,mPassword, mName));
-                    IOActions.commit();
+                    IOActions.loginUser(mEmail, mPassword);
+                    //IOActions.commit(); handled by addUser/loginUser
                     //MainActivity.currentUser = ioa.currentUser;
                     return true;
                 } catch (NullUserException e) {

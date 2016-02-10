@@ -109,6 +109,12 @@ public class IOActions extends Application {
     public static HashSet<User> getAccounts() {
         return accounts;
     }
+
+    /**
+     * add new user
+     * @param user user object
+     * @throws DuplicateUserException
+     */
     public static void addUser(User user)
             throws DuplicateUserException {
         if (accounts.contains(user) || user.getUsername().equals("null")) {

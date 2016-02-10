@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity
         if (IOActions.userSignedIn() == false) {
             Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
             startActivity(new Intent(this, LoginActivity.class));
+            //TODO: onActivityResult which checks if user did login successfully
         }
 
         //LAYOUT THINGS
