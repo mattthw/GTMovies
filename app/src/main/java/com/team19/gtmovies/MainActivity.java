@@ -23,12 +23,14 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     protected static IOActions ioa;
-
+    protected static View rootView;
     protected static NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        rootView = findViewById(R.id.MainView1);
+
 
         //LOGIN THINGS
         try {
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             Log.e("GTMovies", e.getMessage());
         }
-        if (IOActions.userSignedIn() == false) {
+        if (!IOActions.userSignedIn()) {
             Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
             startActivity(new Intent(this, LoginActivity.class));
             //TODO: onActivityResult which checks if user did login successfully

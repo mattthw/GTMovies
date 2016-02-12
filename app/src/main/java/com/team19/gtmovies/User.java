@@ -15,13 +15,21 @@ public class User<T extends Comparable<T>>
     private String name;
     private static final long serialVersionUID = 1L;
 
+    /**
+     * constructor used when creating blank user
+     */
+    public User () {
+        username = "null";
+        password = "null";
+        name = "logged_out";
+    }
     public User (String u, String p, String n)
-            throws NullUserException {
+            throws IllegalUserException {
         username = u;
         password = p;
         name = n;
         if (u.length() < 4 || p.length() < 4) {
-            throw new NullUserException("Username and Password must be >= 4 chars");
+            throw new IllegalUserException("Username and Password must be >= 4 chars");
         }
     }
 

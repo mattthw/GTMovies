@@ -30,14 +30,14 @@ public class IOActions extends Application {
     protected static HashSet<User> accounts;
     protected static User currentUser;
 
-    public IOActions(Context c) throws Exception {
+    public IOActions(Context c)  {
         ioaContext = c;
         onStart();
         if (userSignedIn()) {
             Log.println(Log.ASSERT, "GTMovies", currentUser.getUsername() + " signed in.");
         } else {
-            currentUser = new User("null", "null", "null");
-            Log.println(Log.ASSERT, "GTMovies", "no user signed in.");
+            currentUser = new User();
+//            Log.println(Log.ASSERT, "GTMovies", "no user signed in.");
         }
     }
 
@@ -61,8 +61,7 @@ public class IOActions extends Application {
         objectIn = new ObjectInputStream(fileIn);
         accounts = (HashSet<User>) objectIn.readObject();
         objectIn.close();
-        //DEBUG:
-        Log.println(Log.INFO, "GTMovies", "ACCOUNTS: " + accounts);
+        Log.println(Log.DEBUG, "GTMovies", "ACCOUNTS: " + accounts);
     }
 
     protected static void loadUser()
@@ -71,8 +70,7 @@ public class IOActions extends Application {
         objectIn = new ObjectInputStream(fileIn);
         currentUser = (User) objectIn.readObject();
         objectIn.close();
-        //DEBUG:
-        Log.println(Log.INFO, "GTMovies", "USER: " + currentUser);
+        Log.println(Log.DEBUG, "GTMovies", "USER: " + currentUser);
     }
 
     protected static void saveAccounts()
@@ -126,6 +124,12 @@ public class IOActions extends Application {
         }
     }
 
+    public static boolean userSignedIn() {
+        if (currentUser == null || currentUser.getUsername().equals("null"))
+            return false;
+        return true;
+    }
+
     public static User getUserByUsername(String un)
             throws NullUserException {
         for (User u: accounts) {
@@ -135,29 +139,29 @@ public class IOActions extends Application {
         throw new NullUserException();
     }
 
-    public static boolean userSignedIn() {
-        if (currentUser == null || currentUser.getUsername().equals("null"))
-            return false;
-        return true;
-    }
-
     /**
      * updates currentUser to user if their credentials match
-     * @param username user
-     * @param password pass
+     * @param uname user
+     * @param p pass
      * @return true if success, false on failure
      * @throws NullUserException getUSerByUsername()
      */
-    public static boolean loginUser(String username, String password)
+    public static boolean loginUser(String uname, String p)
             throws NullUserException {
-        User u = getUserByUsername(username);
-        if (u.getPassword().equals(password)) {
-            currentUser = u;
-            Log.println(Log.ASSERT, "GTMovies", currentUser.getUsername() + " signed in.");
+        User temp = getUserByUsername(uname);
+        Log.println(Log.DEBUG, "GTMovies", "param: " + uname + ":" + p
+            + "\ntemp: " + temp.getUsername() + ":" +temp.getPassword());
+        if (temp.getPassword().equals(p)) {
+            currentUser = temp;
+            Log.println(Log.ASSERT, "GTMovies",
+                    "'" + temp.getUsername() + "' signed in.");
             commit();
             return true;
+        } else {
+            Log.println(Log.ASSERT, "GTMovies",
+                    "sign in attempt of '" + temp.getUsername() + "' failed.");
+            return false;
         }
-        return false;
     }
 
     /**
@@ -165,14 +169,9 @@ public class IOActions extends Application {
      * @return true if currentUser set
      */
     public static boolean logoutUser() {
-        try {
-            Log.println(Log.ASSERT, "GTMovies", currentUser.getUsername() + " signed out.");
-            currentUser = new User("null", "null", "logged-out-action-taken");
-            commit();
-            return true;
-        } catch (NullUserException e) {
-            Log.println(Log.INFO, "GTMovies", "NullUserException when logout.");
-        }
-        return false;
+        Log.println(Log.ASSERT, "GTMovies", currentUser.getUsername() + " signed out.");
+        currentUser = new User();
+        commit();
+        return true;
     }
 }
