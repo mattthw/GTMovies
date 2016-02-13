@@ -128,6 +128,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_manage_profile) {
+            Intent intent = new Intent(this, UserProfileActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_admin) {
 

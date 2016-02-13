@@ -41,7 +41,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.team19.gtmovies.MainActivity" />
         </activity>
-        <activity android:name=".UserProfileActivity"></activity>
+        <activity
+            android:name=".UserProfileActivity"
+            android:label="User Profile">
+        </activity>
     </application>
 
 </manifest>
