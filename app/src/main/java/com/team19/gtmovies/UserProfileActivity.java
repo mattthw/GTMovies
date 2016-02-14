@@ -1,5 +1,6 @@
 package com.team19.gtmovies;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,13 +14,17 @@ import android.widget.TextView;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class UserProfileActivity extends AppCompatActivity {
+    protected View rootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        rootView = findViewById(R.id.userProfileRootView);
 
         final User cu = MainActivity.ioa.currentUser;
         final IOActions ioa = MainActivity.ioa;
@@ -51,6 +56,9 @@ public class UserProfileActivity extends AppCompatActivity {
                 // Remove the user entry from IOAction's account list (we will add it back later)
                 ioa.getAccounts().remove(cu);
 
+                // Store the current hasProfile variable (will come in handy for the snackbar)
+                boolean hasprofileback = cu.getHasProfile();
+
                 // Save everything to the currentuser object
                 cu.setName(eName.getText().toString());
                 cu.setUsername(eUsername.getText().toString());
@@ -70,6 +78,27 @@ public class UserProfileActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
                 }
+
+                // Disable text fields and make snackbar for visual confirmation
+                eName.setEnabled(false);
+                eUsername.setEnabled(false);
+                ePassword.setEnabled(false);
+                eBio.setEnabled(false);
+                if(!hasprofileback) {
+                    Snackbar.make(rootView, "Profile successfully created!", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(rootView, "Profile has been updated!", Snackbar.LENGTH_SHORT).show();
+                }
+
+                // We are done. Go back to MainActivity, after a set delay.
+                TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        NavUtils.navigateUpFromSameTask(UserProfileActivity.this);
+                    }
+                };
+                Timer t = new Timer();
+                t.schedule(task, 1000);
             }
         });
     }
