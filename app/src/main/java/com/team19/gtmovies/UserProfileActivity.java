@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,6 +55,7 @@ public class UserProfileActivity extends AppCompatActivity {
         if(!cu.getHasProfile()) {
             CharSequence text = ((TextView)findViewById(R.id.textViewUserProfileTitle)).getText();
             CreateProfileDialogFragment alert = new CreateProfileDialogFragment();
+            alert.setCancelable(false);
             alert.show(getSupportFragmentManager(), "");
 
         }
