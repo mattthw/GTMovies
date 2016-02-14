@@ -1,8 +1,11 @@
 package com.team19.gtmovies;
 
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +28,9 @@ public class UserProfileActivity extends AppCompatActivity {
         final EditText eName = (EditText)findViewById(R.id.editTextUserProfileName);
         final EditText ePassword = (EditText)findViewById(R.id.editTextUserProfilePassword);
         final EditText eBio = (EditText)findViewById(R.id.editTextUserProfileBio);
+
+        //setup up button on action bar
+        setupActionBar();
 
         // Grab the user's pre-existing information
         eUsername.setText(cu.getUsername());
@@ -66,5 +72,27 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * Set up the {@link android.app.ActionBar}, if the API is available.
+     */
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Show the Up button in the action bar.
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
