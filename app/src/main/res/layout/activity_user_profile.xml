@@ -96,7 +96,7 @@
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="13"
-        android:id="@+id/editText"
+        android:id="@+id/editTextUserProfileBio"
         android:layout_below="@+id/textViewUserProfileBio"
         android:layout_alignStart="@+id/editTextUserProfilePassword"
         android:lines="6"/>

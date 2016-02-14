@@ -13,6 +13,8 @@ public class User<T extends Comparable<T>>
     private String username;
     private String password;
     private String name;
+    private String bio;
+    private boolean hasProfile;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -22,12 +24,16 @@ public class User<T extends Comparable<T>>
         username = "null";
         password = "null";
         name = "logged_out";
+        bio = "";
+        hasProfile = false;
     }
     public User (String u, String p, String n)
             throws IllegalUserException {
         username = u;
         password = p;
         name = n;
+        bio = "";
+        hasProfile = false;
         if (u.length() < 4 || p.length() < 4) {
             throw new IllegalUserException("Username and Password must be >= 4 chars");
         }
@@ -42,6 +48,12 @@ public class User<T extends Comparable<T>>
     public String getName() {
         return name;
     }
+    public String getBio() {
+        return bio;
+    }
+    public boolean getHasProfile() {
+        return hasProfile;
+    }
     protected String getPassword() {
         return this.password;
     }
@@ -53,6 +65,12 @@ public class User<T extends Comparable<T>>
     }
     public void setName(String n) {
         name = n;
+    }
+    public void setBio(String b) {
+        bio = b;
+    }
+    public void setHasProfile(boolean h) {
+        hasProfile = h;
     }
     public void setCredentials(String cred) {
         String u = cred.substring(0, cred.indexOf(":"));
