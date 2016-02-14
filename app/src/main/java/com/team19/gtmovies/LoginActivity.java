@@ -44,12 +44,11 @@ public class LoginActivity extends AppCompatActivity {
     private UserLoginTask mAuthTask = null;
     // UI references.
     private TextView mEmailView;
-
-
     private EditText mPasswordView;
     private EditText mPassConfirmView;
     private EditText mNameView;
     private boolean register = false;
+    private String error = "";
     //user credentials
     private String email = null; //username
     private String password = null;
@@ -274,9 +273,9 @@ public class LoginActivity extends AppCompatActivity {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-
         @Override
         protected Boolean doInBackground(Void... params) {
+            error = "";
             if (register) { //register a new user
                 try {
                     IOActions.addUser(new User(email, password, name));
@@ -286,6 +285,7 @@ public class LoginActivity extends AppCompatActivity {
                     return result;
                 } catch (DuplicateUserException e) {
                     Log.e("GTMovies", e.getMessage());
+                    error = "duplicate";
                     return false;
                 } catch (IllegalUserException e) {
                     Log.e("GTMovies", e.getMessage());
@@ -302,6 +302,7 @@ public class LoginActivity extends AppCompatActivity {
                     return result;
                 } catch (NullUserException e) {
                     Log.e("GTMovies", e.getMessage());
+                    error = "nulluser";
                     return false;
                 }
             }
@@ -317,8 +318,17 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 Snackbar.make(MainActivity.rootView,
                         "Invalid password or username!" , Snackbar.LENGTH_LONG).show();
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                Log.i("GTMovies", error);
+                if (error.equals("duplicate")) {
+                    mEmailView.setError("User already exists");
+                    mEmailView.requestFocus();
+                } else if (error.equals("nulluser")) {
+                    mEmailView.setError("User not found");
+                    mEmailView.requestFocus();
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
             }
         }
         @Override

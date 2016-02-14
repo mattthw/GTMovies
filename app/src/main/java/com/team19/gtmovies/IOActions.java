@@ -1,7 +1,11 @@
 package com.team19.gtmovies;
 
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import java.io.FileInputStream;
@@ -123,6 +127,14 @@ public class IOActions extends Application {
             Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
             commit();
         }
+    }
+
+    public static void deleteUser(User user) throws NullUserException {
+        if (user == null)
+            throw new NullUserException("User is null");
+        String uname = user.getUsername();
+        accounts.remove(user);
+        Log.println(Log.INFO, "GTMovies", "User '" + uname + "' deleted.");
     }
 
     public static boolean userSignedIn() {
