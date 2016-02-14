@@ -44,6 +44,7 @@
         <activity
             android:name=".UserProfileActivity"
             android:label="User Profile"
+            android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".MainActivity">
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data

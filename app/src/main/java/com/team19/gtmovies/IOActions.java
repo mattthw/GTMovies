@@ -47,6 +47,7 @@ public class IOActions extends Application {
             loadUser();
         } catch (FileNotFoundException f) {
             accounts = new HashSet<>();
+            currentUser = new User();
             commit();
             Log.println(Log.INFO, "GTMovies", "Created new empty set for user accounts");
         } catch (IOException i) {
@@ -61,7 +62,7 @@ public class IOActions extends Application {
         objectIn = new ObjectInputStream(fileIn);
         accounts = (HashSet<User>) objectIn.readObject();
         objectIn.close();
-        Log.println(Log.DEBUG, "GTMovies", "ACCOUNTS: " + accounts);
+        Log.println(Log.DEBUG, "GTMovies", "ACCOUNTS loaded with: " + accounts);
     }
 
     protected static void loadUser()
@@ -70,7 +71,7 @@ public class IOActions extends Application {
         objectIn = new ObjectInputStream(fileIn);
         currentUser = (User) objectIn.readObject();
         objectIn.close();
-        Log.println(Log.DEBUG, "GTMovies", "USER: " + currentUser);
+        Log.println(Log.DEBUG, "GTMovies", "USER loaded with: " + currentUser);
     }
 
     protected static void saveAccounts()
@@ -114,7 +115,7 @@ public class IOActions extends Application {
      * @throws DuplicateUserException
      */
     public static void addUser(User user)
-            throws DuplicateUserException {
+            throws DuplicateUserException, NullUserException {
         if (accounts.contains(user) || user.getUsername().equals("null")) {
             throw new DuplicateUserException();
         } else {

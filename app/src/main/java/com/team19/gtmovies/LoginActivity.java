@@ -279,7 +279,7 @@ public class LoginActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... params) {
             if (register) { //register a new user
                 try {
-                    IOActions.addUser(new User(email,password, name));
+                    IOActions.addUser(new User(email, password, name));
                     boolean result = IOActions.loginUser(email, password);
                     Log.println(Log.DEBUG, "GTMovies",
                             "REGISTER: returning '" + result + "'");

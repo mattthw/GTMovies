@@ -14,6 +14,7 @@ public class User<T extends Comparable<T>>
     private String password;
     private String name;
     private String bio;
+    private String major;
     private boolean hasProfile;
     private static final long serialVersionUID = 1L;
 
@@ -25,10 +26,11 @@ public class User<T extends Comparable<T>>
         password = "null";
         name = "logged_out";
         bio = "";
+        major = "";
         hasProfile = false;
     }
     public User (String u, String p, String n)
-            throws IllegalUserException {
+            throws IllegalUserException, NullUserException {
         username = u;
         password = p;
         name = n;
@@ -37,11 +39,11 @@ public class User<T extends Comparable<T>>
         if (u.length() < 4 || p.length() < 4) {
             throw new IllegalUserException("Username and Password must be >= 4 chars");
         }
+        if (u == null || p == null || n == null) {
+            throw new NullUserException("Tried creating a user using null parameters.");
+        }
     }
 
-    public String getCredentials() {
-        return username + ":" + password;
-    }
     public String getUsername() {
         return username;
     }
@@ -50,6 +52,9 @@ public class User<T extends Comparable<T>>
     }
     public String getBio() {
         return bio;
+    }
+    public String getMajor() {
+        return major;
     }
     public boolean getHasProfile() {
         return hasProfile;
@@ -72,11 +77,8 @@ public class User<T extends Comparable<T>>
     public void setHasProfile(boolean h) {
         hasProfile = h;
     }
-    public void setCredentials(String cred) {
-        String u = cred.substring(0, cred.indexOf(":"));
-        String p = cred.substring(cred.indexOf(":") + 1);
-        username = u;
-        password = p;
+    public void setMajor(String m) {
+        major = m;
     }
     public int compareTo(User user) {
         if (this.getUsername()
