@@ -34,7 +34,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private EditText eUsername;
     private Spinner eMajor;
-    private String selectedMajor = null;
+    private String selectedMajor = "";
     private EditText eName;
     private EditText ePassword;
     private EditText eBio;
@@ -64,7 +64,7 @@ public class UserProfileActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         eMajor.setAdapter(adapter);
         addListenerOnSpinnerItemSelection();
-        if (!selectedMajor.equals(null)) {
+        if (!selectedMajor.equals("")) {
             int spinnerPosition = adapter.getPosition(selectedMajor);
             eMajor.setSelection(spinnerPosition);
         }
