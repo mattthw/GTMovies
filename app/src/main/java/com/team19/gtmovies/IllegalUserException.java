@@ -6,9 +6,17 @@ package com.team19.gtmovies;
  */
 public class IllegalUserException extends Exception {
 
+    /**
+     * default constructor
+     */
     public IllegalUserException() {
         super("Invalid arguments when creating new User.");
     }
+
+    /**
+     * constructor
+     * @param s custom message
+     */
     public IllegalUserException(String s) {
         super(s);
     }

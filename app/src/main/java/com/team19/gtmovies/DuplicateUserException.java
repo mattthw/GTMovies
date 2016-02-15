@@ -6,9 +6,17 @@ package com.team19.gtmovies;
  */
 public class DuplicateUserException extends Exception {
 
+    /**
+     * default constructor
+     */
     public DuplicateUserException () {
         super("An account with this username already exists!");
     }
+
+    /**
+     * constructor
+     * @param message custom message
+     */
     public DuplicateUserException(String message) {
         super(message);
 

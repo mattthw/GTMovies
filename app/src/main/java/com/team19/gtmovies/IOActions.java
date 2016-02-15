@@ -34,6 +34,10 @@ public class IOActions extends Application {
     protected static HashSet<User> accounts;
     protected static User currentUser;
 
+    /**
+     * constructor for IOActions
+     * @param c context passed by calling class
+     */
     public IOActions(Context c)  {
         ioaContext = c;
         onStart();
@@ -45,6 +49,9 @@ public class IOActions extends Application {
         }
     }
 
+    /**
+     * begin process of loading accounts and users
+     */
     protected static void onStart() {
         try {
             loadAccounts();
@@ -60,6 +67,11 @@ public class IOActions extends Application {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }
     }
+    /**
+     * gets object from serialized file
+     * @throws ClassNotFoundException if error on readObject()
+     * @throws IOException if error opening file
+     */
     protected static void loadAccounts()
             throws ClassNotFoundException, IOException {
         fileIn = ioaContext.openFileInput(AFILE);
@@ -68,7 +80,11 @@ public class IOActions extends Application {
         objectIn.close();
         Log.println(Log.DEBUG, "GTMovies", "ACCOUNTS loaded with: " + accounts);
     }
-
+    /**
+     * gets object from serialized file
+     * @throws ClassNotFoundException if error on readObject()
+     * @throws IOException if error opening file
+     */
     protected static void loadUser()
             throws ClassNotFoundException, IOException {
         fileIn = ioaContext.openFileInput(UFILE);
@@ -77,9 +93,12 @@ public class IOActions extends Application {
         objectIn.close();
         Log.println(Log.DEBUG, "GTMovies", "USER loaded with: " + currentUser);
     }
-
+    /**
+     * serializes and writes HashSet accounts object
+     * @throws IOException if fails to write out
+     */
     protected static void saveAccounts()
-            throws ClassNotFoundException, IOException {
+            throws IOException {
         fileOut = ioaContext.openFileOutput(AFILE, Context.MODE_PRIVATE);
         objectOut = new ObjectOutputStream(fileOut);
         objectOut.writeObject(accounts);
@@ -87,15 +106,24 @@ public class IOActions extends Application {
         Log.println(Log.INFO, "GTMovies", AFILE + " saved.");
     }
 
+    /**
+     * serializes and writes User object
+     * @throws IOException if fails to write object
+     */
     protected static void saveUser()
-            throws ClassNotFoundException, IOException {
+            throws IOException {
         fileOut = ioaContext.openFileOutput(UFILE, Context.MODE_PRIVATE);
         objectOut = new ObjectOutputStream(fileOut);
         objectOut.writeObject(currentUser);
         objectOut.close();
-        Log.println(Log.INFO, "GTMovies", UFILE + " saved with user: " + currentUser.getUsername());
+        Log.println(Log.INFO, "GTMovies", UFILE + " saved with user: "
+                + currentUser.getUsername() + " "
+                + currentUser.getMajor());
     }
 
+    /**
+     * save changes to USER and ACCOUNTS
+     */
     protected static void commit() {
         try {
             saveAccounts();
@@ -109,6 +137,10 @@ public class IOActions extends Application {
         }
     }
 
+    /**
+     * gets accounts
+     * @return HashSet of accounts
+     */
     public static HashSet<User> getAccounts() {
         return accounts;
     }
@@ -129,6 +161,11 @@ public class IOActions extends Application {
         }
     }
 
+    /**
+     * remove user from accounts
+     * @param user User Object
+     * @throws NullUserException if DNE
+     */
     public static void deleteUser(User user) throws NullUserException {
         if (user == null)
             throw new NullUserException("User is null");
@@ -137,31 +174,42 @@ public class IOActions extends Application {
         Log.println(Log.INFO, "GTMovies", "User '" + uname + "' deleted.");
     }
 
+    /**
+     * gets sign in status
+     * @return  true if user is currently signed in
+     */
     public static boolean userSignedIn() {
         if (currentUser == null || currentUser.getUsername().equals("null"))
             return false;
         return true;
     }
 
-    public static User getUserByUsername(String un)
-            throws NullUserException {
+    /**
+     * if user exists return User object
+     * else throw exception (it is expected that it will not fail)
+     * @param un username
+     * @return User
+     */
+    public static User getUserByUsername(String un) {
         for (User u: accounts) {
-            if (u.getUsername().equals(un))
+            if (u.getUsername().equalsIgnoreCase(un))
                 return u;
         }
-        throw new NullUserException();
+        return null;
     }
 
     /**
-     * updates currentUser to user if their credentials match
-     * @param uname user
-     * @param p pass
-     * @return true if success, false on failure
-     * @throws NullUserException getUSerByUsername()
+     * log user in and commit changes
+     * @param uname username
+     * @param p password
+     * @return true if success
      */
     public static boolean loginUser(String uname, String p)
-            throws NullUserException {
+        throws NullUserException {
         User temp = getUserByUsername(uname);
+        if (temp == null) {
+            throw new NullUserException();
+        }
         Log.println(Log.DEBUG, "GTMovies", "param: " + uname + ":" + p
             + "\ntemp: " + temp.getUsername() + ":" +temp.getPassword());
         if (temp.getPassword().equals(p)) {

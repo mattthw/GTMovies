@@ -99,24 +99,41 @@
                 android:id="@+id/editTextUserProfileName"
                 android:ems="13"
                 android:layout_gravity="center_vertical"
-                android:editable="false"
                 android:inputType="textPersonName"
                 android:layout_marginLeft="30dp" />
             <!--android:layout_below="@+id/textViewUserProfileName"-->
             <!--android:layout_alignStart="@+id/editTextUserProfileUsername"-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Major:"
-                android:id="@+id/textViewUserProfileMajor"
-                android:layout_marginTop="5dp" />
             <!--android:layout_below="@+id/editTextUserProfileUsername"-->
             <!--android:layout_alignParentStart="true"-->
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Major:"
+                    android:id="@+id/textViewUserProfileMajor"
+                    android:layout_marginTop="5dp" />
+
+                <Spinner
+                    android:layout_width="270dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerProfileMajor"
+                    android:entries="@array/profMajors"
+                    android:layout_marginTop="30dp"/>
+
+            </LinearLayout>
+
             <EditText
                 android:layout_width="250dp"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:id="@+id/editTextUserProfileMajor"
                 android:ems="13"

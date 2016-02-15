@@ -71,8 +71,6 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
         //load login info
-        //SharedPreferences pref = getSharedPreferences(USER_STATUS, 0);
-        //String USER = pref.getString("USER", "null");
         startActivity(new Intent(this, WelcomeActivity.class));
         //load existing users
         try {
@@ -125,6 +123,11 @@ public class LoginActivity extends AppCompatActivity {
         // client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    /**
+     * XML/UI function to change layout from registering back to just
+     * signing in
+     * @param view
+     */
     public void cancel(View view) {
         findViewById(R.id.register_button).setVisibility(View.VISIBLE);
         findViewById(R.id.pwRegister).setVisibility(View.GONE);
@@ -200,14 +203,6 @@ public class LoginActivity extends AppCompatActivity {
         if (cancel) {
             //cancel and focus on bad field
             focusView.requestFocus();
-//        } else if (findViewById(R.id.pwRegister)
-//                .getVisibility() == (View.VISIBLE)) {
-//            //register user
-//            mAuthTask = new UserLoginTask(email, password, name);
-//            mAuthTask.execute((Void) null);
-//            mPasswordView.setText("");
-//            mPassConfirmView.setText("");
-//            mNameView.setText("");
         } else {
             //sign in or register
             mAuthTask = new UserLoginTask();
@@ -217,7 +212,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * void parents function. We
+     * dont want them to push back!
+     */
     @Override
     public void onBackPressed() {
     }
@@ -257,15 +255,24 @@ public class LoginActivity extends AppCompatActivity {
 //        AppIndex.AppIndexApi.end(client, viewAction);
 //        client.disconnect();
     }
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        //debug:
-//        //Log.println(Log.INFO, "GTMovies", "ondestroy called");
-//        Intent returnIntent = new Intent();
-//        //returnIntent.putExtra("user", IOActions.currentUser);
-//        setResult(Activity.RESULT_OK, returnIntent);
-//    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        //update header
+        ((TextView) MainActivity.nav_header.findViewById(R.id.headerName))
+                .setText(IOActions.currentUser.getName());
+        ((TextView) MainActivity.nav_header.findViewById(R.id.headerUsername))
+                .setText(IOActions.currentUser.getUsername());
+
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        });
+        //MainActivity.navigationView.addHeaderView(MainActivity.nav_header);
+    }
 
 
     /**
