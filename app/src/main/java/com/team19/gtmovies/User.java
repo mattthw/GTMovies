@@ -16,6 +16,7 @@ public class User<T extends Comparable<T>>
     private String bio;
     private String major;
     private boolean hasProfile;
+    private boolean admin = false;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -44,6 +45,7 @@ public class User<T extends Comparable<T>>
         password = p;
         name = n;
         bio = "";
+        major = "";
         hasProfile = false;
         if (u.length() < 4 || p.length() < 4) {
             throw new IllegalUserException("Username and Password must be >= 4 chars");
