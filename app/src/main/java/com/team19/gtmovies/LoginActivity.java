@@ -29,6 +29,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,18 +44,19 @@ public class LoginActivity extends AppCompatActivity {
     private UserLoginTask mAuthTask = null;
     // UI references.
     private TextView mEmailView;
-
-
     private EditText mPasswordView;
     private EditText mPassConfirmView;
     private EditText mNameView;
-    //private View mProgressView;
-    //private View mLoginFormView;
-
-    //is user logged in
+    private boolean register = false;
+    private String error = "";
+    //user credentials
+    private String email = null; //username
+    private String password = null;
+    private String passwordCheck = null;
+    private String name = null;
+    //app user status
     public static final String USER_STATUS = "USER";
-
-    //USER DB
+    //app users storage
     protected static HashSet<User> accounts;
 
     /**
@@ -69,8 +71,6 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
         //load login info
-        //SharedPreferences pref = getSharedPreferences(USER_STATUS, 0);
-        //String USER = pref.getString("USER", "null");
         startActivity(new Intent(this, WelcomeActivity.class));
         //load existing users
         try {
@@ -111,6 +111,9 @@ public class LoginActivity extends AppCompatActivity {
                 findViewById(R.id.nameLayout).setVisibility(View.VISIBLE);
                 findViewById(R.id.cancel_button).setVisibility(View.VISIBLE);
                 ((Button) findViewById(R.id.email_sign_in_button)).setText("Create account");
+                register = true;
+                Log.println(Log.DEBUG, "GTMovies",
+                        "register/sign in toggle- register? '" + register + "'");
             }
         });
         //mLoginFormView = findViewById(R.id.login_form);
@@ -120,13 +123,20 @@ public class LoginActivity extends AppCompatActivity {
         // client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    /**
+     * XML/UI function to change layout from registering back to just
+     * signing in
+     * @param view
+     */
     public void cancel(View view) {
         findViewById(R.id.register_button).setVisibility(View.VISIBLE);
         findViewById(R.id.pwRegister).setVisibility(View.GONE);
         findViewById(R.id.nameLayout).setVisibility(View.GONE);
         findViewById(R.id.cancel_button).setVisibility(View.GONE);
         ((Button) findViewById(R.id.email_sign_in_button)).setText("Sign in");
-
+        register = false;
+        Log.println(Log.DEBUG, "GTMovies",
+                "register/sign in toggle- register? '" + register + "'");
     }
 
 
@@ -145,67 +155,67 @@ public class LoginActivity extends AppCompatActivity {
         mPassConfirmView.setError(null);
         mNameView.setError(null);
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        String pwConfirm = mPassConfirmView.getText().toString();
-        String name = mNameView.getText().toString();
+        email = mEmailView.getText().toString();
+        password = mPasswordView.getText().toString();
+        passwordCheck = mPassConfirmView.getText().toString();
+        name = mNameView.getText().toString();
         boolean cancel = false;
         View focusView = null;
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+
+        //ALWAYS CHECK THESE FIELDS
+        if (TextUtils.isEmpty(email)) {
+            //username empty
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
+            cancel = true;
+        } else if (TextUtils.isEmpty(password)) {
+            //password empty
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (email.length() <= 3) {
+            //username length
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailView;
+            cancel = true;
+        } else if (password.length() <= 3) {
+            //password length
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
-        // Check for a valid username
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isUserValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-        //ensure registration info is valid
-        if (findViewById(R.id.pwRegister).getVisibility() == (View.VISIBLE)) {
-            if (!password.equals(pwConfirm)) {
+
+        //REGISTERING?
+        if (findViewById(R.id.pwRegister)
+                .getVisibility() == (View.VISIBLE)) {
+            if (!password.equals(passwordCheck)) {
+                //password confirm
                 mPassConfirmView.setError("Passwords do not match.");
                 focusView = mPassConfirmView;
                 cancel = true;
             } else if (TextUtils.isEmpty(name)) {
+                //name entry
                 mNameView.setError("Please enter your name.");
                 focusView = mNameView;
                 cancel = true;
             }
         }
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+            //cancel and focus on bad field
             focusView.requestFocus();
-        } else if (name.length() > 0) {
-            mAuthTask = new UserLoginTask(email, password, name);
-            mAuthTask.execute((Void) null);
-            mPasswordView.setText("");
-            mPassConfirmView.setText("");
-            mNameView.setText("");
         } else {
-            mAuthTask = new UserLoginTask(email, password);
+            //sign in or register
+            mAuthTask = new UserLoginTask();
             mAuthTask.execute((Void) null);
             mPasswordView.setText("");
             mPassConfirmView.setText("");
         }
     }
 
-    private boolean isUserValid(String email) {
-        return email.length() > 3;
-    }
-
-    private boolean isPasswordValid(String password) {
-        return password.length() > 3;
-    }
-
-
+    /**
+     * void parents function. We
+     * dont want them to push back!
+     */
     @Override
     public void onBackPressed() {
     }
@@ -248,16 +258,20 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        SharedPreferences state = getSharedPreferences(USER_STATUS, 0);
-//        SharedPreferences.Editor editor = state.edit();
-//        editor.putString("USER", "");
-//        editor.putString("username", IOActions.currentUser.getUsername());
-//        editor.commit();
 
-        Intent returnIntent = new Intent();
-        //returnIntent.putExtra("user", IOActions.currentUser);
-        setResult(Activity.RESULT_OK, returnIntent);
+        //update header
+        ((TextView) MainActivity.nav_header.findViewById(R.id.headerName))
+                .setText(IOActions.currentUser.getName());
+        ((TextView) MainActivity.nav_header.findViewById(R.id.headerUsername))
+                .setText(IOActions.currentUser.getUsername());
 
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        });
+        //MainActivity.navigationView.addHeaderView(MainActivity.nav_header);
     }
 
 
@@ -266,67 +280,62 @@ public class LoginActivity extends AppCompatActivity {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
-        private String mName = "";
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-        //use when registering
-        UserLoginTask(String email, String password, String name) {
-            mEmail = email;
-            mPassword = password;
-            mName = name;
-        }
         @Override
         protected Boolean doInBackground(Void... params) {
-            if (mName.length() == 0) {
-                //log in
+            error = "";
+            if (register) { //register a new user
                 try {
-                    IOActions.getUserByUsername(mEmail);
-                    IOActions.loginUser(mEmail, mPassword);
-                    //if (IOActions.currentUser != null) {
-                    //    MainActivity.currentUser = ioa.currentUser;
-                    //    return true;
-                    //}
-                    return true;
+                    IOActions.addUser(new User(email, password, name));
+                    boolean result = IOActions.loginUser(email, password);
+                    Log.println(Log.DEBUG, "GTMovies",
+                            "REGISTER: returning '" + result + "'");
+                    return result;
+                } catch (DuplicateUserException e) {
+                    Log.e("GTMovies", e.getMessage());
+                    error = "duplicate";
+                    return false;
+                } catch (IllegalUserException e) {
+                    Log.e("GTMovies", e.getMessage());
+                    return false;
                 } catch (NullUserException e) {
                     Log.e("GTMovies", e.getMessage());
+                    return false;
                 }
-            } else {
-                //register
+            } else { //login like normal
                 try {
-                    IOActions.addUser(new User(mEmail,mPassword, mName));
-                    IOActions.commit();
-                    //MainActivity.currentUser = ioa.currentUser;
-                    return true;
+                    boolean result = IOActions.loginUser(email, password);
+                    Log.println(Log.DEBUG, "GTMovies",
+                            "REGISTER: returning '" + result + "'");
+                    return result;
                 } catch (NullUserException e) {
                     Log.e("GTMovies", e.getMessage());
-                } catch (DuplicateUserException d) {
-                    Log.e("GTMovies", d.getMessage());
+                    error = "nulluser";
+                    return false;
                 }
             }
-            return false;
         }
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             if (success) {
-//                SharedPreferences state = getSharedPreferences(APP_PREF, 0);
-//                SharedPreferences.Editor editor = state.edit();
-//                editor.putBoolean("verifiedMode", true);
-//                editor.putString("username", currentUser.getUsername());
-//                editor.commit();
-//
-//                Intent returnIntent = new Intent();
-//                returnIntent.putExtra("user", (Serializable)ioa.currentUser);
-//                setResult(Activity.RESULT_OK, returnIntent);
+                Snackbar.make(MainActivity.rootView,
+                        "'" + IOActions.currentUser.getUsername()
+                                + "' signed in." , Snackbar.LENGTH_LONG).show();
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                Snackbar.make(MainActivity.rootView,
+                        "Invalid password or username!" , Snackbar.LENGTH_LONG).show();
+                Log.i("GTMovies", error);
+                if (error.equals("duplicate")) {
+                    mEmailView.setError("User already exists");
+                    mEmailView.requestFocus();
+                } else if (error.equals("nulluser")) {
+                    mEmailView.setError("User not found");
+                    mEmailView.requestFocus();
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
             }
         }
         @Override

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -23,12 +24,16 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     protected static IOActions ioa;
-
+    protected static View rootView;
     protected static NavigationView navigationView;
+    protected static View nav_header;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        rootView = findViewById(R.id.MainView1);
+
 
         //LOGIN THINGS
         try {
@@ -36,9 +41,10 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             Log.e("GTMovies", e.getMessage());
         }
-        if (IOActions.userSignedIn() == false) {
+        if (!IOActions.userSignedIn()) {
             Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
             startActivity(new Intent(this, LoginActivity.class));
+            //TODO: onActivityResult which checks if user did login successfully
         }
 
         //LAYOUT THINGS
@@ -62,23 +68,37 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        nav_header = LayoutInflater.from(this).inflate(R.layout.nav_header_main, null);
+//        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+//        headerView.findViewById(R.id.headerName);
+        //((TextView) headerView.findViewById(R.id.headerName))
+        //        .setText(IOActions.currentUser.getName());
+        //updateNavHeader();
+
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        View headerView = LayoutInflater.from(MainActivity.this).inflate(R.layout.nav_header_main, null);
-//        userName = (TextView) headerView.findViewById(R.id.emailView);
-//        User userTemp = (User)data.getExtras().getSerializable("user");
-        Log.println(Log.INFO, "GTMovies", "onActivtyResult yes");
-//        userName.setText(IOActions.currentUser.getUsername());
-//        if (requestCode == Activity.RESULT_OK) {
-//            if (resultCode == Activity.RESULT_OK) {
+    /**
+     * set users info to nav header
+     */
+    public void updateNavHeader() {
+//        Handler tvh = new Handler();
+//        Runnable updatetvh = new Runnable() {
+//            @Override
+//            public void run() {
+//                ((TextView) MainActivity.nav_header.findViewById(R.id.headerName))
+//                        .setText(IOActions.currentUser.getName());
+//                ((TextView) MainActivity.nav_header.findViewById(R.id.headerUsername))
+//                        .setText(IOActions.currentUser.getUsername());
+//                navigationView.addHeaderView(nav_header);
 //            }
-//        }
-        //View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        //((TextView)headerView.findViewById(R.id.emailView)).setText(IOActions.currentUser.getUsername());
+//        };
+//        tvh.post(updatetvh);
+
     }
 
+    /**
+     * close drawer if open
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -124,11 +144,11 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_manage_profile) {
+            Intent intent = new Intent(this, UserProfileActivity.class);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_admin) {
 
         }
 

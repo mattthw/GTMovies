@@ -9,26 +9,56 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:weightSum="1">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@android:drawable/ic_dialog_info" />
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Profile"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_weight="0.55">
 
-    <TextView
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="64dp"
+            android:layout_height="134dp"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:src="@drawable/ic_face_white_48dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingTop="25dp">
+
+            <TextView
+                android:id="@+id/headerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/nav_header_vertical_spacing"
+                android:textSize="20sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:text="John Smith" />
+
+            <TextView
+                android:id="@+id/headerUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/nav_header_vertical_spacing"
+                android:textSize="14sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:text="username" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- <TextView
         android:id="@+id/emailView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/email" />
+        android:text="@string/email" />-->
 
 </LinearLayout>

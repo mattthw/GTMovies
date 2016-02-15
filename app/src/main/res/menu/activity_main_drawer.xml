@@ -6,16 +6,20 @@
             <!--android:id="@+id/nav_camera"-->
             <!--android:icon="@drawable/ic_menu_camera"-->
             <!--android:title="Import" />-->
-        <item
+        <!--<item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
             android:title="My Movies" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Browse" />
+            android:title="Browse" />-->
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_manage_profile"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Manage Profile" />
+        <item
+            android:id="@+id/nav_admin"
             android:icon="@drawable/ic_menu_manage"
             android:title="Admin Tools" />
     </group>

@@ -42,7 +42,7 @@
 
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_default_display_name">John Smith</string>
-
+    <string name="pref_account_delete">Delete Account</string>
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
         <item>Always</item>
@@ -53,6 +53,30 @@
         <item>1</item>
         <item>0</item>
         <item>-1</item>
+    </string-array>
+    <string-array name="profMajors">
+        <item>Other</item>
+        <item>CE</item>
+        <item>CM</item>
+        <item>CS</item>
+        <item>BME</item>
+        <item>CivilE</item>
+        <item>EnvE</item>
+        <item>AE</item>
+        <item>EE</item>
+        <item>ME</item>
+        <item>ISYE</item>
+        <item>INTA</item>
+        <item>Math</item>
+        <item>Phys</item>
+        <item>Chem</item>
+        <item>ChemE</item>
+        <item>Econ</item>
+        <item>Policy</item>
+        <item>LMC</item>
+        <item>HTS</item>
+        <item>Global Econ</item>
+        <item>Lang</item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->

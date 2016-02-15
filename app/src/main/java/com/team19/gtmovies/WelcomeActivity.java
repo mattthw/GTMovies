@@ -14,9 +14,15 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
     }
+
+    /**
+     * called when "continue" button does onClick
+     * @param view from XML/activity
+     */
     public void userLogin(View view) {
         finish();
     }
+
     @Override
     public void onBackPressed() {
     }
