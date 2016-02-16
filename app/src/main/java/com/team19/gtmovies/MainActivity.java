@@ -89,28 +89,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * The AsyncTask to get that JSON
-     * Currently can just uses the first URL
-     *
-     * Originally meant to be var-args URL... url
-     */
-    private class JSONParse extends AsyncTask<URL, Integer, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(URL... url) {
-            TomatoParser tomato = new TomatoParser();
-
-            JSONObject jObj = tomato.getJSON(url[0]);
-            return jObj;
-        }
-
-        protected  JSONObject doInBackground(String str) {
-            TomatoParser tomato = new TomatoParser();
-
-            JSONObject jObj = tomato.getJSON(str);
-            return jObj;
-        }
-    }
-    /**
      * set users info to nav header
      */
     public void updateNavHeader() {
