@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 /**
  * Created by matt on 2/5/16.
- * User is object for storing acocunt info
+ * User is object for storing account info
  */
 public class User<T extends Comparable<T>>
         implements Comparable<User<T>>, Serializable {

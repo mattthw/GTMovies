@@ -44,13 +44,15 @@
         <activity
             android:name=".UserProfileActivity"
             android:label="User Profile"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="stateHidden">
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.team19.gtmovies.MainActivity" />
         </activity>
+        <activity android:name=".MovieLookUp"></activity>
     </application>
 
 </manifest>
