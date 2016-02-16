@@ -3,6 +3,7 @@ package com.team19.gtmovies;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -27,6 +32,12 @@ public class MainActivity extends AppCompatActivity
     protected static View rootView;
     protected static NavigationView navigationView;
     protected static View nav_header;
+
+    // Basic URL for the Tomato API
+    // Has two %s placeholders in the middle of baseURL
+    private static String baseURL =
+            "http://api.rottentomatoes.com/api/public/v1.0%s.json?apikey=%s";
+    private static String profKey = "yedukp76ffytfuy24zsqk7f5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +88,28 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    /**
+     * The AsyncTask to get that JSON
+     * Currently can just uses the first URL
+     *
+     * Originally meant to be var-args URL... url
+     */
+    private class JSONParse extends AsyncTask<URL, Integer, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(URL... url) {
+            TomatoParser tomato = new TomatoParser();
+
+            JSONObject jObj = tomato.getJSON(url[0]);
+            return jObj;
+        }
+
+        protected  JSONObject doInBackground(String str) {
+            TomatoParser tomato = new TomatoParser();
+
+            JSONObject jObj = tomato.getJSON(str);
+            return jObj;
+        }
+    }
     /**
      * set users info to nav header
      */
