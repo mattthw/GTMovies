@@ -1,6 +1,5 @@
 package com.team19.gtmovies;
 
-
 import android.util.Log;
 
 import org.json.JSONException;
@@ -21,7 +20,17 @@ import java.nio.charset.StandardCharsets;
  * Created by Jim Jang on 2016-02-16.
  */
 public class TomatoParser {
-    static JSONObject thing;
+//    static JSONObject thing = null;
+    private JSONObject jObj = null;
+
+    /**
+     * Returns the currently saved JSON in this parser
+     *
+     * @return the currently saved JSON file
+     */
+    public JSONObject getjObj() {
+        return jObj;
+    }
 
     /**
      * Grabs the JSON from given URL
@@ -74,7 +83,6 @@ public class TomatoParser {
         }
 
         // Time to actually make that JSON
-        JSONObject jObj = null;
         try {
             jObj = new JSONObject(jsonRaw);
         } catch (JSONException e) {

@@ -28,4 +28,32 @@ public enum Genre {
         if (this == WEST) return "Western";
         return "Hail Jinu";
     }
+
+    /**
+     * Reads the given String and converts it into a Genre
+     * Will return null if the String is not an existing Genre
+     *
+     * @param str the String to read
+     * @return the appropriate Genre, null if non-existing Genre
+     */
+    public static Genre toGenre(String str) {
+        if (str.equals("Action & Adventure")) return ACT_ADV;
+        if (str.equals("Animation")) return ANIM;
+        if (str.equals("Art House & International")) return ART;
+        if (str.equals("Classics")) return CLASSIC;
+        if (str.equals("Comedy")) return COMD;
+        if (str.equals("Documentary")) return DOCU;
+        if (str.equals("Drama")) return DRAMA;
+        if (str.equals("Horror")) return HORROR;
+        if (str.equals("Kids & Family")) return KIDS_FAM;
+        if (str.equals("Musical & Performing Arts")) return MUSIC;
+        if (str.equals("Mystery & Suspense")) return MYST;
+        if (str.equals("Romance")) return ROMANCE;
+        if (str.equals("Science Fiction & Fantasy")) return SCIFI;
+        if (str.equals("Special Interest")) return SPECIAL;
+        if (str.equals("Sports & Fitness")) return SPORTS;
+        if (str.equals("Television")) return TV;
+        if (str.equals("Western")) return WEST;
+        return null;
+    }
 }
