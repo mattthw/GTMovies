@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by Jim Jang on 2016-02-17.
  */
-public class Movie {
+public class Movie implements Comparable<Movie>{
     // Remembers immediate things
     // Rest in JSON
     int id;
@@ -50,6 +50,11 @@ public class Movie {
         } catch (JSONException e) {
             Log.e("JSON Error", "JSONException while parsing single movie" + e.toString());
         }
+    }
+
+    @Override
+    public int compareTo(Movie other) {
+        return this.id - other.getID();
     }
 
     /**
