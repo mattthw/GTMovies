@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -71,12 +72,21 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
         //load login info
-        startActivity(new Intent(this, WelcomeActivity.class));
+        startActivityForResult(new Intent(this, WelcomeActivity.class), 1);
         //load existing users
         try {
             accounts = IOActions.getAccounts();
         } catch (Exception e) {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
+        }
+
+
+        //remove up button
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(false);
         }
 
         // Set up the login form.
@@ -106,14 +116,7 @@ public class LoginActivity extends AppCompatActivity {
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                findViewById(R.id.register_button).setVisibility(View.GONE);
-                findViewById(R.id.pwRegister).setVisibility(View.VISIBLE);
-                findViewById(R.id.nameLayout).setVisibility(View.VISIBLE);
-                findViewById(R.id.cancel_button).setVisibility(View.VISIBLE);
-                ((Button) findViewById(R.id.email_sign_in_button)).setText("Create account");
-                register = true;
-                Log.println(Log.DEBUG, "GTMovies",
-                        "register/sign in toggle- register? '" + register + "'");
+                onRegisterPressed();
             }
         });
         //mLoginFormView = findViewById(R.id.login_form);
@@ -123,12 +126,41 @@ public class LoginActivity extends AppCompatActivity {
         // client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data != null) {
+            if (!data.getBooleanExtra("login", true)) {
+                onRegisterPressed();
+            }
+        }
+    }
+
+    public void onRegisterPressed() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Register");
+        }
+        findViewById(R.id.register_button).setVisibility(View.GONE);
+        findViewById(R.id.pwRegister).setVisibility(View.VISIBLE);
+        findViewById(R.id.nameLayout).setVisibility(View.VISIBLE);
+        findViewById(R.id.cancel_button).setVisibility(View.VISIBLE);
+        ((Button) findViewById(R.id.email_sign_in_button)).setText("Create account");
+        register = true;
+        Log.println(Log.DEBUG, "GTMovies",
+                "register/sign in toggle- register? '" + register + "'");
+    }
+
     /**
      * XML/UI function to change layout from registering back to just
      * signing in
      * @param view
      */
     public void cancel(View view) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Login");
+        }
         findViewById(R.id.register_button).setVisibility(View.VISIBLE);
         findViewById(R.id.pwRegister).setVisibility(View.GONE);
         findViewById(R.id.nameLayout).setVisibility(View.GONE);
@@ -219,6 +251,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
     }
+
     @Override
     public void onStart() {
         super.onStart();
