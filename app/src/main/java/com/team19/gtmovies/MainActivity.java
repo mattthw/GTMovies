@@ -33,12 +33,6 @@ public class MainActivity extends AppCompatActivity
     protected static NavigationView navigationView;
     protected static View nav_header;
 
-    // Basic URL for the Tomato API
-    // Has two %s placeholders in the middle of baseURL
-    private static String baseURL =
-            "http://api.rottentomatoes.com/api/public/v1.0%s.json?apikey=%s";
-    private static String profKey = "yedukp76ffytfuy24zsqk7f5";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

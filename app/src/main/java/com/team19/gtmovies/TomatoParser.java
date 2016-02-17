@@ -17,6 +17,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 /**
+ * I insist the 'ma' be pronounced as mɑː
  * Created by Jim Jang on 2016-02-16.
  */
 public class TomatoParser {
