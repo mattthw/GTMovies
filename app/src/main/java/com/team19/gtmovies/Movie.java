@@ -18,27 +18,16 @@ public class Movie implements Comparable<Movie>{
     String title;
     ArrayList<Genre> genres = new ArrayList<>();
     JSONObject fullInfo;
-    static String base =
-            "http://api.rottentomatoes.com/api/public/v1.0/movies/%d.json?apikey=%s";
+//    static String base =
+//            "http://api.rottentomatoes.com/api/public/v1.0/movies/%d.json?apikey=%s";
 
     /**
-     * Receives the movie id, and the API key and creates the Movie object.
+     * Accepts a JSONObject and creates a Movie out of it
      *
-     * @param id the id of the Movie
-     * @param apiKey the API key to access the Rotten Tomatoes API
+     * @param jObj the JSONObject to base this Movie off of
      */
-    public Movie(int id, String apiKey) {
-        this(String.format(base, id, apiKey));
-    }
-
-    /**
-     * Receives the full String of the URL address and creates the Movie object from it.
-     *
-     * @param urlStr String of the target URL
-     */
-    public Movie(String urlStr) {
-        TomatoParser tomato = new TomatoParser();
-        fullInfo = tomato.getJSON(urlStr);
+    public Movie(JSONObject jObj) {
+        fullInfo = jObj;
         JSONArray tmpJArray;
         try {
             id = fullInfo.getInt("id");
@@ -92,4 +81,35 @@ public class Movie implements Comparable<Movie>{
     public JSONObject getFullInfo() {
         return fullInfo;
     }
+
+//    /**
+//     * Receives the movie id, and the API key and creates the Movie object.
+//     *
+//     * @param id the id of the Movie
+//     * @param apiKey the API key to access the Rotten Tomatoes API
+//     */
+//    public Movie(int id, String apiKey) {
+//        this(String.format(base, id, apiKey));
+//    }
+//
+//    /**
+//     * Receives the full String of the URL address and creates the Movie object from it.
+//     *
+//     * @param urlStr String of the target URL
+//     */
+//    public Movie(String urlStr) {
+//        TomatoParser tomato = new TomatoParser();
+//        fullInfo = tomato.getJSON(urlStr);
+//        JSONArray tmpJArray;
+//        try {
+//            id = fullInfo.getInt("id");
+//            title = fullInfo.getString("title");
+//            tmpJArray = fullInfo.getJSONArray("genres");
+//            for (int i = 0; i < tmpJArray.length(); i++) {
+//                genres.add(Genre.toGenre(tmpJArray.getString(i)));
+//            }
+//        } catch (JSONException e) {
+//            Log.e("JSON Error", "JSONException while parsing single movie" + e.toString());
+//        }
+//    }
 }

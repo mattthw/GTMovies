@@ -20,8 +20,8 @@ import java.nio.charset.StandardCharsets;
  * Created by Jim Jang on 2016-02-16.
  */
 public class TomatoParser {
-//    static JSONObject thing = null;
-    private JSONObject jObj = null;
+    static JSONObject jObj = null;
+//    private JSONObject jObj = null;
 
     /**
      * Returns the currently saved JSON in this parser
