@@ -8,23 +8,26 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.team19.gtmovies.WelcomeActivity"
-    android:background="#d1cfcf">
+    android:background="?attr/colorPrimary"
+    android:theme="@style/AppTheme.NoActionBar">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome to GTMovies!"
+        android:text="@string/welcome_title"
         android:id="@+id/emailView"
-        style="@style/Base.TextAppearance.AppCompat.Display1"
-        android:textColor="#383838"
+        style="@style/Base.TextAppearance.AppCompat.Title"
+        android:textColor="#FFFFFF"
         android:textAlignment="center"
-        android:textSize="25dp"
-        android:paddingLeft="0dp"
-        android:paddingTop="10dp"
+        android:textSize="50sp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:paddingTop="100dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="41dp" />
 
+    <!--
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,17 +43,29 @@
         android:textAlignment="textStart"
         android:layout_below="@+id/emailView"
         android:layout_alignParentStart="true" />
+    -->
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="continue"
-        android:id="@+id/button2"
+        android:text="@string/welcome_login"
+        android:id="@+id/login_button"
         android:onClick="userLogin"
+        android:nestedScrollingEnabled="true"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/register_button"
+        android:singleLine="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_register"
+        android:id="@+id/register_button"
+        android:onClick="userRegister"
         android:nestedScrollingEnabled="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="79dp"
+        android:layout_marginBottom="40dp"
         android:singleLine="false" />
 
 </RelativeLayout>
