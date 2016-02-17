@@ -1,7 +1,15 @@
 <resources>
     <string name="app_name">GTMovies</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Login</string>
     <string name="title_activity_main">GTMovies</string>
+
+    <!-- Strings for welcome -->
+    <string name="welcome_title">Welcome to GTMovies!</string>
+    <string name="welcome_subheading">Welcome to GTMovies!</string>
+    <string name="welcometext">Go ahead and press continue to see what the buzz is all about.
+    </string>
+    <string name="welcome_login">Login</string>
+    <string name="welcome_register">Register</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
@@ -26,8 +34,6 @@
 
     <string name="action_settings">Settings</string>
     <string name="action_logout">Logout</string>
-
-    <string name="welcometext">Go ahead and press continue to see what the buzz is all about.</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
