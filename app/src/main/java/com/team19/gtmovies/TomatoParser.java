@@ -63,9 +63,9 @@ public class TomatoParser {
         String jsonRaw = "";
         BufferedReader br = null;
         try {
-            String currentLine;
+            String currentLine = null;
             br = new BufferedReader(
-                    new InputStreamReader(is, StandardCharsets.UTF_8));
+                    new InputStreamReader(is, StandardCharsets.UTF_8), 8);
             while ((currentLine = br.readLine()) != null) {
                 jsonRaw += currentLine;
                 jsonRaw += "\n";
