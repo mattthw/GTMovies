@@ -89,6 +89,20 @@ public class LoginActivity extends AppCompatActivity {
             actionBar.setDisplayShowHomeEnabled(false);
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        //JinuTest
+        Button jinuTest = (Button) findViewById(R.id.jinuTestButton);
+        final Intent jinuTestIntent = new Intent(this, JinuTestActivity.class);
+        jinuTest.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(jinuTestIntent);
+            }
+        });
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
         // Set up the login form.
         mEmailView = (TextView) findViewById(R.id.email);
         mNameView = (EditText) findViewById(R.id.name);
