@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         ////////////////////////////////////////////////////////////////////////////////////////////
         //JinuTest
         Button jinuTest = (Button) findViewById(R.id.jinuTestButton);
-        final Intent jinuTestIntent = new Intent(this, JinuTestActivity.class);
+        final Intent jinuTestIntent = new Intent(getApplicationContext(), JinuTestActivity.class);
         jinuTest.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
