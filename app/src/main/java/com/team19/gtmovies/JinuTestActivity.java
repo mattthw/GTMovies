@@ -34,6 +34,7 @@ public class JinuTestActivity extends AppCompatActivity {
 
     //For storing the Movies and going through them
     private JSONArray movies = null;
+    private int[] movieIDs;
     private int index = -1;
 
     // Basic URL for the Tomato API
@@ -66,136 +67,6 @@ public class JinuTestActivity extends AppCompatActivity {
         });
     }
 
-/**
- * The AsyncTask to get that Movie view set-up
- * This is a test prototype so it's currently stupid
- * Can be changed to use Strings in doInBackground
- *
- */
-private class JSONParse extends AsyncTask<String, Integer, JSONObject> {
-    private ProgressDialog pDialog;
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        moviePic = (ImageView)findViewById(R.id.imageView2);
-        movieTitle = (TextView)findViewById(R.id.titleView);
-        movieID = (TextView)findViewById(R.id.idView);
-        movieGenre = (TextView)findViewById(R.id.genreView);
-        pDialog = new ProgressDialog(JinuTestActivity.this);
-        pDialog.setMessage("Pulling movie...");
-        pDialog.setIndeterminate(false);
-        pDialog.setCancelable(true);
-        pDialog.show();
 
-    }
-
-    @Override
-    protected JSONObject doInBackground(String... urlParts) {
-        HttpURLConnection urlConnection = null;
-        InputStream is = null;
-        String jsonRaw = "";
-        BufferedReader br = null;
-        String urlRaw = String.format(
-                baseURL, boxOffice, "limit="+numOfMovies+"&country=us&", profKey);
-        URL url = null;
-        try {
-            url = new URL(urlRaw);
-        } catch (MalformedURLException e) {
-            Log.e("URL ERROR", "Failed to create URL in background");
-        }
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            is = new BufferedInputStream(urlConnection.getInputStream());
-            String currentLine = null;
-            br = new BufferedReader(
-                    new InputStreamReader(is, StandardCharsets.UTF_8), 8);
-            while ((currentLine = br.readLine()) != null) {
-                jsonRaw += currentLine;
-                jsonRaw += "\n";
-            }
-        } catch (IOException e) {
-            Log.e("HTTP Connection Error", "HTTP Connection Failure" + e.toString());
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            } else {
-                ///////////////////////////////////////////
-                // No Internet Connection Pop-Up or smth //
-                // Program later                         //
-                ///////////////////////////////////////////
-            }
-            try {
-                if (br != null) {
-                    br.close();
-                }
-            } catch (IOException e) {
-                Log.e("Buffer Error", "Couldn't close buffer" + e.toString());
-            }
-        }
-
-        JSONObject tmpJSON = null;
-        try {
-            tmpJSON = new JSONObject(jsonRaw);
-        } catch (JSONException e) {
-            Log.e("JSON Error", "Couldn't make tmpJSON" + e.toString());
-        }
-        try {
-            movies = tmpJSON.getJSONArray("movies");
-        } catch (JSONException e) {
-            Log.e("JSON Error", "Exception while initial movie read in" + e.toString());
-        }
-        if (movies != null) {
-            index = 0;
-        }
-
-        JSONObject movieJSON = null;
-        try {
-            movieJSON = movies.getJSONObject(index++);
-        } catch (JSONException e) {
-            Log.e("JSON Error", "Exception while initial MovieView set up" + e.toString());
-        }
-        return movieJSON;
-    }
-
-//    @Override
-//    protected JSONObject doInBackground(String... urlParts) {
-//        JSONObject movieJSON = null;
-//
-//        // Just in case index becomes static later
-//        if (index == -1) {
-//            try {
-//                movies = new TomatoParser().getJSON(
-//                        String.format(
-//                                baseURL, boxOffice, "limit="+numOfMovies+"&country=us&", profKey)).
-//                        getJSONArray("movies");
-//            } catch (JSONException e) {
-//                Log.e("JSON Error", "Exception while initial movie readin" + e.toString());
-//            }
-//            if (movies != null) {
-//                index = 0;
-//            }
-//        }
-//        try {
-//            movieJSON = movies.getJSONObject(index++);
-//        } catch (JSONException e) {
-//            Log.e("JSON Error", "Exception while initial MovieView set up" + e.toString());
-//        }
-//        return movieJSON;
-//    }
-
-    @Override
-    protected void onPostExecute(JSONObject movieJSON) {
-        Movie movie = new Movie(movieJSON);
-        pDialog.dismiss();
-        movieTitle.setText(movie.getTitle());
-        movieID.setText(Integer.toString(movie.getID()));
-        String tmpGenres = "";
-        for (Genre g : movie.getGenres()) {
-            tmpGenres += g;
-            tmpGenres += ", ";
-        }
-        movieGenre.setText(tmpGenres);
-    }
-}
 
 }
