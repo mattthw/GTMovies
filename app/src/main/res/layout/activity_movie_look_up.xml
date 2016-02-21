@@ -31,4 +31,5 @@
         android:id="@+id/listView"
         android:layout_below="@+id/button_movie_lookup"
         android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
