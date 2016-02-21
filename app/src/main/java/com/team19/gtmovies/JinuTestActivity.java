@@ -51,7 +51,7 @@ public class JinuTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_jinu_test);
 
         // ORIGINAL INITIATION HERE
-        new JSONParse().execute();
+//        new JSONParse().execute();
 
 //        final JSONParse parse = new JSONParse();
 //        parse.execute();
@@ -62,7 +62,7 @@ public class JinuTestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 index %= numOfMovies;
-                new JSONParse().execute();
+//                new JSONParse().execute();
             }
         });
     }
