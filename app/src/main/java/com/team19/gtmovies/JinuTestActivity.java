@@ -14,7 +14,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class JinuTestActivity extends AppCompatActivity {
 
@@ -26,6 +34,7 @@ public class JinuTestActivity extends AppCompatActivity {
 
     //For storing the Movies and going through them
     private JSONArray movies = null;
+    private int[] movieIDs;
     private int index = -1;
 
     // Basic URL for the Tomato API
@@ -40,25 +49,10 @@ public class JinuTestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jinu_test);
-        // Just in case index becomes static later
-        if (index == -1) {
-            try {
-                movies = new TomatoParser().getJSON(
-                        String.format(
-                                baseURL, boxOffice, "limit="+numOfMovies+"&country=us&", profKey)).
-                        getJSONArray("movies");
-            } catch (JSONException e) {
-                Log.e("JSON Error", "Exception while initial movie readin" + e.toString());
-            }
-            if (movies != null) {
-                index = 0;
-            }
-        }
-        try {
-            new JSONParse().execute(movies.getJSONObject(index++));
-        } catch (JSONException e) {
-            Log.e("JSON Error", "Exception while initial MovieView set up" + e.toString());
-        }
+
+        // ORIGINAL INITIATION HERE
+//        new JSONParse().execute();
+
 //        final JSONParse parse = new JSONParse();
 //        parse.execute();
         // do it so that every time it executes it goes to next movie
@@ -67,56 +61,12 @@ public class JinuTestActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    index %= numOfMovies;
-                    new JSONParse().execute(movies.getJSONObject(index++));
-                } catch (JSONException e) {
-                    Log.e("JSON Error", "Exception while NextButton click" + e.toString());
-                }
+                index %= numOfMovies;
+//                new JSONParse().execute();
             }
         });
     }
 
-/**
- * The AsyncTask to get that Movie view set-up
- * This is a test prototype so it's currently stupid
- * Receives JSONObject, makes Movie out of it, updates appropriate Views.
- *
- */
-private class JSONParse extends AsyncTask<JSONObject, Integer, Movie> {
-    private ProgressDialog pDialog;
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        moviePic = (ImageView)findViewById(R.id.imageView2);
-        movieTitle = (TextView)findViewById(R.id.titleView);
-        movieID = (TextView)findViewById(R.id.idView);
-        movieGenre = (TextView)findViewById(R.id.genreView);
-        pDialog = new ProgressDialog(JinuTestActivity.this);
-        pDialog.setMessage("Pulling movie...");
-        pDialog.setIndeterminate(false);
-        pDialog.setCancelable(true);
-        pDialog.show();
 
-    }
-
-    @Override
-    protected Movie doInBackground(JSONObject... movie) {
-        return new Movie(movie[0]);
-    }
-
-    @Override
-    protected void onPostExecute(Movie movie) {
-        pDialog.dismiss();
-        movieTitle.setText(movie.getTitle());
-        movieID.setText(movie.getID());
-        String tmpGenres = "";
-        for (Genre g : movie.getGenres()) {
-            tmpGenres += g;
-            tmpGenres += ", ";
-        }
-        movieGenre.setText(tmpGenres);
-    }
-}
 
 }
