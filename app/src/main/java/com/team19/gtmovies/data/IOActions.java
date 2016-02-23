@@ -5,9 +5,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.team19.gtmovies.CurrentState;
-import com.team19.gtmovies.pojo.User;
+//import com.team19.gtmovies.pojo.User;
 import com.team19.gtmovies.exception.DuplicateUserException;
 import com.team19.gtmovies.exception.NullUserException;
+import com.team19.gtmovies.pojo.User;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

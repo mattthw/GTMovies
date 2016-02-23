@@ -16,15 +16,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
-import com.team19.gtmovies.pojo.User;
-import com.team19.gtmovies.exception.DuplicateUserException;
+import com.team19.gtmovies.activity.JinuTestActivity;
 import com.team19.gtmovies.data.IOActions;
+import com.team19.gtmovies.exception.DuplicateUserException;
 import com.team19.gtmovies.exception.IllegalUserException;
 import com.team19.gtmovies.exception.NullUserException;
-import com.team19.gtmovies.CurrentState;
+import com.team19.gtmovies.pojo.User;
 
 import java.util.HashSet;
+
+//import com.team19.gtmovies.JinuTestActivity;
 
 /**
  * A login screen that offers login via email/password.
