@@ -42,13 +42,44 @@ public class JinuTestActivity extends AppCompatActivity {
     private static String baseURL =
             "http://api.rottentomatoes.com/api/public/v1.0%s.json?%sapikey=%s";
     private static String boxOffice = "/lists/movies/box_office";
-    private static int numOfMovies = 16;
+    private int numOfMovies = 16;
     private static String profKey = "yedukp76ffytfuy24zsqk7f5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jinu_test);
+        movieTitle = (TextView) findViewById(R.id.titleView);
+        movieID = (TextView) findViewById(R.id.idView);
+        TomatoMagic magically = new TomatoMagic(getApplicationContext(), TomatoMagic.newMovie);
+        try {
+            movies = magically.getRawObj().getJSONArray("movies");
+        } catch (JSONException e) {
+            Log.e("JSON ERROR", "Couldn't get movies from JSON in Test Activity");
+        }
+        try {
+            numOfMovies = movies.length();
+            for (int i = 0; i < movies.length(); i++) {
+                movieIDs[i] = movies.getJSONObject(i).getInt("id");
+            }
+        } catch (JSONException e) {
+            Log.e("JSON ERROR", "Couldn't break up JSONArray into individual movies");
+        }
+        if (movies != null && movies.length() != 0) {
+            index = 0;
+        } else {
+            Log.e("TestActivity Error", "movies not intialized");
+        }
+
+        Movie tmp = null;
+        try {
+            tmp = new Movie(movies.getJSONObject(index));
+        } catch (JSONException e) {
+            Log.e("Movie Error", "Couldn't create a Movie object");
+        }
+
+        movieTitle.setText(tmp.getTitle());
+        movieID.setText(tmp.getID());
 
         // ORIGINAL INITIATION HERE
 //        new JSONParse().execute();
@@ -61,8 +92,16 @@ public class JinuTestActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Movie tmp2 = null;
                 index %= numOfMovies;
-//                new JSONParse().execute();
+                try {
+                    tmp2 = new Movie(movies.getJSONObject(index));
+                } catch (JSONException e) {
+                    Log.e("Movie Error", "Couldn't create a Movie object");
+                }
+
+                movieTitle.setText(tmp2.getTitle());
+                movieID.setText(tmp2.getID());
             }
         });
     }

@@ -62,7 +62,7 @@ public class TomatoMagic {
                 && !target.equals(newDVD)) {
             throw new IllegalArgumentException("GetJSON only uses set options");
         }
-        String urlRaw = String.format(baseURL, target, profKey);
+        String urlRaw = String.format(baseURL, target, "", profKey);
         JsonObjectRequest jObjReq = new JsonObjectRequest
                 (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -123,7 +123,8 @@ public class TomatoMagic {
                 && !target.equals(newDVD)) {
             throw new IllegalArgumentException("TomatoMagic only uses set options");
         }
-        String urlRaw = String.format(baseURL, target, profKey);
+//        String urlRaw = String.format(baseURL, target, "", profKey);
+        Log.e("AR", "ARGGGHH");
 
         //First things first get Volley up and running
         // Actually don't know if this is necessary: initialzing only when not initialized            // PROBLEMO TO LOOK AT
