@@ -1,6 +1,5 @@
 package com.team19.gtmovies;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -15,13 +14,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 /**
- * Created by Jim Jang on 2016-02-20.
+ * Created by Jim Jang on 2016-02-22.
  */
-public class TomatoMagic {
+public class SingletonMagic {
     // Basic URL for the Tomato API
     // Has three %s placeholders in the middle of baseURL
     public static String baseURL =
@@ -37,30 +33,53 @@ public class TomatoMagic {
     public static String numPage = "page=%d";
     public static String profKey = "yedukp76ffytfuy24zsqk7f5";
 
-    // Actual instance variables
-    static RequestQueue queue = null;
+    private static SingletonMagic ourInstance;
+    private RequestQueue mRequestQueue;
+    private static Context mCtx;
     private JSONObject rawObj;
-    private JSONArray movies;
-    private boolean nextable = true;
-    private boolean prevable = false;
+    public boolean nextable = true;
+    public boolean prevable = false;
     private String nextURL = null;
     private String prevURL = null;
 
-    // Need to find a better way to do stuff
-    // Some API results use a friggin Page system in which case the URL becomes completely different
+    // Copied from Android Volley site
+    private SingletonMagic(Context context) {
+        mCtx = context;
+        mRequestQueue = getRequestQueue();
+    }
 
-    /**
-     * Gets the JSON from given target
-     *
-     * @param target where to get the JSON from (one of following: boxOffice, newMovie, or newDVD)
-     * @throws IllegalArgumentException if wrong options are given
-     * @return the JSONObject grabbed from the target
-     */
-    public JSONObject grabJSONFrom(String target) throws IllegalArgumentException {
+    // Default fx on creation
+//    public static SingletonMagic getInstance() {
+//        return ourInstance;
+//    }
+
+    // Copied from Android Volley site
+    public static synchronized SingletonMagic getInstance(Context context) {
+        if (ourInstance == null) {
+            ourInstance = new SingletonMagic(context);
+        }
+        return ourInstance;
+    }
+
+    // Copied from Android Volley site
+    public RequestQueue getRequestQueue() {
+        if (mRequestQueue == null) {
+            // getApplicationContext() is key, it keeps you from leaking the
+            // Activity or BroadcastReceiver if someone passes one in.
+            mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
+        }
+        return mRequestQueue;
+    }
+
+    public <T> void addToRequestQueue(Request<T> req) {
+        getRequestQueue().add(req);
+    }
+
+    public void request(String target) {
         if (!target.equals(boxOffice)
                 && !target.equals(newMovie)
                 && !target.equals(newDVD)) {
-            throw new IllegalArgumentException("GetJSON only uses set options");
+            throw new IllegalArgumentException("Request only uses set options");
         }
         String urlRaw = String.format(baseURL, target, "", profKey);
         JsonObjectRequest jObjReq = new JsonObjectRequest
@@ -68,29 +87,12 @@ public class TomatoMagic {
                     @Override
                     public void onResponse(JSONObject resp) {
                         Log.e("WAHAHAHAHA", "TO HELL WITH THE WORLD!!!!");
-                        Log.e("WAHAHAHAHA", "TO HELL WITH THE WORLD!!!!");
-                        Log.e("WAHAHAHAHA", "TO HELL WITH THE WORLD!!!!");
-                        Log.e("WAHAHAHAHA", "TO HELL WITH THE WORLD!!!!");
-                        Log.e("WAHAHAHAHA", "TO HELL WITH THE WORLD!!!!");
 //                        //handle a valid response coming back.  Getting this string mainly for debug
 //                        response = resp.toString();
 //                        //printing first 500 chars of the response.  Only want to do this for debug
 //                        TextView view = (TextView) findViewById(R.id.textView2);
 //                        view.setText(response.substring(0, 500));
                         if (resp == null) {
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
-                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
                             Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
                         }
 
@@ -100,11 +102,6 @@ public class TomatoMagic {
                         try {
                             nextURL = rawObj.getJSONObject("links").getString("next");
                             Log.e("HELL!!", nextURL.toString());
-                            Log.e("HELL!!", nextURL.toString());
-                            Log.e("HELL!!", nextURL.toString());
-                            Log.e("HELL!!", nextURL.toString());
-                            Log.e("HELL!!", nextURL.toString());
-                            Log.e("HELL!!", nextURL.toString());
                         } catch (JSONException e) {
                             Log.e("JSON ERROR", "Error when magically getting nextURL");
                         }
@@ -113,11 +110,11 @@ public class TomatoMagic {
                         }
 
                         // put movies into a JSONArray
-                        try {
-                            movies = rawObj.getJSONArray("movies");
-                        } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Error when magically getting movies");
-                        }
+//                        try {
+//                            movies = rawObj.getJSONArray("movies");
+//                        } catch (JSONException e) {
+//                            Log.e("JSON ERROR", "Error when magically getting movies");
+//                        }
                     }
                 }, new Response.ErrorListener() {
 
@@ -126,59 +123,9 @@ public class TomatoMagic {
                         Log.e("VOLLEY FAIL", "Coudln't getJSON");
                     }
                 });
-        queue.add(jObjReq);
-        queue.start();
-        if (rawObj == null) {
-            Log.e("FFFFFFFFFFFFF", "TO HELL WITH THE WORLD!!!!");
-            Log.e("FFFFFFFFFFFFF", "TO HELL WITH THE WORLD!!!!");
-            Log.e("FFFFFFFFFFFFF", "TO HELL WITH THE WORLD!!!!");
-            Log.e("FFFFFFFFFFFFF", "TO HELL WITH THE WORLD!!!!");
-            Log.e("FFFFFFFFFFFFF", "TO HELL WITH THE WORLD!!!!");
-            Log.e("FFFFFFFFFFFFF", "TO HELL WITH THE WORLD!!!!");
-            Log.e("FFFFFFFFFFFFF", "TO HELL WITH THE WORLD!!!!");
-            Log.e("FFFFFFFFFFFFF", "TO HELL WITH THE WORLD!!!!");
-            Log.e("FFFFFFFFFFFFF", "TO HELL WITH THE WORLD!!!!");
-            Log.e("FFFFFFFFFFFFF", "TO HELL WITH THE WORLD!!!!");
-        }
-        return rawObj;
-    }
-
-    /**
-     * Initializes the TomatoMagic
-     * Initializes a working RequestQueue if one does not already exist
-     * Grabs the JSON from the target and stores it
-     * Requires the context of where this is being run in (highly likely just getApplicationContext)
-     * Also only takes set options for target:
-     *   TomatoMagic.boxOffice
-     *   TomatoMagic.newMovie
-     *   TomatoMagic.newDVD
-     *
-     * @param context the context where TomatoMagic is being run in
-     * @param target the target to grab the JSON from
-     * @throws IllegalArgumentException thrown when wrong target is input
-     */
-    public TomatoMagic(Context context, String target) throws IllegalArgumentException {
-        if (!target.equals(boxOffice)
-                && !target.equals(newMovie)
-                && !target.equals(newDVD)) {
-            throw new IllegalArgumentException("TomatoMagic only uses set options");
-        }
-//        String urlRaw = String.format(baseURL, target, "", profKey);
-        Log.e("AR", "ARGGGHH");
-
-        //First things first get Volley up and running
-        // Actually don't know if this is necessary: initialzing only when not initialized            // PROBLEMO TO LOOK AT
-        // What if context changes???????? Can that happen???? Hopefully it s just always
-        // getAppCntxt?
-        if (queue == null) {
-            queue = Volley.newRequestQueue(context);
-        }
-        grabJSONFrom(target);
-    }
-
-    //TODO
-    public void grabJSONWithSettings() {
-        //
+        Log.e("!!!!!!!!!!", "About to add to queue!!!");
+        mRequestQueue.add(jObjReq);
+        Log.e("!!!!!!!!!!", "Added to queue!!!");
     }
 
     /**
@@ -211,12 +158,12 @@ public class TomatoMagic {
                             prevable = false;
                         }
 
-                        // put movies into a JSONArray
-                        try {
-                            movies = rawObj.getJSONArray("movies");
-                        } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Error when getting movies from URL");
-                        }
+//                        // put movies into a JSONArray
+//                        try {
+//                            movies = rawObj.getJSONArray("movies");
+//                        } catch (JSONException e) {
+//                            Log.e("JSON ERROR", "Error when getting movies from URL");
+//                        }
                     }
                 }, new Response.ErrorListener() {
 
@@ -225,7 +172,7 @@ public class TomatoMagic {
                         Log.e("VOLLEY FAIL", "Couldn't getJSON");
                     }
                 });
-        queue.add(jObjReq);
+        mRequestQueue.add(jObjReq);
     }
 
     /**
@@ -254,15 +201,6 @@ public class TomatoMagic {
         }
         grabJSONFromURL(prevURL);
         return rawObj;
-    }
-
-    /**
-     * Returns the JSONArray of movies currently saved
-     *
-     * @return JSONArray of movies
-     */
-    public JSONArray getMovies() {
-        return movies;
     }
 
     /**

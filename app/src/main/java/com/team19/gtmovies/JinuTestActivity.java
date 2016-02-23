@@ -10,6 +10,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,48 +56,112 @@ public class JinuTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_jinu_test);
         movieTitle = (TextView) findViewById(R.id.titleView);
         movieID = (TextView) findViewById(R.id.idView);
-        TomatoMagic magically = new TomatoMagic(getApplicationContext(), TomatoMagic.newMovie);
-        try {
-            movies = magically.getRawObj().getJSONArray("movies");
-        } catch (JSONException e) {
-            Log.e("JSON ERROR", "Couldn't get movies from JSON in Test Activity");
-        }
-        try {
-            numOfMovies = movies.length();
-            for (int i = 0; i < movies.length(); i++) {
-                movieIDs[i] = movies.getJSONObject(i).getInt("id");
-            }
-        } catch (JSONException e) {
-            Log.e("JSON ERROR", "Couldn't break up JSONArray into individual movies");
-        }
-        if (movies != null && movies.length() != 0) {
-            index = 0;
-        } else {
-            Log.e("TestActivity Error", "movies not intialized");
-        }
 
-        Movie tmp = null;
-        try {
-            tmp = new Movie(movies.getJSONObject(index));
-        } catch (JSONException e) {
-            Log.e("Movie Error", "Couldn't create a Movie object");
-        }
+        String urlRaw = String.format(baseURL, "/lists/movies/opening", "", profKey);
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject resp) {
+                        Log.e("WAHAHAHAHA", "TO HELL WITH THE WORLD!!!!");
+//                        //handle a valid response coming back.  Getting this string mainly for debug
+//                        response = resp.toString();
+//                        //printing first 500 chars of the response.  Only want to do this for debug
+//                        TextView view = (TextView) findViewById(R.id.textView2);
+//                        view.setText(response.substring(0, 500));
+                        if (resp == null) {
+                            Log.e("FSDIADFNIFANI", "TO HELL WITH THE WORLD!!!!");
+                        }
 
-        movieTitle.setText(tmp.getTitle());
-        movieID.setText(tmp.getID());
+                        // put movies into a JSONArray
+                        try {
+                            movies = resp.getJSONArray("movies");
+                        } catch (JSONException e) {
+                            Log.e("JSON ERROR", "Error when getting movies in test acti.");
+                        }
+                        if (movies == null) {
+                            Log.e("Movie Error", "movies JSONArray is null!");
+                        }
+                        Movie tmp = null;
+                        try {
+                            tmp = new Movie(movies.getJSONObject(++index));
+                        } catch (JSONException e) {
+                            Log.e("Movie Error", "Couldn't initially create a Movie obj");
+                        }
+                        if (tmp == null) {
+                            Log.e("Movie Error", "No JSONError but Movie is null");
+                        }
+                        movieTitle.setText(tmp.getTitle());
+                        movieID.setText(Integer.toString(tmp.getID()));
+                    }
+                }, new Response.ErrorListener() {
 
-        // ORIGINAL INITIATION HERE
-//        new JSONParse().execute();
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY FAIL", "Coudln't getJSON");
+                    }
+                });
 
-//        final JSONParse parse = new JSONParse();
-//        parse.execute();
-        // do it so that every time it executes it goes to next movie
+// Access the RequestQueue through your singleton class.
+        SingletonMagic.getInstance(this).addToRequestQueue(jsObjRequest);
+
+
+        boolean following_is_not_using_add_as_request;
+//        SingletonMagic magically = SingletonMagic.getInstance(getApplicationContext());
+//        magically.request(SingletonMagic.newMovie);
+//        JSONObject rawObj = magically.getRawObj();
+//        try {
+//            movies = rawObj.getJSONArray("movies");
+//        } catch (JSONException e) {
+//            Log.e("JSON Error", "Couldn't get movies JSONArray");
+//        }
+//        if (movies != null) {
+//            index = 0;
+//        }
+//        Movie tmp = null;
+//        try {
+//            tmp = new Movie(movies.getJSONObject(index));
+//        } catch (JSONException e) {
+//            Log.e("JSON Error", "Couldn't get an individual Movie out of the JArray");
+//        }
+
+        boolean following_is_using_Tomato_magic;
+//        TomatoMagic magically = new TomatoMagic(getApplicationContext(), TomatoMagic.newMovie);
+//        try {
+//            movies = magically.getRawObj().getJSONArray("movies");
+//        } catch (JSONException e) {
+//            Log.e("JSON ERROR", "Couldn't get movies from JSON in Test Activity");
+//        }
+//        try {
+//            numOfMovies = movies.length();
+//            for (int i = 0; i < movies.length(); i++) {
+//                movieIDs[i] = movies.getJSONObject(i).getInt("id");
+//            }
+//        } catch (JSONException e) {
+//            Log.e("JSON ERROR", "Couldn't break up JSONArray into individual movies");
+//        }
+//        if (movies != null && movies.length() != 0) {
+//            index = 0;
+//        } else {
+//            Log.e("TestActivity Error", "movies not intialized");
+//        }
+//
+//        Movie tmp = null;
+//        try {
+//            tmp = new Movie(movies.getJSONObject(index));
+//        } catch (JSONException e) {
+//            Log.e("Movie Error", "Couldn't create a Movie object");
+//        }
+//
+//        movieTitle.setText(tmp.getTitle());
+//        movieID.setText(tmp.getID());
 
         nextButton = (Button) findViewById(R.id.nextMovieButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                Log.d("FUCK YOU", "I'm Running. Just Not Doing Anything");
                 Movie tmp2 = null;
+                index += 1;
                 index %= numOfMovies;
                 try {
                     tmp2 = new Movie(movies.getJSONObject(index));
@@ -101,7 +170,8 @@ public class JinuTestActivity extends AppCompatActivity {
                 }
 
                 movieTitle.setText(tmp2.getTitle());
-                movieID.setText(tmp2.getID());
+                movieID.setText(Integer.toString(tmp2.getID()));
+//                Log.d("FUCK YOU", "I'm Running. Just Not Doing Anything");
             }
         });
     }
