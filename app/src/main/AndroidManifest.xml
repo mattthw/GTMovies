@@ -13,7 +13,7 @@
 
         <!-- MAIN ACTIVITY -->
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/title_activity_main"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
@@ -26,53 +26,53 @@
         <!-- CHILD SETTINGS ACTIVITY -->
         <!-- CHILD LOGIN ACTIVITY -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.team19.gtmovies.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <!-- CHILD OF LOGIN ACTIVITY -->
-        <activity android:name=".WelcomeActivity" />
+        <activity android:name=".activity.WelcomeActivity" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.team19.gtmovies.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
-            android:name=".UserProfileActivity"
+            android:name=".activity.UserProfileActivity"
             android:label="User Profile"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:windowSoftInputMode="stateHidden">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.team19.gtmovies.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
-        <activity android:name=".MovieLookUp" />
-        <activity android:name=".JinuTestActivity"></activity>
+        <activity android:name=".data.MovieLookUp" />
+        <activity android:name=".activity.JinuTestActivity"></activity>
         <activity
-            android:name=".MovieListActivity"
+            android:name=".activity.MovieListActivity"
             android:label="@string/title_movie_list"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.team19.gtmovies.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
-            android:name=".MovieDetailActivity"
+            android:name=".activity.MovieDetailActivity"
             android:label="@string/title_movie_detail"
-            android:parentActivityName=".MovieListActivity"
+            android:parentActivityName=".activity.MovieListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.team19.gtmovies.MovieListActivity" />
+                android:value=".activity.MovieListActivity" />
         </activity>
     </application>
 

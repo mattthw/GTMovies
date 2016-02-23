@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:fillViewport="true"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.team19.gtmovies.UserProfileActivity"
+    tools:context=".activity.UserProfileActivity"
     android:id="@+id/userProfileRootView">
 
     <TextView
@@ -66,13 +66,13 @@
             <!--android:layout_below="@+id/textViewUserProfileUsername"-->
             <!--android:layout_alignParentStart="true"-->
 
-            <TextView
+            <!-- <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Password:"
                 android:id="@+id/textViewUserProfilePassword"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp" /> -->
 
             <EditText
                 android:layout_width="250dp"

@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,11 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import com.team19.gtmovies.fragment.MovieDetailFragment;
+import com.team19.gtmovies.R;
+
 /**
  * An activity representing a single Movie detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
  * in a {@link MovieListActivity}.
+ * @author Austin Leal
+ * @version 1.0
  */
 public class MovieDetailActivity extends AppCompatActivity {
 

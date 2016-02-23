@@ -1,13 +1,8 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.activity;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,27 +12,27 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import org.json.JSONObject;
+import com.team19.gtmovies.data.IOActions;
+import com.team19.gtmovies.R;
 
-import java.net.URL;
-
-public class MainActivity extends AppCompatActivity
+public class MainFrameActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     protected static IOActions ioa;
     protected static View rootView;
     protected static NavigationView navigationView;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.Adapter mAdapter;
     protected static View nav_header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        rootView = findViewById(R.id.MainView1);
+        rootView = findViewById(R.id.main_view);
 
 
         //LOGIN THINGS
@@ -56,6 +51,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +60,7 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+        */
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -74,11 +71,8 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         nav_header = LayoutInflater.from(this).inflate(R.layout.nav_header_main, null);
-//        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
-//        headerView.findViewById(R.id.headerName);
-        //((TextView) headerView.findViewById(R.id.headerName))
-        //        .setText(IOActions.currentUser.getName());
-        //updateNavHeader();
+
+        startActivity(new Intent(this, MovieListActivity.class));
 
     }
 
@@ -114,34 +108,41 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
+    } */
 
+    /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        Log.e("GTMovies", "Problem here");
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         }
-        if (id == R.id.action_logout) {
+        if (id == R.id.nav_logout) {
+            Log.e("GTMovies", "logout problem");
             IOActions.logoutUser();
+            Log.e("GTMovies", "logout problem2");
             //startActivity(new Intent(this, LoginActivity.class));
             Intent intent = getIntent();
+            Log.e("GTMovies", "logout problem3");
             finish();
+            Log.e("GTMovies", "logout problem");
             startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -152,9 +153,13 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_manage_profile) {
             Intent intent = new Intent(this, UserProfileActivity.class);
             startActivity(intent);
-
-        } else if (id == R.id.nav_admin) {
-
+        } else if (id == R.id.nav_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+        } else if (id == R.id.nav_logout) {
+            IOActions.logoutUser();
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

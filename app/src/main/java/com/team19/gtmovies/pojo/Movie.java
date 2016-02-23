@@ -1,5 +1,6 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.pojo;
 
+import android.media.Image;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -14,10 +15,13 @@ import java.util.ArrayList;
 public class Movie implements Comparable<Movie> {
     // Remembers immediate things
     // Rest in JSON
-    int id;
-    String title;
-    ArrayList<Genre> genres = new ArrayList<>();
-    JSONObject fullInfo;
+    private int id;
+    private String title;
+    private ArrayList<Genre> genres = new ArrayList<>();
+    private Image poster;
+    private int rating;
+    private String description;
+    private JSONObject fullInfo;
 //    static String base =
 //            "http://api.rottentomatoes.com/api/public/v1.0/movies/%d.json?apikey=%s";
 

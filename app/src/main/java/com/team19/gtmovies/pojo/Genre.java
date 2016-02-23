@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.pojo;
 
 /**
  * Created by Jim Jang on 2016-02-17.

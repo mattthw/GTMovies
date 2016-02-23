@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.exception;
 
 /**
  * Created by matt on 2/8/16.

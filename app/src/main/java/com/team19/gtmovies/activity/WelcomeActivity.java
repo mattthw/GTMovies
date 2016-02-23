@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import com.team19.gtmovies.R;
 
 public class WelcomeActivity extends AppCompatActivity {
 

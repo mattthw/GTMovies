@@ -1,24 +1,24 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import com.team19.gtmovies.fragment.MovieDetailFragment;
+import com.team19.gtmovies.R;
 import com.team19.gtmovies.dummy.DummyContent;
 
 import java.util.List;
@@ -30,6 +30,8 @@ import java.util.List;
  * lead to a {@link MovieDetailActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
+ * @author Austin Leal
+ * @version 1.0
  */
 public class MovieListActivity extends AppCompatActivity {
 
@@ -39,30 +41,15 @@ public class MovieListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
 
+    private int mPage;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_list);
+        //setContentView(R.layout.activity_movie_list);
+        Log.e("GTMovies", "going to activity");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        // Show the Up button in the action bar.
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        View recyclerView = findViewById(R.id.movie_list);
+        View recyclerView = findViewById(R.id.movie_list_view);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
@@ -96,6 +83,8 @@ public class MovieListActivity extends AppCompatActivity {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
     }
 
+
+
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
@@ -115,8 +104,10 @@ public class MovieListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            //holder.mMoviePosterView.setImageResource(mValues.get(position).);
+            holder.mMovieTitleView.setText(mValues.get(position).id);
+            holder.mMovieRatingView.setText(mValues.get(position).content);
+            holder.mMovieDescriptionView.setText(mValues.get(position).content);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -147,20 +138,24 @@ public class MovieListActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
+            public final ImageView mMoviePosterView;
+            public final TextView mMovieTitleView;
+            public final TextView mMovieRatingView;
+            public final TextView mMovieDescriptionView;
             public DummyContent.DummyItem mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                mMoviePosterView = (ImageView) view.findViewById(R.id.movie_poster);
+                mMovieTitleView = (TextView) view.findViewById(R.id.movie_title);
+                mMovieRatingView = (TextView) view.findViewById(R.id.movie_rating);
+                mMovieDescriptionView = (TextView) view.findViewById(R.id.movie_description);
             }
 
             @Override
             public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
+                return super.toString() + " '" + mMovieTitleView.getText() + "'";
             }
         }
     }

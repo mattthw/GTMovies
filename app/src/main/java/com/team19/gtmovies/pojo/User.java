@@ -1,7 +1,9 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.pojo;
+
+import com.team19.gtmovies.exception.IllegalUserException;
+import com.team19.gtmovies.exception.NullUserException;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 /**
  * Created by matt on 2/5/16.
@@ -168,10 +170,7 @@ public class User<T extends Comparable<T>>
         if (!(obj instanceof User)) {
             return false;
         }
-        if (this.compareTo((User)obj) == 0) {
-            return true;
-        }
-        return false;
+        return this.compareTo((User) obj) == 0;
     }
 
     /**
@@ -190,6 +189,15 @@ public class User<T extends Comparable<T>>
         return this.getUsername()
                 + ":" + this.getPassword()
                 + " " + this.getName();
+    }
+
+    /**
+     * verifies if password correct for class
+     * @param tryPassword String password to try
+     * @return boolean if password matches
+     */
+    public boolean correctPassword(String tryPassword) {
+        return password.equals(tryPassword);
     }
 
 

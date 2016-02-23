@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.activity;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.team19.gtmovies.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

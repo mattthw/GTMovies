@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.data;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import android.util.Log;
+
+import com.team19.gtmovies.R;
 
 import org.json.JSONObject;
 

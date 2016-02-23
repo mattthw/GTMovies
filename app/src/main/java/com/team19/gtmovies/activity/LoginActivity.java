@@ -1,17 +1,7 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -26,15 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.team19.gtmovies.R;
+import com.team19.gtmovies.pojo.User;
+import com.team19.gtmovies.exception.DuplicateUserException;
+import com.team19.gtmovies.data.IOActions;
+import com.team19.gtmovies.exception.IllegalUserException;
+import com.team19.gtmovies.exception.NullUserException;
+import com.team19.gtmovies.CurrentState;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * A login screen that offers login via email/password.
@@ -308,9 +298,9 @@ public class LoginActivity extends AppCompatActivity {
 
         //update header
         ((TextView) MainActivity.nav_header.findViewById(R.id.headerName))
-                .setText(IOActions.currentUser.getName());
+                .setText(CurrentState.getUser().getName());
         ((TextView) MainActivity.nav_header.findViewById(R.id.headerUsername))
-                .setText(IOActions.currentUser.getUsername());
+                .setText(CurrentState.getUser().getUsername());
 
 //        runOnUiThread(new Runnable() {
 //            @Override
@@ -366,7 +356,7 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
             if (success) {
                 Snackbar.make(MainActivity.rootView,
-                        "'" + IOActions.currentUser.getUsername()
+                        "'" + CurrentState.getUser().getUsername()
                                 + "' signed in." , Snackbar.LENGTH_LONG).show();
                 finish();
             } else {

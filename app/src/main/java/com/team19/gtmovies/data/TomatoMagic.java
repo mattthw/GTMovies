@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.data;
 
 import android.app.Activity;
 import android.content.Context;

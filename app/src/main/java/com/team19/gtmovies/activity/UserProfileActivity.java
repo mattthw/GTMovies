@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.activity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -12,14 +12,17 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.team19.gtmovies.CurrentState;
+import com.team19.gtmovies.data.IOActions;
+import com.team19.gtmovies.R;
+import com.team19.gtmovies.pojo.User;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,8 +32,8 @@ import java.util.TimerTask;
 public class UserProfileActivity extends AppCompatActivity {
     protected View rootView;
     private static UserProfileActivity upa = null;
-    final User cu = MainActivity.ioa.currentUser;
-    final IOActions ioa = MainActivity.ioa;
+    final User cu = CurrentState.getUser();
+    final IOActions ioa = MainFrameActivity.ioa;
 
     private EditText eUsername;
     private Spinner eMajor;
@@ -56,7 +59,7 @@ public class UserProfileActivity extends AppCompatActivity {
         // Grab the user's pre-existing information
         eUsername.setText(cu.getUsername());
         eName.setText(cu.getName());
-        ePassword.setText(cu.getPassword());
+        //ePassword.setText();
         eBio.setText(cu.getBio());
         //spinner
         selectedMajor = cu.getMajor();
@@ -78,7 +81,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         }
         // What to do if the save button is clicked
-        ((Button)findViewById(R.id.buttonUserProfileSubmit)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.buttonUserProfileSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (verifyProfile())
@@ -114,7 +117,7 @@ public class UserProfileActivity extends AppCompatActivity {
             cancel = true;
         } else if (IOActions.getUserByUsername(eUsername.getText().toString()) != null
                 && !(eUsername.getText().toString()
-                    .equals(IOActions.currentUser.getUsername()))) {
+                    .equals(CurrentState.getUser().getUsername()))) {
             //username already exists
             eUsername.setError("Username already exists");
             focusView = eUsername;
@@ -145,7 +148,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
     private void saveProfile() {
         // Remove the user entry from IOAction's account list (we will add it back later)
-        ioa.getAccounts().remove(cu);
+        IOActions.getAccounts().remove(cu);
 
         // Store the current hasProfile variable (will come in handy for the snackbar)
         boolean hasprofileback = cu.getHasProfile();
@@ -160,9 +163,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Save everything to disk
         try {
-            ioa.saveUser();
-            ioa.getAccounts().add(cu);
-            ioa.saveAccounts();
+            IOActions.saveUser();
+            IOActions.getAccounts().add(cu);
+            IOActions.saveAccounts();
         } catch (FileNotFoundException f) {
             Log.e("GTMovies", "FileNotFoundException: "+Log.getStackTraceString(f));
         } catch (IOException i) {

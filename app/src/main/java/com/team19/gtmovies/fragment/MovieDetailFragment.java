@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.fragment;
 
 import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.team19.gtmovies.R;
+import com.team19.gtmovies.activity.MovieDetailActivity;
+import com.team19.gtmovies.activity.MovieListActivity;
 import com.team19.gtmovies.dummy.DummyContent;
 
 /**
@@ -16,6 +19,8 @@ import com.team19.gtmovies.dummy.DummyContent;
  * This fragment is either contained in a {@link MovieListActivity}
  * in two-pane mode (on tablets) or a {@link MovieDetailActivity}
  * on handsets.
+ * @author Austin Leal
+ * @version 1.0
  */
 public class MovieDetailFragment extends Fragment {
     /**
@@ -34,6 +39,14 @@ public class MovieDetailFragment extends Fragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public MovieDetailFragment() {
+    }
+
+    /**
+     * creates new MovieDetailFragment instance
+     * @return new MovieDetailFragment instance
+     */
+    public static MovieDetailFragment newInstance() {
+        return new MovieDetailFragment();
     }
 
     @Override

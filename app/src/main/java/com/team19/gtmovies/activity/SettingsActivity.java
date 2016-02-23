@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.activity;
 
 
 import android.annotation.TargetApi;
@@ -20,6 +20,8 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+
+import com.team19.gtmovies.R;
 
 import java.util.List;
 
@@ -277,7 +279,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_account);
             setHasOptionsMenu(true);
 
-            Preference button = (Preference)findPreference(getString(R.string.pref_account_delete));
+            Preference button = findPreference(getString(R.string.pref_account_delete));
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
