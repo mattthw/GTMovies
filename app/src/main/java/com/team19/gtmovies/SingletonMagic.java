@@ -26,6 +26,7 @@ public class SingletonMagic {
     public static String newMovie = "/lists/movies/opening";
     public static String newDVD = "/lists/dvds/new_releases";
     public static String topRental = "/lists/dvds/top_rentals";
+    public static String search = "/movies";
 
     //Setting strings for URL
     public static String numMovies = "limit=%d&";
@@ -76,6 +77,10 @@ public class SingletonMagic {
         getRequestQueue().add(req);
     }
 
+
+    // TODO: Erase everything below at end of M5
+    // Below are all deprecated
+    // Will erase at end of M5
     public void request(String target) {
         if (!target.equals(boxOffice)
                 && !target.equals(newMovie)
