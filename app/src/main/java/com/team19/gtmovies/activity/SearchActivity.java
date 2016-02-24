@@ -2,19 +2,35 @@ package com.team19.gtmovies.activity;
 
 import android.app.SearchManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.SingletonMagic;
 import com.team19.gtmovies.fragment.MovieListFragment;
 import com.team19.gtmovies.pojo.Movie;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
+    List<Movie> list = new ArrayList<>();
+    public boolean nextable = true;
+    public boolean prevable = false;
+    private String nextURL = null;
+    private String prevURL = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +80,68 @@ public class SearchActivity extends AppCompatActivity {
                 actionBar.setTitle(query);
             }
 
-            List<Movie> list = MovieListFragment.getMovieList();   //TODO: @Jinu get the movies using query
+            String queryURI = Uri.encode(query);
+            // Creating the JSONRequest
+            String urlRaw = String.format(
+                    SingletonMagic.baseURL, SingletonMagic.search, "q=" + queryURI, SingletonMagic.profKey);
+
+            JsonObjectRequest newMovieRequest = new JsonObjectRequest
+                    (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject resp) {
+                            if (resp == null) {
+                                Log.e("JSONRequest ERROR", "Null Response Received");
+                            }
+
+                            // put movies into a JSONArray
+                            JSONArray tmpMovies = null;
+                            try {
+                                tmpMovies = resp.getJSONArray("movies");
+                            } catch (JSONException e) {
+                                Log.e("JSON ERROR", "Error when getting movies in Search.");
+                            }
+                            if (tmpMovies == null) {
+                                Log.e("Movie Error", "movies JSONArray is null!");
+                            }
+                            for (int i = 0; i < tmpMovies.length(); i++) {
+                                try {
+                                    list.add(new Movie(tmpMovies.getJSONObject(i)));
+                                } catch (JSONException e) {
+                                    Log.e("Movie Error", "Couldn't make Movie" + i + "in Search");
+                                }
+                            }
+                            try {
+                                JSONObject tmpJ = resp.getJSONObject("links");
+                                nextURL = tmpJ.getString("next");
+                                prevURL = tmpJ.getString("prev");
+                            } catch (JSONException e) {
+                                Log.e("JSON ERROR", "Fail to get connected URLs in search");
+                            }
+                            if (nextURL != null) {
+                                nextable = true;
+                            } else {
+                                nextable = false;
+                            }
+                            if (prevURL != null) {
+                                prevable = true;
+                            } else {
+                                prevable = false;
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("VOLLEY FAIL", "Couldn't getJSON");
+                        }
+                    });
+
+            // Access the RequestQueue through singleton class.
+            // Add Requests to RequestQueue
+            SingletonMagic.getInstance(this).addToRequestQueue(newMovieRequest);
 
             MovieListFragment movieListFragment = MovieListFragment.newInstance(0);
-            movieListFragment.fillSearchMovieList(list);
+            movieListFragment.fillSearchMovieList(MovieListFragment.getMovieList()); //TODO: replace with "list"
             Log.d("GTMovies", "line1");
             FragmentManager fragmentManager = getSupportFragmentManager();
             if (fragmentManager != null) {
@@ -103,4 +177,146 @@ public class SearchActivity extends AppCompatActivity {
         });
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
     }*/
+
+    //////////////////////////////////
+    // DIDNT KNOW HOW THIS WOULD BE //
+    // USED IN ACTUAL APP SO I JUST //
+    // HAVE THEM WRITTEN DOWN FOR   //
+    // REFERENCE PURPOSES.          //
+    //                   JINU JANG  //
+    //////////////////////////////////
+    /**
+     * Grabs the JSONObject from the next Page
+     *
+     * @return the JSONObject from the next Page
+     * @throws UnsupportedOperationException when no nextPage exists currently
+     */
+    public void grabNextPage() throws UnsupportedOperationException {
+        if (!nextable) {
+            throw new UnsupportedOperationException("No next page found");
+        }
+        list = new ArrayList<Movie>();
+        JsonObjectRequest newMovieRequest = new JsonObjectRequest
+                (Request.Method.GET, nextURL, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject resp) {
+                        if (resp == null) {
+                            Log.e("JSONRequest ERROR", "Null Response Received");
+                        }
+
+                        // put movies into a JSONArray
+                        JSONArray tmpMovies = null;
+                        try {
+                            tmpMovies = resp.getJSONArray("movies");
+                        } catch (JSONException e) {
+                            Log.e("JSON ERROR", "Error when getting movies in Search.");
+                        }
+                        if (tmpMovies == null) {
+                            Log.e("Movie Error", "movies JSONArray is null!");
+                        }
+                        for (int i = 0; i < tmpMovies.length(); i++) {
+                            try {
+                                list.add(new Movie(tmpMovies.getJSONObject(i)));
+                            } catch (JSONException e) {
+                                Log.e("Movie Error", "Couldn't make Movie" + i + "in Search");
+                            }
+                        }
+                        try {
+                            JSONObject tmpJ = resp.getJSONObject("links");
+                            nextURL = tmpJ.getString("next");
+                            prevURL = tmpJ.getString("prev");
+                        } catch (JSONException e) {
+                            Log.e("JSON ERROR", "Fail to get connected URLs in search");
+                        }
+                        if (nextURL != null) {
+                            nextable = true;
+                        } else {
+                            nextable = false;
+                        }
+                        if (prevURL != null) {
+                            prevable = true;
+                        } else {
+                            prevable = false;
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY FAIL", "Couldn't getJSON");
+                    }
+                });
+
+        // Access the RequestQueue through singleton class.
+        // Add Requests to RequestQueue
+        SingletonMagic.getInstance(this).addToRequestQueue(newMovieRequest);
+    }
+
+    /**
+     * Grabs the JSONObject from the previous Page
+     *
+     * @return the JSONObject from the previous Page
+     * @throws UnsupportedOperationException when no prevPage exists currently
+     */
+    public void grabPrevPage() throws UnsupportedOperationException {
+        if (!prevable) {
+            throw new UnsupportedOperationException("No previous page found");
+        }
+        list = new ArrayList<Movie>();
+        JsonObjectRequest newMovieRequest = new JsonObjectRequest
+                (Request.Method.GET, prevURL, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject resp) {
+                        if (resp == null) {
+                            Log.e("JSONRequest ERROR", "Null Response Received");
+                        }
+
+                        // put movies into a JSONArray
+                        JSONArray tmpMovies = null;
+                        try {
+                            tmpMovies = resp.getJSONArray("movies");
+                        } catch (JSONException e) {
+                            Log.e("JSON ERROR", "Error when getting movies in Search.");
+                        }
+                        if (tmpMovies == null) {
+                            Log.e("Movie Error", "movies JSONArray is null!");
+                        }
+                        for (int i = 0; i < tmpMovies.length(); i++) {
+                            try {
+                                list.add(new Movie(tmpMovies.getJSONObject(i)));
+                            } catch (JSONException e) {
+                                Log.e("Movie Error", "Couldn't make Movie" + i + "in Search");
+                            }
+                        }
+                        try {
+                            JSONObject tmpJ = resp.getJSONObject("links");
+                            nextURL = tmpJ.getString("next");
+                            prevURL = tmpJ.getString("prev");
+                        } catch (JSONException e) {
+                            Log.e("JSON ERROR", "Fail to get connected URLs in search");
+                        }
+                        if (nextURL != null) {
+                            nextable = true;
+                        } else {
+                            nextable = false;
+                        }
+                        if (prevURL != null) {
+                            prevable = true;
+                        } else {
+                            prevable = false;
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY FAIL", "Couldn't getJSON");
+                    }
+                });
+
+        // Access the RequestQueue through singleton class.
+        // Add Requests to RequestQueue
+        SingletonMagic.getInstance(this).addToRequestQueue(newMovieRequest);
+    }
+
 }

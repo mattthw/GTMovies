@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity
         //initializing new movieArray to return
         final List<Movie> movieArray = new ArrayList<>();
 
-        // Creating the newMovies JSONRequest
+        // Creating the JSONRequest
         String urlRaw = String.format(
                 SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
 
