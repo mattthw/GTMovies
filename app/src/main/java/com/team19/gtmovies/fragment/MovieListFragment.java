@@ -59,6 +59,7 @@ public class MovieListFragment extends Fragment {
      * @return new MovieListFragment instance
      */
     public static MovieListFragment newInstance(int page) {
+        Log.d("GTMovie", "create new fragment");
         Bundle mBundle = new Bundle();
         mBundle.putInt(ARG_ITEM_ID, page + 1);
         MovieListFragment fragment = new MovieListFragment();
@@ -87,6 +88,8 @@ public class MovieListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_list, container, false);
+
+        Log.d("GTMovie", "fragment onCreateView");
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list_view);
         if (rootView.findViewById(R.id.movie_list_view) == null) {
@@ -193,6 +196,9 @@ public class MovieListFragment extends Fragment {
 
             public MovieViewHolder(View itemView) {
                 super(itemView);
+
+                Log.d("GTMovie", "create new MovieViewHolder");
+
                 mView = itemView;
                 mMoviePosterView = (ImageView) itemView.findViewById(R.id.movie_poster);
                 mMovieTitleView = (TextView) itemView.findViewById(R.id.movie_title);
@@ -208,20 +214,27 @@ public class MovieListFragment extends Fragment {
 
         public MovieRecyclerViewAdapter(List<Movie> movieInfo) {
             movieList = movieInfo;
+
+            Log.d("GTMovie", "create new MovieRecyclerViewAdapter");
         }
 
         @Override
         public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.movie_list_content, parent, false);
+
+            Log.d("GTMovie", "onCreateViewHolder");
             return new MovieViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(final MovieRecyclerViewAdapter.MovieViewHolder holder, int position) {
             holder.mMovieInfo = movieList.get(position);
+
+            Log.d("GTMovie", "pnBindViewHolder");
             //holder.poster.setImageResource(mMovieInfo.poster);
             if (holder != null) {
+                Log.d("GTMovie", "holder not null");
                 holder.mMovieTitleView.setText(holder.mMovieInfo.getTitle());
                 String rating = holder.mMovieInfo.getRating() + "%";
                 holder.mMovieRatingView.setText(rating);
@@ -233,15 +246,18 @@ public class MovieListFragment extends Fragment {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d("GTMovie", "holder setOnClickListener");
                     if (MovieListFragment.isTwoPane()) {
+                        Log.d("GTMovie", "TWO PANE PROBLEM!!!");
                         Bundle arguments = new Bundle();
                         arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
-                        getFragmentManager().beginTransaction()
+                        /*getFragmentManager().beginTransaction()
                                 .replace(R.id.content_main, fragment)
-                                .commit();
+                                .commit();*/
                     } else {
+                        Log.d("GTMovie", "one pane");
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
                         intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());

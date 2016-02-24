@@ -63,32 +63,33 @@ public class MainActivity extends AppCompatActivity
             //TODO: onActivityResult which checks if user did login successfully
         }
 
-        //LAYOUT THINGS
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // Layout toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
+        // Layout drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        // Layout navigation
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         nav_header = LayoutInflater.from(this).inflate(R.layout.nav_header_main, null);
 
+        // Setup tabs and search
         FragmentManager fragmentManager = getSupportFragmentManager();
-
         setupTabs(fragmentManager);
         setupSearch(fragmentManager);
 
+        // Populate lists of new movies and top rentals
+        getMovies();
+
+        // Place view
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();
-
-
-
-
-        getMovies();
     }
 
     /**
@@ -142,12 +143,14 @@ public class MainActivity extends AppCompatActivity
 
     public void setupSearch(FragmentManager fragmentManager) {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) findViewById(R.id.search_bar);
+        final SearchView searchView = (SearchView) findViewById(R.id.main_search_bar);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.e("GTMovies", "break here");
+                Log.e("GTMovies", "query: " + searchView.getQuery().toString());
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                intent.putExtra(SearchManager.QUERY, searchView.getQuery().toString());
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
                 return true;

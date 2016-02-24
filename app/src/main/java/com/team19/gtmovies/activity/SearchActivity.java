@@ -24,12 +24,18 @@ public class SearchActivity extends AppCompatActivity {
 
         Log.d("GTMovies", "Got to search");
 
-        //set up button
-        ActionBar actionBar = getSupportActionBar();
+        // Setup action bar
+        /*ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        Log.d("GTMovies", "Got past actionBar in onCreate");
+        Log.d("GTMovies", "Got past actionBar in onCreate");*/
+
+        // Layout toolbar and search
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.search_toolbar);
+        //setSupportActionBar(toolbar);
+        //windowActionBar
+        //setupSearch();
 
         handleIntent(getIntent());
     }
@@ -54,7 +60,7 @@ public class SearchActivity extends AppCompatActivity {
             ActionBar actionBar = getSupportActionBar();
             Log.d("GTMovies", "got actionBar");
             if (actionBar != null) {
-                Log.e("GTMovies", "Hitting actionBar in handleIntent");
+                Log.d("GTMovies", "Hitting actionBar in handleIntent with query:- " +  query);
                 actionBar.setTitle(query);
             }
 
@@ -67,21 +73,25 @@ public class SearchActivity extends AppCompatActivity {
             if (fragmentManager != null) {
                 fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
                         movieListFragment).commit();
-                Log.e("GTMovies", "line2");
+                Log.d("GTMovies", "line2");
             } else {
                 Log.e("GTMovies", "No fragmentmanager");
             }
-            movieListFragment.fillSearchMovieList(null);    //nulls for next query
+                Log.d("GTMovies", "here1");
+            //  movieListFragment.fillSearchMovieList(null);    //nulls for next query
+            Log.d("GTMovies", "here2");
         }
     }
 
-    /**public void setupSearch(FragmentManager fragmentManager) {
+    /*public void setupSearch() {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) findViewById(R.id.search_bar);
+        final SearchView searchView = (SearchView) findViewById(R.id.search_search_bar);
+        searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.e("GTMovies", "break here");
+                //searchView.setQuery(query, true);
                 onNewIntent(getSupportParentActivityIntent());
                 return true;
             }
