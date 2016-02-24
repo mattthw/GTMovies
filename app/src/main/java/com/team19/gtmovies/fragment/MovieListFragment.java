@@ -17,7 +17,6 @@ import com.team19.gtmovies.R;
 import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
 import com.team19.gtmovies.pojo.Movie;
-import com.team19.gtmovies.pojo.MovieInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,6 +146,7 @@ public class MovieListFragment extends Fragment {
 
     public boolean fillSearchMovieList(List<Movie> list) {
         if (list != null) {
+            Log.d("GTMovies", list.toString());
             searchMovieList = list;
             return true;
         } else {
@@ -258,4 +258,7 @@ public class MovieListFragment extends Fragment {
         }
     }
 
+    public static List getMovieList() {
+        return tabMovieList.get(0);
+    }
 }

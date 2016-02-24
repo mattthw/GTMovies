@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        };
 //        tvh.post(updatetvh);
-
     }
 
     public void setupTabs(final FragmentManager fragmentManager) {
@@ -148,7 +147,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.e("GTMovies", "break here");
-                startActivity(new Intent(MainActivity.this, SearchActivity.class));
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                intent.setAction(Intent.ACTION_SEARCH);
+                startActivity(intent);
                 return true;
             }
 
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity
         List<List<Movie>> listList = new ArrayList<>();
         listList.add(newMovies);
         listList.add(topRentals);
+        listList.add(new ArrayList<Movie>()); //dummy arraylist for recommendations
         MovieListFragment.fillTabMovieList(listList);
     }
 
