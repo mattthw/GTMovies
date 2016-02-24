@@ -30,7 +30,8 @@ import java.util.List;
  * @version 1.0
  */
 public class MovieListFragment extends Fragment {
-    private static ArrayList<MovieInfo> movieList = null;
+    private static List<List<MovieInfo>> movieList = null;
+    private static int currentTab = 0;
 
     private static boolean mTwoPane = false;
 
@@ -96,7 +97,7 @@ public class MovieListFragment extends Fragment {
             fillMovieList(null);
         }
 
-        mAdapter = new MovieRecyclerViewAdapter(movieList);
+        mAdapter = new MovieRecyclerViewAdapter(movieList.get(currentTab));
         if (mRecyclerView != null) {
             mRecyclerView.setAdapter(mAdapter);
         } else {
@@ -119,23 +120,40 @@ public class MovieListFragment extends Fragment {
      * @param list list to set movie list to
      * @return true if successfully set to provided argument false if unable to
      */
-    public static boolean fillMovieList(ArrayList<MovieInfo> list) {
+    public static boolean fillMovieList(List<List<MovieInfo>> list) {
         if (list != null ) {
             movieList = list;
             return true;
         } else {
-            movieList = new ArrayList<>();
-            MovieInfo movie;
-            for (int i = 0; i < 10; i++) {
-                movie = new MovieInfo();
-                movie.title = "Title" + i;
-                movie.rating = 10;
-                movie.description = "Description of the movie number " + i
-                        + " of the list of movies";
-                movieList.add(movie);
+            movieList = new ArrayList<List<MovieInfo>>();
+            for (int i = 0; i < 3; i++) {
+                ArrayList<MovieInfo> arrayList = new ArrayList<>();
+                for (int j = 0; j < 3 * (i + 1); j++) {
+                    MovieInfo movie;
+                    movie = new MovieInfo();
+                    movie.title = "Title" + j;
+                    movie.rating = 10;
+                    movie.description = "Description of the movie number " + j
+                            + " of the list of movies";
+                    arrayList.add(movie);
+                }
+                movieList.add(arrayList);
             }
         }
         return true;
+    }
+
+    /**
+     * Sets current tab
+     * @param position position of current tab
+     * @return true if successfully set
+     */
+    public static boolean setTabPosition(int position) {
+        if (position >= 0 && position < movieList.size()) {
+            currentTab = position;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -209,7 +227,7 @@ public class MovieListFragment extends Fragment {
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
                         getFragmentManager().beginTransaction()
-                                .replace(R.id.movie_detail_container, fragment)
+                                .replace(R.id.content_main, fragment)
                                 .commit();
                     } else {
                         Context context = v.getContext();

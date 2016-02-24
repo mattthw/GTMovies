@@ -1,35 +1,30 @@
 package com.team19.gtmovies.activity;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 
-import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.fragment.MovieListFragment;
-
-import static junit.framework.Assert.assertNotNull;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     protected static IOActions ioa;
     protected static View rootView;
     protected static NavigationView navigationView;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
     protected static View nav_header;
 
     @Override
@@ -66,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         nav_header = LayoutInflater.from(this).inflate(R.layout.nav_header_main, null);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();
 
@@ -81,10 +76,30 @@ public class MainActivity extends AppCompatActivity
         MovieFragmentPagerAdapter pagerAdapter = new MovieFragmentPagerAdapter(
                 getSupportFragmentManager(), MainActivity.this);
         viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset,
+                    int positionOffsetPixels) {
+                onPageSelected(position);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (MovieListFragment.setTabPosition(position)) {
+                    fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                            MovieListFragment.newInstance(0)).commit();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                //don't know what to do here
+                onPageSelected(state);
+            }
+        });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.scroll_tabs);
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
     /**
