@@ -2,13 +2,13 @@ package com.team19.gtmovies.activity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -20,8 +20,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.team19.gtmovies.CurrentState;
-import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.pojo.User;
 
 import java.io.FileNotFoundException;

@@ -1,7 +1,7 @@
 package com.team19.gtmovies.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,20 +19,6 @@ import com.team19.gtmovies.pojo.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
-import com.team19.gtmovies.R;
-import com.team19.gtmovies.SingletonMagic;
-import com.team19.gtmovies.pojo.Movie;
 
 public class JinuTestActivity extends AppCompatActivity {
 

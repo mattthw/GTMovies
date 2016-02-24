@@ -4,14 +4,8 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.util.Log;
 
-import com.team19.gtmovies.R;
-import com.team19.gtmovies.dummy.DummyContent;
 import com.team19.gtmovies.fragment.MovieListFragment;
 
 /**
@@ -33,6 +27,8 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     public MovieFragmentPagerAdapter(FragmentManager fragmentManager, Context context) {
         super(fragmentManager);
         this.context = context;
+
+        Log.e("GTMovies", "constructor");
     }
 
 
@@ -43,13 +39,14 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
+        Log.e("GTMovies", "getItem");
         return MovieListFragment.newInstance(position + 1);
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
         //way of returning each title to populate tabs
+        Log.e("GTMovies", "getPageTitle");
         return tabTitles[position];
     }
 
