@@ -42,9 +42,6 @@ public class MainActivity extends AppCompatActivity
     protected static View rootView;
     protected static NavigationView navigationView;
     protected static View nav_header;
-    final private ArrayList<Movie> newMovies = new ArrayList<>();
-    final private ArrayList<Movie> topRentals = new ArrayList<>();
-    final private List<List<Movie>> listList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,149 +77,18 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         nav_header = LayoutInflater.from(this).inflate(R.layout.nav_header_main, null);
 
-        final FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        setupTabs(fragmentManager);
+        setupSearch(fragmentManager);
+
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();
 
-//        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
-//        headerView.findViewById(R.id.headerName);
-        //((TextView) headerView.findViewById(R.id.headerName))
-        //        .setText(IOActions.currentUser.getName());
-        //updateNavHeader();
-
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        MovieFragmentPagerAdapter pagerAdapter = new MovieFragmentPagerAdapter(
-                getSupportFragmentManager(), MainActivity.this);
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                    int positionOffsetPixels) {
-                onPageSelected(position);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (MovieListFragment.setTabPosition(position)) {
-                    fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                            MovieListFragment.newInstance(0)).commit();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                //don't know what to do here
-                onPageSelected(state);
-            }
-        });
 
 
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.scroll_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) findViewById(R.id.search_bar);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Log.e("GTMovies", "break here");
-                startActivity(new Intent(MainActivity.this, SearchActivity.class));
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        // Creating the newMovies JSONRequest
-        String urlRaw = String.format(
-                SingletonMagic.baseURL, SingletonMagic.newMovie, "", SingletonMagic.profKey);
-        JsonObjectRequest newMoviesRequest = new JsonObjectRequest
-                (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject resp) {
-                        if (resp == null) {
-                            Log.e("JSONRequest ERROR", "Null Response Received");
-                        }
-
-                        // put movies into a JSONArray
-                        JSONArray tmpMovies = null;
-                        try {
-                            tmpMovies = resp.getJSONArray("movies");
-                        } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Error when getting movies in Main.");
-                        }
-                        if (tmpMovies == null) {
-                            Log.e("Movie Error", "movies JSONArray is null!");
-                        }
-                        for (int i = 0; i < tmpMovies.length(); i++) {
-                            try {
-                                newMovies.add(new Movie(tmpMovies.getJSONObject(i)));
-                            } catch (JSONException e) {
-                                Log.e("Movie Error", "Couldn't make Movie" + i + "in Main");
-                            }
-                        }
-                        // Add the finished newMovies ArrayList in to listList
-                        listList.add(newMovies);
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("VOLLEY FAIL", "Couldn't getJSON");
-                    }
-                });
-
-        // Creating the topRentals JSONRequest
-        urlRaw = String.format(
-                SingletonMagic.baseURL, SingletonMagic.topRental, "", SingletonMagic.profKey);
-        JsonObjectRequest topRentalRequest = new JsonObjectRequest
-                (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject resp) {
-                        if (resp == null) {
-                            Log.e("JSONRequest ERROR", "Null Response Received");
-                        }
-
-                        // put movies into a JSONArray
-                        JSONArray tmpMovies = null;
-                        try {
-                            tmpMovies = resp.getJSONArray("movies");
-                        } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Error when getting movies in Main.");
-                        }
-                        if (tmpMovies == null) {
-                            Log.e("Movie Error", "movies JSONArray is null!");
-                        }
-                        for (int i = 0; i < tmpMovies.length(); i++) {
-                            try {
-                                topRentals.add(new Movie(tmpMovies.getJSONObject(i)));
-                            } catch (JSONException e) {
-                                Log.e("Movie Error", "Couldn't make Movie" + i + "in Main");
-                            }
-                        }
-                        // Add the finished topRentals ArrayList in to listList
-                        listList.add(topRentals);
-                        // Set the View
-                        MovieListFragment.fillTabMovieList(listList);
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("VOLLEY FAIL", "Couldn't getJSON");
-                    }
-                });
-
-        // Access the RequestQueue through singleton class.
-        // Add Requests to RequestQueue
-        SingletonMagic.getInstance(this).addToRequestQueue(newMoviesRequest);
-        SingletonMagic.getInstance(this).addToRequestQueue(topRentalRequest);
+        getMovies();
     }
 
     /**
@@ -242,6 +108,118 @@ public class MainActivity extends AppCompatActivity
 //        };
 //        tvh.post(updatetvh);
 
+    }
+
+    public void setupTabs(final FragmentManager fragmentManager) {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        MovieFragmentPagerAdapter pagerAdapter = new MovieFragmentPagerAdapter(
+                getSupportFragmentManager(), MainActivity.this);
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
+                onPageSelected(position);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (MovieListFragment.setTabPosition(position)) {
+                    fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                            MovieListFragment.newInstance(0)).commit();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                //don't know what to do here
+                onPageSelected(state);
+            }
+        });
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.scroll_tabs);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    public void setupSearch(FragmentManager fragmentManager) {
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) findViewById(R.id.search_bar);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.e("GTMovies", "break here");
+                startActivity(new Intent(MainActivity.this, SearchActivity.class));
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+    }
+
+    public void getMovies() {
+        // Get the movies
+        List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.newMovie);
+        List<Movie> topRentals = getMoviesFromAPI(SingletonMagic.topRental);
+        // Set the View
+        List<List<Movie>> listList = new ArrayList<>();
+        listList.add(newMovies);
+        listList.add(topRentals);
+        MovieListFragment.fillTabMovieList(listList);
+    }
+
+    public List getMoviesFromAPI(String requestType) {
+        //initializing new movieArray to return
+        final List<Movie> movieArray = new ArrayList<>();
+
+        // Creating the newMovies JSONRequest
+        String urlRaw = String.format(
+                SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
+
+        JsonObjectRequest newMovieRequest = new JsonObjectRequest
+                (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject resp) {
+                        if (resp == null) {
+                            Log.e("JSONRequest ERROR", "Null Response Received");
+                        }
+
+                        // put movies into a JSONArray
+                        JSONArray tmpMovies = null;
+                        try {
+                            tmpMovies = resp.getJSONArray("movies");
+                        } catch (JSONException e) {
+                            Log.e("JSON ERROR", "Error when getting movies in Main.");
+                        }
+                        if (tmpMovies == null) {
+                            Log.e("Movie Error", "movies JSONArray is null!");
+                        }
+                        for (int i = 0; i < tmpMovies.length(); i++) {
+                            try {
+                                movieArray.add(new Movie(tmpMovies.getJSONObject(i)));
+                            } catch (JSONException e) {
+                                Log.e("Movie Error", "Couldn't make Movie" + i + "in Main");
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY FAIL", "Couldn't getJSON");
+                    }
+                });
+
+        // Access the RequestQueue through singleton class.
+        // Add Requests to RequestQueue
+        SingletonMagic.getInstance(this).addToRequestQueue(newMovieRequest);
+
+        // Retrun the finished movieArray ArrayList to be added to movieList
+        return movieArray;
     }
 
     /**
@@ -320,17 +298,5 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    // Testing Auto-logout
-    @Override
-    public void onStop() {
-        super.onStop();
-        IOActions.logoutUser();
-    }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        IOActions.logoutUser();
     }
 }

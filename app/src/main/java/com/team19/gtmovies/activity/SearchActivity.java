@@ -11,7 +11,6 @@ import android.util.Log;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.fragment.MovieListFragment;
 import com.team19.gtmovies.pojo.Movie;
-import com.team19.gtmovies.pojo.MovieInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +64,10 @@ public class SearchActivity extends AppCompatActivity {
             final FragmentManager fragmentManager = getSupportFragmentManager();
             MovieListFragment movieListFragment = MovieListFragment.newInstance(0);
             movieListFragment.fillSearchMovieList(list);
+            Log.e("GTMovies", "line1");
             fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
                     movieListFragment).commit();
+            Log.e("GTMovies", "line2");
             movieListFragment.fillSearchMovieList(null);    //nulls for next query
         }
     }
