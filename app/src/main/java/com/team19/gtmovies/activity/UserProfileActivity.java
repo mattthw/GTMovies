@@ -51,13 +51,13 @@ public class UserProfileActivity extends AppCompatActivity {
         //setup up button on action bar
         setupActionBar();
 
-        eUsername = (EditText)findViewById(R.id.editTextUserProfileUsername);
+        //eUsername = (EditText)findViewById(R.id.editTextUserProfileUsername);
         eMajor = (Spinner)findViewById(R.id.spinnerProfileMajor);
         eName = (EditText)findViewById(R.id.editTextUserProfileName);
-        ePassword = (EditText)findViewById(R.id.editTextUserProfilePassword);
+        //ePassword = (EditText)findViewById(R.id.editTextUserProfilePassword);
         eBio = (EditText)findViewById(R.id.editTextUserProfileBio);
         // Grab the user's pre-existing information
-        eUsername.setText(cu.getUsername());
+        //eUsername.setText(cu.getUsername());
         eName.setText(cu.getName());
         //ePassword.setText();
         eBio.setText(cu.getBio());
@@ -84,8 +84,9 @@ public class UserProfileActivity extends AppCompatActivity {
         findViewById(R.id.buttonUserProfileSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (verifyProfile())
-                    saveProfile();
+//                if (verifyProfile())
+//                    saveProfile();
+                saveProfile();
             }
         });
     }
@@ -156,8 +157,8 @@ public class UserProfileActivity extends AppCompatActivity {
         // Save everything to the currentuser object
         cu.setName(eName.getText().toString());
         cu.setMajor(selectedMajor);
-        cu.setUsername(eUsername.getText().toString());
-        cu.setPassword(ePassword.getText().toString());
+        //cu.setUsername(eUsername.getText().toString());
+        //cu.setPassword(ePassword.getText().toString());
         cu.setBio(eBio.getText().toString());
         cu.setHasProfile(true); // They saved their new info, so profile is made automatically for them.
 
@@ -176,8 +177,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Disable text fields and make snackbar for visual confirmation
         eName.setEnabled(false);
-        eUsername.setEnabled(false);
-        ePassword.setEnabled(false);
+//        eUsername.setEnabled(false);
+//        ePassword.setEnabled(false);
         eBio.setEnabled(false);
         eMajor.setEnabled(false);
         if(!hasprofileback) {

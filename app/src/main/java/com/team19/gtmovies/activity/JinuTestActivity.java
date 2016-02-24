@@ -12,6 +12,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.team19.gtmovies.R;
+import com.team19.gtmovies.SingletonMagic;
+import com.team19.gtmovies.pojo.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
