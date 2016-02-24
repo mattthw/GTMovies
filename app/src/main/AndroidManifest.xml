@@ -55,7 +55,7 @@
                 android:value=".activity.MainActivity" />
         </activity>
         <activity android:name=".data.MovieLookUp" />
-        <activity android:name=".activity.JinuTestActivity"></activity>
+        <activity android:name=".activity.JinuTestActivity" />
         <activity
             android:name=".activity.MovieListActivity"
             android:label="@string/title_movie_list"
@@ -74,6 +74,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MovieListActivity" />
         </activity>
+        <activity
+            android:name=".activity.SearchActivity"
+            android:label="Search"/>
     </application>
 
 </manifest>

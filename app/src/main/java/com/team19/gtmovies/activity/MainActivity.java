@@ -1,5 +1,7 @@
 package com.team19.gtmovies.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -10,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -98,8 +101,27 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.scroll_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) findViewById(R.id.search_bar);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.e("GTMovies", "break here");
+                startActivity(new Intent(MainActivity.this, SearchActivity.class));
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
     }
 
     /**
@@ -134,13 +156,19 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /*
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        Log.
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) findViewById(R.id.search_bar);
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        //searchView.setIconifiedByDefault(false);
         return true;
-    } */
+    }*/
 
     /*
     @Override

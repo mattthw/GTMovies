@@ -30,8 +30,9 @@ import java.util.List;
  * @version 1.0
  */
 public class MovieListFragment extends Fragment {
-    private static List<List<MovieInfo>> movieList = null;
+    private static List<List<MovieInfo>> tabMovieList = null;
     private static int currentTab = 0;
+    private List<MovieInfo> searchMovieList = null;
 
     private static boolean mTwoPane = false;
 
@@ -93,11 +94,15 @@ public class MovieListFragment extends Fragment {
         }
 
         mLayoutManager = new LinearLayoutManager(getActivity());
-        if (movieList == null) {
-            fillMovieList(null);
+        if (tabMovieList == null) {
+            fillTabMovieList(null);
         }
 
-        mAdapter = new MovieRecyclerViewAdapter(movieList.get(currentTab));
+        if (searchMovieList != null) {
+            mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+        } else {
+            mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
+        }
         if (mRecyclerView != null) {
             mRecyclerView.setAdapter(mAdapter);
         } else {
@@ -120,12 +125,12 @@ public class MovieListFragment extends Fragment {
      * @param list list to set movie list to
      * @return true if successfully set to provided argument false if unable to
      */
-    public static boolean fillMovieList(List<List<MovieInfo>> list) {
+    public static boolean fillTabMovieList(List<List<MovieInfo>> list) {
         if (list != null ) {
-            movieList = list;
+            tabMovieList = list;
             return true;
         } else {
-            movieList = new ArrayList<List<MovieInfo>>();
+            tabMovieList = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
                 ArrayList<MovieInfo> arrayList = new ArrayList<>();
                 for (int j = 0; j < 3 * (i + 1); j++) {
@@ -137,10 +142,20 @@ public class MovieListFragment extends Fragment {
                             + " of the list of movies";
                     arrayList.add(movie);
                 }
-                movieList.add(arrayList);
+                tabMovieList.add(arrayList);
             }
         }
         return true;
+    }
+
+    public boolean fillSearchMovieList(List<MovieInfo> list) {
+        if (list != null) {
+            searchMovieList = list;
+            return true;
+        } else {
+            searchMovieList = new ArrayList<>();
+            return false;
+        }
     }
 
     /**
@@ -149,7 +164,7 @@ public class MovieListFragment extends Fragment {
      * @return true if successfully set
      */
     public static boolean setTabPosition(int position) {
-        if (position >= 0 && position < movieList.size()) {
+        if (position >= 0 && position < tabMovieList.size()) {
             currentTab = position;
             return true;
         }

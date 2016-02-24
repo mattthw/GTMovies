@@ -27,6 +27,16 @@
                     app:popupTheme="@style/AppTheme.PopupOverlay"
                     android:foregroundGravity="right">
 
+                    <!--<android.support.v7.view.menu.ActionMenuItemView
+                        xmlns:appcompat="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                        <android.support.v7.view.menu.ActionMenuItemView
+                            android:id="@+id/menu_search"
+                            appcompat:actionViewClass="android.support.v7.widget.SearchView"
+                            appcompat:showAsAction="always"/>
+                    </android.support.v7.view.menu.ActionMenuItemView>-->
+
                     <RelativeLayout
                         android:layout_height="match_parent"
                         android:layout_width="match_parent">

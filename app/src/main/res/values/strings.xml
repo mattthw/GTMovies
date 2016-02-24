@@ -134,4 +134,6 @@
     <string name="edit_your_profile_here">Edit your profile here:</string>
     <string name="save_profile">Save Profile</string>
     <string name="user_bio">User Bio:</string>
+    <string name="title_test_list">Items</string>
+    <string name="title_test_detail">TEST Detail</string>
 </resources>
