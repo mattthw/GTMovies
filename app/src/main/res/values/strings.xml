@@ -4,7 +4,7 @@
     <string name="title_activity_main">GTMovies</string>
 
     <!-- Strings for welcome -->
-    <string name="welcome_title">Welcome to GTMovies!</string>
+    <string name="welcome_title">Welcome to GTMovies</string>
     <string name="welcome_subheading">Welcome to GTMovies!</string>
     <string name="welcometext">Go ahead and press continue to see what the buzz is all about.
     </string>

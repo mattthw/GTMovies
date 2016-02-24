@@ -12,11 +12,11 @@
     android:theme="@style/AppTheme.NoActionBar.FullScreen">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/welcome_title"
         android:id="@+id/emailView"
-        style="@style/Base.TextAppearance.AppCompat.Title"
+        style="@style/Base.TextAppearance.AppCompat.Subhead"
         android:textColor="#FFFFFF"
         android:textAlignment="center"
         android:textSize="50sp"
@@ -45,27 +45,32 @@
         android:layout_alignParentStart="true" />
     -->
 
-    <Button
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/welcome_login"
-        android:id="@+id/login_button"
-        android:onClick="userLogin"
-        android:nestedScrollingEnabled="true"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@id/register_button"
-        android:singleLine="false" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/welcome_register"
-        android:id="@+id/register_button"
-        android:onClick="userRegister"
-        android:nestedScrollingEnabled="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
-        android:singleLine="false" />
+        android:layout_marginBottom="76dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_register"
+            android:id="@+id/register_button"
+            android:onClick="userRegister"
+            android:nestedScrollingEnabled="true"
+            android:singleLine="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_login"
+            android:id="@+id/login_button"
+            android:onClick="userLogin"
+            android:nestedScrollingEnabled="true"
+            android:singleLine="false" />
+
+    </LinearLayout>
 
 </RelativeLayout>
