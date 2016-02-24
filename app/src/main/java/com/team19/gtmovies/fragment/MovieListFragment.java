@@ -58,7 +58,7 @@ public class MovieListFragment extends Fragment {
      */
     public static MovieListFragment newInstance(int page) {
         Bundle mBundle = new Bundle();
-        mBundle.putInt(ARG_ITEM_ID, page);
+        mBundle.putInt(ARG_ITEM_ID, page + 1);
         MovieListFragment fragment = new MovieListFragment();
         fragment.setArguments(mBundle);
         return fragment;
@@ -86,15 +86,16 @@ public class MovieListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_list, container, false);
 
-
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list_view);
         if (rootView.findViewById(R.id.movie_list_view) == null) {
             Log.e("GTMovies", "Well there's your problem");
         }
+
         mLayoutManager = new LinearLayoutManager(getActivity());
         if (movieList == null) {
             fillMovieList(null);
         }
+
         mAdapter = new MovieRecyclerViewAdapter(movieList);
         if (mRecyclerView != null) {
             mRecyclerView.setAdapter(mAdapter);

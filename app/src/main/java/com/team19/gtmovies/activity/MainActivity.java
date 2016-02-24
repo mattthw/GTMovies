@@ -78,8 +78,9 @@ public class MainActivity extends AppCompatActivity
 
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        viewPager.setAdapter(new MovieFragmentPagerAdapter(getSupportFragmentManager(),
-                MainActivity.this));
+        MovieFragmentPagerAdapter pagerAdapter = new MovieFragmentPagerAdapter(
+                getSupportFragmentManager(), MainActivity.this);
+        viewPager.setAdapter(pagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.scroll_tabs);
         tabLayout.setupWithViewPager(viewPager);

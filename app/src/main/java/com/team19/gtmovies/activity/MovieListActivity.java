@@ -58,7 +58,7 @@ public class MovieListActivity extends AppCompatActivity {
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
             // activity should be in two-pane mode.
-            mTwoPane = true;
+            //mTwoPane = true;
         }
     }
 

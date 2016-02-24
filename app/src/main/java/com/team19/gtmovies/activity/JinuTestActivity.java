@@ -1,7 +1,5 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.activity;
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +26,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import com.team19.gtmovies.R;
+import com.team19.gtmovies.SingletonMagic;
+import com.team19.gtmovies.pojo.Movie;
 
 public class JinuTestActivity extends AppCompatActivity {
 

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,10 +25,16 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
             "New Rentals", "Your Recommendations"};
     private Context context;
 
+    /**
+     * Constructor for MovieFragmentPagerAdapter
+     * @param fragmentManager Fragment manager
+     * @param context context
+     */
     public MovieFragmentPagerAdapter(FragmentManager fragmentManager, Context context) {
         super(fragmentManager);
         this.context = context;
     }
+
 
     @Override
     public int getCount() {
@@ -36,6 +43,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+
         return MovieListFragment.newInstance(position + 1);
     }
 
