@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
 
 public class WelcomeActivity extends AppCompatActivity {
+    private int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,25 @@ public class WelcomeActivity extends AppCompatActivity {
         int success = 1;
         setResult(success, new Intent().putExtra("login", false));
         finish();
+    }
+
+    /**
+     * hidden method. don't tell Matt if you find this.
+     * @param view from XML/activity
+     */
+    public void disguisedToast(View view) {
+        Context context = getApplicationContext();
+        CharSequence hi = "Why hello there";
+        CharSequence au = "Achievement Unlocked!";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = null;
+
+        if (count == 4) toast = Toast.makeText(context, hi, duration);
+        else if (count == 7) toast = Toast.makeText(context, "Stop", duration);
+        else if (count == 10) toast = Toast.makeText(context, au, Toast.LENGTH_LONG);
+        if (toast != null) toast.show();
+        count += 1;
     }
 
     @Override

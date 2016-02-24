@@ -25,6 +25,7 @@ public class SingletonMagic {
     public static String boxOffice = "/lists/movies/box_office";
     public static String newMovie = "/lists/movies/opening";
     public static String newDVD = "/lists/dvds/new_releases";
+    public static String topRental = "/lists/dvds/top_rentals";
 
     //Setting strings for URL
     public static String numMovies = "limit=%d&";

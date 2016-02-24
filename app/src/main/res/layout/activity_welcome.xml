@@ -17,6 +17,7 @@
         android:text="@string/welcome_title"
         android:id="@+id/emailView"
         style="@style/Base.TextAppearance.AppCompat.Subhead"
+        android:onClick="disguisedToast"
         android:textColor="#FFFFFF"
         android:textAlignment="center"
         android:textSize="50sp"

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
+import com.team19.gtmovies.pojo.Movie;
 import com.team19.gtmovies.pojo.MovieInfo;
 
 import java.util.ArrayList;
@@ -30,9 +31,9 @@ import java.util.List;
  * @version 1.0
  */
 public class MovieListFragment extends Fragment {
-    private static List<List<MovieInfo>> tabMovieList = null;
+    private static List<List<Movie>> tabMovieList = null;
     private static int currentTab = 0;
-    private List<MovieInfo> searchMovieList = null;
+    private List<Movie> searchMovieList = null;
 
     private static boolean mTwoPane = false;
 
@@ -125,21 +126,17 @@ public class MovieListFragment extends Fragment {
      * @param list list to set movie list to
      * @return true if successfully set to provided argument false if unable to
      */
-    public static boolean fillTabMovieList(List<List<MovieInfo>> list) {
+    public static boolean fillTabMovieList(List<List<Movie>> list) {
         if (list != null ) {
             tabMovieList = list;
             return true;
         } else {
             tabMovieList = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
-                ArrayList<MovieInfo> arrayList = new ArrayList<>();
+                ArrayList<Movie> arrayList = new ArrayList<>();
                 for (int j = 0; j < 3 * (i + 1); j++) {
-                    MovieInfo movie;
-                    movie = new MovieInfo();
-                    movie.title = "Title" + j;
-                    movie.rating = 10;
-                    movie.description = "Description of the movie number " + j
-                            + " of the list of movies";
+                    Movie movie;
+                    movie = new Movie(j);
                     arrayList.add(movie);
                 }
                 tabMovieList.add(arrayList);
@@ -148,7 +145,7 @@ public class MovieListFragment extends Fragment {
         return true;
     }
 
-    public boolean fillSearchMovieList(List<MovieInfo> list) {
+    public boolean fillSearchMovieList(List<Movie> list) {
         if (list != null) {
             searchMovieList = list;
             return true;
@@ -181,7 +178,7 @@ public class MovieListFragment extends Fragment {
 
     public class MovieRecyclerViewAdapter
             extends RecyclerView.Adapter<MovieRecyclerViewAdapter.MovieViewHolder> {
-        private List<MovieInfo> movieList;
+        private List<Movie> movieList;
 
         /**
          * inner class for RecyclerView.ViewHolder
@@ -192,7 +189,7 @@ public class MovieListFragment extends Fragment {
             public final TextView mMovieTitleView;
             public final TextView mMovieRatingView;
             public final TextView mMovieDescriptionView;
-            public MovieInfo mMovieInfo;
+            public Movie mMovieInfo;
 
             public MovieViewHolder(View itemView) {
                 super(itemView);
@@ -209,7 +206,7 @@ public class MovieListFragment extends Fragment {
             }
         }
 
-        public MovieRecyclerViewAdapter(List<MovieInfo> movieInfo) {
+        public MovieRecyclerViewAdapter(List<Movie> movieInfo) {
             movieList = movieInfo;
         }
 
@@ -225,10 +222,10 @@ public class MovieListFragment extends Fragment {
             holder.mMovieInfo = movieList.get(position);
             //holder.poster.setImageResource(mMovieInfo.poster);
             if (holder != null) {
-                holder.mMovieTitleView.setText(holder.mMovieInfo.title);
-                String rating = holder.mMovieInfo.rating + "%";
+                holder.mMovieTitleView.setText(holder.mMovieInfo.getTitle());
+                String rating = holder.mMovieInfo.getRating() + "%";
                 holder.mMovieRatingView.setText(rating);
-                holder.mMovieDescriptionView.setText(holder.mMovieInfo.description);
+                holder.mMovieDescriptionView.setText(holder.mMovieInfo.getDescription());
             } else {
                 Log.e("GTMovies", "No holder.");
             }
@@ -238,7 +235,7 @@ public class MovieListFragment extends Fragment {
                 public void onClick(View v) {
                     if (MovieListFragment.isTwoPane()) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.title);
+                        arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
                         getFragmentManager().beginTransaction()
@@ -247,7 +244,7 @@ public class MovieListFragment extends Fragment {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.title);
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
 
                         context.startActivity(intent);
                     }

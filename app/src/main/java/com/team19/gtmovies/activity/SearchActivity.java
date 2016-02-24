@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.fragment.MovieListFragment;
+import com.team19.gtmovies.pojo.Movie;
 import com.team19.gtmovies.pojo.MovieInfo;
 
 import java.util.ArrayList;
@@ -54,12 +55,12 @@ public class SearchActivity extends AppCompatActivity {
                 actionBar.setTitle(query);
             }
 
-            List<MovieInfo> list = new ArrayList<>();   //TODO: @Jinu get the movies using query
-            MovieInfo movie = new MovieInfo();          //and here
-            movie.title = query;                        //and here
-            movie.rating = 50;                          //and here
-            movie.description = "description:" + query; //and here
-            list.add(movie);                            //and here
+            List<Movie> list = new ArrayList<>();   //TODO: @Jinu get the movies using query
+//            Movie movie = new Movie();          //and here
+//            movie.title = query;                        //and here
+//            movie.rating = 50;                          //and here
+//            movie.description = "description:" + query; //and here
+//            list.add(movie);                            //and here
 
             final FragmentManager fragmentManager = getSupportFragmentManager();
             MovieListFragment movieListFragment = MovieListFragment.newInstance(0);

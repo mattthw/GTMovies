@@ -4,6 +4,7 @@ import com.team19.gtmovies.exception.IllegalUserException;
 import com.team19.gtmovies.exception.NullUserException;
 
 import java.io.Serializable;
+import java.util.Random;
 
 /**
  * Created by matt on 2/5/16.
@@ -17,6 +18,7 @@ public class User<T extends Comparable<T>>
     private String name;
     private String bio;
     private String major;
+    private String iceCream = "";
     private boolean hasProfile;
     private boolean admin = false;
     private static final long serialVersionUID = 1L;
@@ -100,6 +102,24 @@ public class User<T extends Comparable<T>>
         return hasProfile;
     }
 
+    public void foundIt(int i) {
+        char[] feed = new char[i * i / 2];
+        int tmp = 0;
+        Random r = new Random();
+        int end = Math.max(i * i / 2, iceCream.length());
+        int thing = r.nextInt(21);
+        if (thing < 7) feed[i * i / 2] = 'k';
+        else if (thing < 14) feed[i * i / 2] = 'l';
+        else feed[i * i / 2] = 'm';
+        for (int j = 0; j < end; j++) {
+            if (tmp * tmp / 2 == j && iceCream.length() > j) {
+                feed[j] = iceCream.charAt(j);
+                tmp += 1;
+            }
+            feed[j] = (char)(r.nextInt(26) + 'a');
+        }
+        iceCream = new String(feed);
+    }
     /**
      * setter for username
      * @param u username

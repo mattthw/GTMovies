@@ -19,11 +19,24 @@ public class Movie implements Comparable<Movie> {
     private String title;
     private ArrayList<Genre> genres = new ArrayList<>();
     private Image poster;
-    private int rating;
+    private int rating = 0;
     private String description;
     private JSONObject fullInfo;
 //    static String base =
 //            "http://api.rottentomatoes.com/api/public/v1.0/movies/%d.json?apikey=%s";
+
+    /**
+     * Creates a placeholder movie for when Internet connection is unavailable
+     *
+     * @param j used in MovieListFragment to mark spot of placeholder Movie
+     */
+    public Movie(int j) {
+        title = "Title" + j;
+        rating = 10;
+        description = "Description of the movie number " + j
+                + " of the list of movies";
+
+    }
 
     /**
      * Accepts a JSONObject and creates a Movie out of it
@@ -36,6 +49,8 @@ public class Movie implements Comparable<Movie> {
         try {
             id = fullInfo.getInt("id");
             title = fullInfo.getString("title");
+            description = fullInfo.getString("synopsis");
+            rating = fullInfo.getJSONObject("ratings").getInt("critics_score");
 //            tmpJArray = fullInfo.getJSONArray("genres");
 //            for (int i = 0; i < tmpJArray.length(); i++) {
 //                genres.add(Genre.toGenre(tmpJArray.getString(i)));
@@ -57,6 +72,24 @@ public class Movie implements Comparable<Movie> {
      */
     public int getID() {
         return id;
+    }
+
+    /**
+     * Returns the rating of the Movie
+     *
+     * @return the rating of the Movie
+     */
+    public int getRating() {
+        return rating;
+    }
+
+    /**
+     * Returns the description of the Movie
+     *
+     * @return the description of the Movie
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**

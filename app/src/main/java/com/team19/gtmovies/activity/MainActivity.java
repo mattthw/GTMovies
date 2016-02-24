@@ -19,9 +19,22 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.SingletonMagic;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.fragment.MovieListFragment;
+import com.team19.gtmovies.pojo.Movie;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +42,9 @@ public class MainActivity extends AppCompatActivity
     protected static View rootView;
     protected static NavigationView navigationView;
     protected static View nav_header;
+    final private ArrayList<Movie> newMovies = new ArrayList<>();
+    final private ArrayList<Movie> topRentals = new ArrayList<>();
+    final private List<List<Movie>> listList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +138,91 @@ public class MainActivity extends AppCompatActivity
             }
         });
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        // Creating the newMovies JSONRequest
+        String urlRaw = String.format(
+                SingletonMagic.baseURL, SingletonMagic.newMovie, "", SingletonMagic.profKey);
+        JsonObjectRequest newMoviesRequest = new JsonObjectRequest
+                (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject resp) {
+                        if (resp == null) {
+                            Log.e("JSONRequest ERROR", "Null Response Received");
+                        }
+
+                        // put movies into a JSONArray
+                        JSONArray tmpMovies = null;
+                        try {
+                            tmpMovies = resp.getJSONArray("movies");
+                        } catch (JSONException e) {
+                            Log.e("JSON ERROR", "Error when getting movies in Main.");
+                        }
+                        if (tmpMovies == null) {
+                            Log.e("Movie Error", "movies JSONArray is null!");
+                        }
+                        for (int i = 0; i < tmpMovies.length(); i++) {
+                            try {
+                                newMovies.add(new Movie(tmpMovies.getJSONObject(i)));
+                            } catch (JSONException e) {
+                                Log.e("Movie Error", "Couldn't make Movie" + i + "in Main");
+                            }
+                        }
+                        // Add the finished newMovies ArrayList in to listList
+                        listList.add(newMovies);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY FAIL", "Couldn't getJSON");
+                    }
+                });
+
+        // Creating the topRentals JSONRequest
+        urlRaw = String.format(
+                SingletonMagic.baseURL, SingletonMagic.topRental, "", SingletonMagic.profKey);
+        JsonObjectRequest topRentalRequest = new JsonObjectRequest
+                (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject resp) {
+                        if (resp == null) {
+                            Log.e("JSONRequest ERROR", "Null Response Received");
+                        }
+
+                        // put movies into a JSONArray
+                        JSONArray tmpMovies = null;
+                        try {
+                            tmpMovies = resp.getJSONArray("movies");
+                        } catch (JSONException e) {
+                            Log.e("JSON ERROR", "Error when getting movies in Main.");
+                        }
+                        if (tmpMovies == null) {
+                            Log.e("Movie Error", "movies JSONArray is null!");
+                        }
+                        for (int i = 0; i < tmpMovies.length(); i++) {
+                            try {
+                                topRentals.add(new Movie(tmpMovies.getJSONObject(i)));
+                            } catch (JSONException e) {
+                                Log.e("Movie Error", "Couldn't make Movie" + i + "in Main");
+                            }
+                        }
+                        // Add the finished topRentals ArrayList in to listList
+                        listList.add(topRentals);
+                        // Set the View
+                        MovieListFragment.fillTabMovieList(listList);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY FAIL", "Couldn't getJSON");
+                    }
+                });
+
+        // Access the RequestQueue through singleton class.
+        // Add Requests to RequestQueue
+        SingletonMagic.getInstance(this).addToRequestQueue(newMoviesRequest);
+        SingletonMagic.getInstance(this).addToRequestQueue(topRentalRequest);
     }
 
     /**
@@ -219,5 +320,17 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    // Testing Auto-logout
+    @Override
+    public void onStop() {
+        super.onStop();
+        IOActions.logoutUser();
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        IOActions.logoutUser();
     }
 }
