@@ -78,8 +78,8 @@
             android:label="Search"
             android:launchMode="singleTop"
             android:parentActivityName=".activity.MainActivity">
-            <meta-data android:name="android.app.default_searchable"
-                android:value=".activity.MainActivity" />
+            <!--<meta-data android:name="android.app.default_searchable"
+                android:value=".activity.MainActivity" />-->
         </activity>
     </application>
 

@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true">
 
 
-    <android.support.design.widget.AppBarLayout
+    <!--<android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.NoActionBar">
@@ -16,7 +16,7 @@
                 android:id="@+id/search_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical">-->
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/search_toolbar"
@@ -40,9 +40,9 @@
                     </RelativeLayout>
 
                 </android.support.v7.widget.Toolbar>
-            </LinearLayout>
+            <!--</LinearLayout>
 
 
-    </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.AppBarLayout>-->
 
 </android.support.design.widget.CoordinatorLayout>

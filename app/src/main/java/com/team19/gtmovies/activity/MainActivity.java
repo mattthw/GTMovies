@@ -41,7 +41,9 @@ public class MainActivity extends AppCompatActivity
     protected static IOActions ioa;
     protected static View rootView;
     protected static NavigationView navigationView;
-    protected static View nav_header;
+    protected static Toolbar toolbar;
+    protected static DrawerLayout drawer;
+    protected static View navHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +66,11 @@ public class MainActivity extends AppCompatActivity
         }
 
         // Layout toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
         // Layout drawer
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         // Layout navigation
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        nav_header = LayoutInflater.from(this).inflate(R.layout.nav_header_main, null);
+        navHeader = LayoutInflater.from(this).inflate(R.layout.nav_header_main, null);
 
         // Setup tabs and search
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity
         // Populate lists of new movies and top rentals
         getMovies();
 
+
         // Place view
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();
@@ -95,20 +98,20 @@ public class MainActivity extends AppCompatActivity
     /**
      * set users info to nav header
      */
-    public void updateNavHeader() {
-//        Handler tvh = new Handler();
-//        Runnable updatetvh = new Runnable() {
-//            @Override
-//            public void run() {
-//                ((TextView) MainActivity.nav_header.findViewById(R.id.headerName))
-//                        .setText(IOActions.currentUser.getName());
-//                ((TextView) MainActivity.nav_header.findViewById(R.id.headerUsername))
-//                        .setText(IOActions.currentUser.getUsername());
-//                navigationView.addHeaderView(nav_header);
-//            }
-//        };
-//        tvh.post(updatetvh);
-    }
+/*    public void updateNavHeader() {
+        Handler tvh = new Handler();
+        Runnable updatetvh = new Runnable() {
+            @Override
+            public void run() {
+                ((TextView) MainActivity.nav_header.findViewById(R.id.headerName))
+                        .setText(IOActions.currentUser.getName());
+                ((TextView) MainActivity.nav_header.findViewById(R.id.headerUsername))
+                        .setText(IOActions.currentUser.getUsername());
+                navigationView.addHeaderView(nav_header);
+            }
+        };
+        tvh.post(updatetvh);
+    }*/
 
     public void setupTabs(final FragmentManager fragmentManager) {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -232,7 +235,6 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -286,6 +288,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        Log.d("GTMovies", "Item selected");
         int id = item.getItemId();
 
         if (id == R.id.nav_manage_profile) {
@@ -300,7 +303,6 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

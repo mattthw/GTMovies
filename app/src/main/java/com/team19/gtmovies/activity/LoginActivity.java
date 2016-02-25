@@ -299,9 +299,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
 
         //update header
-        ((TextView) MainActivity.nav_header.findViewById(R.id.headerName))
+        ((TextView) MainActivity.navHeader.findViewById(R.id.headerName))
                 .setText(CurrentState.getUser().getName());
-        ((TextView) MainActivity.nav_header.findViewById(R.id.headerUsername))
+        ((TextView) MainActivity.navHeader.findViewById(R.id.headerUsername))
                 .setText(CurrentState.getUser().getUsername());
 
 //        runOnUiThread(new Runnable() {
