@@ -20,7 +20,7 @@ public class SingletonMagic {
     // Basic URL for the Tomato API
     // Has three %s placeholders in the middle of baseURL
     public static String baseURL =
-            "http://api.rottentomatoes.com/api/public/v1.0%s.json?%sapikey=%s";
+            "http://api.rottentomatoes.com/api/public/v1.0%s.json?%s&apikey=%s";
     public static String boxOffice = "/lists/movies/box_office";
     public static String newMovie = "/lists/movies/opening";
     public static String newDVD = "/lists/dvds/new_releases";
@@ -28,8 +28,8 @@ public class SingletonMagic {
     public static String search = "/movies";
 
     //Setting strings for URL
-    public static String numMovies = "limit=%d&";
-    public static String country = "country=%s&";
+    public static String numMovies = "limit=%d";
+    public static String country = "country=%s";
     public static String perPage = "page_limit=%d";
     public static String numPage = "page=%d";
     public static String profKey = "yedukp76ffytfuy24zsqk7f5";

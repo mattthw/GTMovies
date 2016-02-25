@@ -52,7 +52,7 @@ public class SearchActivity extends AppCompatActivity {
         //windowActionBar
         //setupSearch();
 
-        handleIntent(getIntent());
+//        handleIntent(getIntent());
     }
 
     @Override
@@ -84,7 +84,7 @@ public class SearchActivity extends AppCompatActivity {
             String urlRaw = String.format(
                     SingletonMagic.baseURL, SingletonMagic.search, "q=" + queryURI, SingletonMagic.profKey);
 
-            JsonObjectRequest newMovieRequest = new JsonObjectRequest
+            JsonObjectRequest searchRequest = new JsonObjectRequest
                     (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
 
                         @Override
@@ -103,6 +103,7 @@ public class SearchActivity extends AppCompatActivity {
                             if (tmpMovies == null) {
                                 Log.e("Movie Error", "movies JSONArray is null!");
                             }
+                            Log.e("WHEE", Integer.toString(tmpMovies.length()));
                             for (int i = 0; i < tmpMovies.length(); i++) {
                                 try {
                                     list.add(new Movie(tmpMovies.getJSONObject(i)));
@@ -127,6 +128,23 @@ public class SearchActivity extends AppCompatActivity {
                             } else {
                                 prevable = false;
                             }
+
+                            // AUSTIN THING JUST CTRL C Ved
+                            MovieListFragment movieListFragment = MovieListFragment.newInstance(0);
+                            movieListFragment.fillSearchMovieList(list);
+                            Log.d("GTMovies", "line1");
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            if (fragmentManager != null) {
+                                fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
+                                        movieListFragment).commit();
+                                Log.d("GTMovies", "line2");
+                            } else {
+                                Log.e("GTMovies", "No fragmentmanager");
+                            }
+                            Log.d("GTMovies", "here1");
+                            //  movieListFragment.fillSearchMovieList(null);    //nulls for next query
+                            Log.d("GTMovies", "here2");
+
                         }
                     }, new Response.ErrorListener() {
                         @Override
@@ -137,22 +155,7 @@ public class SearchActivity extends AppCompatActivity {
 
             // Access the RequestQueue through singleton class.
             // Add Requests to RequestQueue
-            SingletonMagic.getInstance(this).addToRequestQueue(newMovieRequest);
-
-            MovieListFragment movieListFragment = MovieListFragment.newInstance(0);
-            movieListFragment.fillSearchMovieList(MovieListFragment.getMovieList()); //TODO: replace with "list"
-            Log.d("GTMovies", "line1");
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            if (fragmentManager != null) {
-                fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
-                        movieListFragment).commit();
-                Log.d("GTMovies", "line2");
-            } else {
-                Log.e("GTMovies", "No fragmentmanager");
-            }
-                Log.d("GTMovies", "here1");
-            //  movieListFragment.fillSearchMovieList(null);    //nulls for next query
-            Log.d("GTMovies", "here2");
+            SingletonMagic.getInstance(this).addToRequestQueue(searchRequest);
         }
     }
 
