@@ -23,6 +23,8 @@ import java.util.HashSet;
 /**
  * Created by matt on 2/8/16.
  * used for data retrieval etc
+ * @author Matt McCoy
+ * @version 2.0
  */
 public class IOActions extends Application {
     private static FileInputStream fileIn;
@@ -94,6 +96,7 @@ public class IOActions extends Application {
         objectIn.close();
         Log.println(Log.DEBUG, "GTMovies", "USER loaded with: " + CurrentState.getUser());
     }
+
     /**
      * serializes and writes HashSet accounts object
      * @throws IOException if fails to write out

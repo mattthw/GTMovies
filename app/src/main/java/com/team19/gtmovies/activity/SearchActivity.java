@@ -25,6 +25,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity to be searched
+ */
 public class SearchActivity extends AppCompatActivity {
     List<Movie> list = new ArrayList<>();
     public boolean nextable = true;
@@ -52,7 +55,7 @@ public class SearchActivity extends AppCompatActivity {
         //windowActionBar
         //setupSearch();
 
-//        handleIntent(getIntent());
+        handleIntent(getIntent());
     }
 
     @Override
@@ -131,7 +134,7 @@ public class SearchActivity extends AppCompatActivity {
 
                             // AUSTIN THING JUST CTRL C Ved
                             MovieListFragment movieListFragment = MovieListFragment.newInstance(0);
-                            movieListFragment.fillSearchMovieList(list);
+                            MovieListFragment.fillSearchMovieList(list);
                             Log.d("GTMovies", "line1");
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             if (fragmentManager != null) {
@@ -157,6 +160,7 @@ public class SearchActivity extends AppCompatActivity {
             // Add Requests to RequestQueue
             SingletonMagic.getInstance(this).addToRequestQueue(searchRequest);
         }
+        MovieListFragment.fillSearchMovieList(null);
     }
 
     /*public void setupSearch() {

@@ -2,15 +2,20 @@ package com.team19.gtmovies.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
 
+/**
+ * Activity for Welcome screen
+ *
+ * @author anonymous
+ * @version 1.0
+ */
 public class WelcomeActivity extends AppCompatActivity {
     private int count = 0;
 

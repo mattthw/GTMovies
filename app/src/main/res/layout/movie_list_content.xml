@@ -12,7 +12,7 @@
     card_view:cardCornerRadius="3dp">
 
     <ImageView
-        android:contentDescription="@string/dummy_movie_title"
+        android:contentDescription="@string/default_movie_title"
         android:id="@+id/movie_poster"
         android:layout_width="80dp"
         android:layout_height="100dp"
@@ -32,7 +32,7 @@
         android:outlineProvider="paddedBounds">
         <TextView
             android:id="@+id/movie_title"
-            android:text="@string/dummy_movie_title"
+            android:text="@string/default_movie_title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="25sp"

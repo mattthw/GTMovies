@@ -30,6 +30,9 @@ import java.util.HashSet;
 
 /**
  * A login screen that offers login via email/password.
+ *
+ * @author Matt McCoy
+ * @version 2.0
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -81,19 +84,6 @@ public class LoginActivity extends AppCompatActivity {
             actionBar.setDisplayShowHomeEnabled(false);
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////////////
-        //JinuTest
-        Button jinuTest = (Button) findViewById(R.id.jinuTestButton);
-        final Intent jinuTestIntent = new Intent(getApplicationContext(), JinuTestActivity.class);
-        jinuTest.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(jinuTestIntent);
-            }
-        });
-        ////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////////////
 
         // Set up the login form.
         mEmailView = (TextView) findViewById(R.id.email);
@@ -142,6 +132,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Response to press on register button.
+     */
     public void onRegisterPressed() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -276,6 +269,7 @@ public class LoginActivity extends AppCompatActivity {
 //        );
 //        AppIndex.AppIndexApi.start(client, viewAction);
     }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -294,6 +288,7 @@ public class LoginActivity extends AppCompatActivity {
 //        AppIndex.AppIndexApi.end(client, viewAction);
 //        client.disconnect();
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -316,6 +311,9 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * INNER CLASS FOR USER LOGIN
+     *
+     * @author Matt McCoy
+     * @version 2.0
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -353,6 +351,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }
+
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
@@ -377,6 +376,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }
+
         @Override
         protected void onCancelled() {
             mAuthTask = null;

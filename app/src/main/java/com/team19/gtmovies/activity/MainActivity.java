@@ -36,6 +36,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Main Activity
+ * @author Matt McCoy
+ * @version 3.0
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     protected static IOActions ioa;
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity
     protected static Toolbar toolbar;
     protected static DrawerLayout drawer;
     protected static View navHeader;
+    protected static FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +88,9 @@ public class MainActivity extends AppCompatActivity
         navHeader = LayoutInflater.from(this).inflate(R.layout.nav_header_main, null);
 
         // Setup tabs and search
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        setupTabs(fragmentManager);
-        setupSearch(fragmentManager);
+        fragmentManager = getSupportFragmentManager();
+        setupTabs();
+        setupSearch();
 
         // Populate lists of new movies and top rentals
         getMovies();
@@ -94,6 +100,23 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();
     }
+
+    /*@Override
+    protected void onStart() {
+        super.onStart();
+        getMovies();
+        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                MovieListFragment.newInstance(0)).commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getMovies();
+        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                MovieListFragment.newInstance(0)).commit();
+    }*/
+
 
     /**
      * set users info to nav header
@@ -113,7 +136,10 @@ public class MainActivity extends AppCompatActivity
         tvh.post(updatetvh);
     }*/
 
-    public void setupTabs(final FragmentManager fragmentManager) {
+    /**
+     * Sets up the TabView
+     */
+    public void setupTabs() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         MovieFragmentPagerAdapter pagerAdapter = new MovieFragmentPagerAdapter(
                 getSupportFragmentManager(), MainActivity.this);
@@ -144,18 +170,22 @@ public class MainActivity extends AppCompatActivity
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    public void setupSearch(FragmentManager fragmentManager) {
+    /**
+     * Sets up search widget
+     */
+    public void setupSearch() {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView = (SearchView) findViewById(R.id.main_search_bar);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.e("GTMovies", "break here");
-                Log.e("GTMovies", "query: " + searchView.getQuery().toString());
+                Log.d("GTMovies", "break here");
+                Log.d("GTMovies", "query: " + searchView.getQuery().toString());
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 intent.putExtra(SearchManager.QUERY, searchView.getQuery().toString());
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
+                Log.d("GTMovies", "skipped it");
                 return true;
             }
 
@@ -167,6 +197,9 @@ public class MainActivity extends AppCompatActivity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
     }
 
+    /**
+     * Fills lists of movies for tabs.
+     */
     public void getMovies() {
         // Get the movies
         List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.newMovie);
@@ -179,6 +212,11 @@ public class MainActivity extends AppCompatActivity
         MovieListFragment.fillTabMovieList(listList);
     }
 
+    /**
+     * Obtains the movies from the API
+     * @param requestType differetiates new movies and top rental
+     * @return a list of movies from the Rotten Tomatoes API
+     */
     public List getMoviesFromAPI(String requestType) {
         //initializing new movieArray to return
         final List<Movie> movieArray = new ArrayList<>();

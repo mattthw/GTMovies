@@ -4,22 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import android.view.MenuItem;
-
-import com.team19.gtmovies.fragment.MovieDetailFragment;
 import com.team19.gtmovies.R;
-import com.team19.gtmovies.dummy.DummyContent;
+import com.team19.gtmovies.fragment.MovieDetailFragment;
+import com.team19.gtmovies.pojo.Movie;
 
 import java.util.List;
 
@@ -79,18 +77,28 @@ public class MovieListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Sets up the recyclerview
+     * @param recyclerView to setup
+     */
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        //recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
     }
 
 
-
+    /**
+     * Inner class to extend RecyclerViewAdapter
+     */
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<Movie> mValues;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        /**
+         * Public SimpleItemRecyclerViewAdapter constructer
+         * @param items List of items for adapter
+         */
+        public SimpleItemRecyclerViewAdapter(List<Movie> items) {
             mValues = items;
         }
 
@@ -104,17 +112,17 @@ public class MovieListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            //holder.mMoviePosterView.setImageResource(mValues.get(position).);
-            holder.mMovieTitleView.setText(mValues.get(position).id);
-            holder.mMovieRatingView.setText(mValues.get(position).content);
-            holder.mMovieDescriptionView.setText(mValues.get(position).content);
+//            //holder.mMoviePosterView.setImageResource(mValues.get(position).);
+//            holder.mMovieTitleView.setText(mValues.get(position).id);
+//            holder.mMovieRatingView.setText(mValues.get(position).content);
+//            holder.mMovieDescriptionView.setText(mValues.get(position).content);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        //arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -123,7 +131,7 @@ public class MovieListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        //intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
 
                         context.startActivity(intent);
                     }
@@ -136,14 +144,21 @@ public class MovieListActivity extends AppCompatActivity {
             return mValues.size();
         }
 
+        /**
+         * Inner ViewHolder class
+         */
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
             public final ImageView mMoviePosterView;
             public final TextView mMovieTitleView;
             public final TextView mMovieRatingView;
             public final TextView mMovieDescriptionView;
-            public DummyContent.DummyItem mItem;
+            public Movie mItem;
 
+            /**
+             * Public constructor for ViewHolder
+             * @param view view to be held
+             */
             public ViewHolder(View view) {
                 super(view);
                 mView = view;

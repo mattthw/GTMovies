@@ -22,8 +22,6 @@ public class Movie implements Comparable<Movie> {
     private int rating = 0;
     private String description;
     private JSONObject fullInfo;
-//    static String base =
-//            "http://api.rottentomatoes.com/api/public/v1.0/movies/%d.json?apikey=%s";
 
     /**
      * Creates a placeholder movie for when Internet connection is unavailable

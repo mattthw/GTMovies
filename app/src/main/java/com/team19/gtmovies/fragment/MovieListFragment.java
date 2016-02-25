@@ -32,7 +32,7 @@ import java.util.List;
 public class MovieListFragment extends Fragment {
     private static List<List<Movie>> tabMovieList = null;
     private static int currentTab = 0;
-    private List<Movie> searchMovieList = null;
+    private static List<Movie> searchMovieList = null;
 
     private static boolean mTwoPane = false;
 
@@ -147,7 +147,12 @@ public class MovieListFragment extends Fragment {
         return true;
     }
 
-    public boolean fillSearchMovieList(List<Movie> list) {
+    /**
+     * Fills movie list on search
+     * @param list new list of movies from search query
+     * @return boolean if list can be used to replace movie search list
+     */
+    public static boolean fillSearchMovieList(List<Movie> list) {
         if (list != null) {
             Log.d("GTMovies", list.toString());
             searchMovieList = list;
@@ -179,6 +184,9 @@ public class MovieListFragment extends Fragment {
         return mTwoPane;
     }
 
+    /**
+     * Innter class for recyclerview adapter
+     */
     public class MovieRecyclerViewAdapter
             extends RecyclerView.Adapter<MovieRecyclerViewAdapter.MovieViewHolder> {
         private List<Movie> movieList;
@@ -194,6 +202,10 @@ public class MovieListFragment extends Fragment {
             public final TextView mMovieDescriptionView;
             public Movie mMovieInfo;
 
+            /**
+             * public constructor for viewholder
+             * @param itemView current view
+             */
             public MovieViewHolder(View itemView) {
                 super(itemView);
 
@@ -212,6 +224,10 @@ public class MovieListFragment extends Fragment {
             }
         }
 
+        /**
+         * Public constructor for adapter
+         * @param movieInfo list of movies
+         */
         public MovieRecyclerViewAdapter(List<Movie> movieInfo) {
             movieList = movieInfo;
 
@@ -253,6 +269,14 @@ public class MovieListFragment extends Fragment {
                         arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
+                        if (!fragment.isVisible()) {
+                            Log.d("GTMovie", "one pane");
+                            Context context = v.getContext();
+                            Intent intent = new Intent(context, MovieDetailActivity.class);
+                            intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
+
+                            context.startActivity(intent);
+                        }
                         /*getFragmentManager().beginTransaction()
                                 .replace(R.id.content_main, fragment)
                                 .commit();*/
@@ -274,7 +298,12 @@ public class MovieListFragment extends Fragment {
         }
     }
 
-    public static List getMovieList() {
-        return tabMovieList.get(0);
+    /**
+     * getter for search movie list
+     * 
+     * @return List of movies in current search movie list
+     */
+    public static List getSearchMovieList() {
+        return searchMovieList;
     }
 }

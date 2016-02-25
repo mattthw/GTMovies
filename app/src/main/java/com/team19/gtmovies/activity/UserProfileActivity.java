@@ -29,6 +29,12 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Profile Activity for user
+ *
+ * @author anonymous
+ * @version 1.0
+ */
 public class UserProfileActivity extends AppCompatActivity {
     protected View rootView;
     private static UserProfileActivity upa = null;
@@ -147,6 +153,10 @@ public class UserProfileActivity extends AppCompatActivity {
             return true;
         }
     }
+
+    /**
+     * Saves user profile
+     */
     private void saveProfile() {
         // Remove the user entry from IOAction's account list (we will add it back later)
         IOActions.getAccounts().remove(cu);
@@ -197,6 +207,7 @@ public class UserProfileActivity extends AppCompatActivity {
         Timer t = new Timer();
         t.schedule(task, 1000);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -208,10 +219,14 @@ public class UserProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //inner class for alert that user doesn't currently have a profile.
-    // (asks if they want to create one)
-    // if yes: allow to edit
-    // if no: return to main
+    /** inner class for alert that user doesn't currently have a profile.
+     * (asks if they want to create one)
+     * if yes: allow to edit
+     * if no: return to main
+     *
+     * @author anonymous
+     * @version 1.0
+     */
     public static class CreateProfileDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -239,8 +254,9 @@ public class UserProfileActivity extends AppCompatActivity {
     public void addListenerOnSpinnerItemSelection() {
         eMajor.setOnItemSelectedListener(new MajorSpinnerListener());
     }
+
     /**
-     * needed for spinner XML item
+     * Class needed for spinner XML item
      */
     private class MajorSpinnerListener implements AdapterView.OnItemSelectedListener {
         @Override

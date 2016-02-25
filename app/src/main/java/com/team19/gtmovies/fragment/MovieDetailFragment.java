@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
-import com.team19.gtmovies.dummy.DummyContent;
+import com.team19.gtmovies.pojo.Movie;
 
 /**
  * A fragment representing a single Movie detail screen.
@@ -32,7 +32,7 @@ public class MovieDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private Movie mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -57,12 +57,11 @@ public class MovieDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            //mItem = Movie.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID)); //TODO: @Jinu, use getArguments().getString(ARG_ITEM_ID) to fetch the data again
-
+            //mItem = MovieListFragment.getSearchMovieList().getValue(getArguments().getString(ARG_ITEM_ID)); //TODO: @Jinu using string title of movie to get movie to display in this view
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
+                appBarLayout.setTitle(getArguments().getString(ARG_ITEM_ID));
             }
         }
     }
@@ -74,7 +73,7 @@ public class MovieDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.movie_detail)).setText(mItem.details);
+            ((TextView) rootView.findViewById(R.id.movie_detail)).setText(mItem.getTitle());
         }
 
         return rootView;

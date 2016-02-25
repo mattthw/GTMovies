@@ -35,6 +35,9 @@ import java.util.List;
  * Android Design: Settings</a> for design guidelines and the <a
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
+ *
+ * @author anonymous
+ * @version 1.0
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
     /**
@@ -180,6 +183,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     /**
      * This fragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
+     *
+     * @author anonymous
+     * @version 1.0
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragment {

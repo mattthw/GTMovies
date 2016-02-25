@@ -173,15 +173,5 @@
         </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="API DEBUG"
-        android:id="@+id/jinuTestButton"
-        android:height="20dp"
-        android:layout_below="@+id/login_form"
-        android:layout_alignStart="@+id/login_form"
-        style="@android:style/Widget.Material.Light.Button.Borderless.Colored" />
-
 
 </RelativeLayout>
