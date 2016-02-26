@@ -39,7 +39,7 @@ public class UserProfileActivity extends AppCompatActivity {
     protected View rootView;
     private static UserProfileActivity upa = null;
     final User cu = CurrentState.getUser();
-    final IOActions ioa = MainFrameActivity.ioa;
+    final IOActions ioa = MainActivity.ioa;
 
     private EditText eUsername;
     private Spinner eMajor;
