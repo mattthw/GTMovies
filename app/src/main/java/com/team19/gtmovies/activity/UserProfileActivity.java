@@ -177,6 +177,7 @@ public class UserProfileActivity extends AppCompatActivity {
             IOActions.saveUser();
             IOActions.getAccounts().add(cu);
             IOActions.saveAccounts();
+            IOActions.saveMovies();
         } catch (FileNotFoundException f) {
             Log.e("GTMovies", "FileNotFoundException: "+Log.getStackTraceString(f));
         } catch (IOException i) {

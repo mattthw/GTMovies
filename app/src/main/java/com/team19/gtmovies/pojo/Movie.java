@@ -108,6 +108,13 @@ public class Movie implements Comparable<Movie> {
         return this.id - other.getID();
     }
 
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Movie)) {
+            return false;
+        }
+        return this.compareTo((Movie) obj) == 0;
+    }
+
     /**
      * Returns the id of the Movie
      *

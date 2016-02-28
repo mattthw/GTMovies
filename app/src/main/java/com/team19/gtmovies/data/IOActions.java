@@ -7,6 +7,7 @@ import android.util.Log;
 import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.exception.DuplicateUserException;
 import com.team19.gtmovies.exception.NullUserException;
+import com.team19.gtmovies.pojo.Movie;
 import com.team19.gtmovies.pojo.User;
 
 import java.io.FileInputStream;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
+import java.util.StringTokenizer;
 
 //import com.team19.gtmovies.pojo.User;
 
@@ -35,7 +37,9 @@ public class IOActions extends Application {
 
     private static final String AFILE = "ACCOUNTS.txt";
     private static final String UFILE = "USER.txt";
+    private static final String MFILE = "MOVIES.txt";
     private static HashSet<User> accounts;
+    private static HashSet<Movie> movies;
 
     /**
      * constructor for IOActions
@@ -59,8 +63,10 @@ public class IOActions extends Application {
         try {
             loadAccounts();
             loadUser();
+            loadMovies();
         } catch (FileNotFoundException f) {
             accounts = new HashSet<>();
+            movies = new HashSet<>();
             CurrentState.setUser(new User());
             commit();
             Log.println(Log.INFO, "GTMovies", "Created new empty set for user accounts");
@@ -83,6 +89,21 @@ public class IOActions extends Application {
         objectIn.close();
         Log.println(Log.DEBUG, "GTMovies", "ACCOUNTS loaded with: " + accounts);
     }
+
+    /**
+     * gets object from serialized file
+     * @throws ClassNotFoundException if error on readObject()
+     * @throws IOException if error opening file
+     */
+    protected static void loadMovies()
+            throws ClassNotFoundException, IOException {
+        fileIn = ioaContext.openFileInput(MFILE);
+        objectIn = new ObjectInputStream(fileIn);
+        movies = (HashSet<Movie>) objectIn.readObject();
+        objectIn.close();
+        Log.println(Log.DEBUG, "GTMovies", "MOVIES loaded with: " + movies);
+    }
+
     /**
      * gets object from serialized file
      * @throws ClassNotFoundException if error on readObject()
@@ -126,12 +147,26 @@ public class IOActions extends Application {
     }
 
     /**
+     * serializes and writes HashSet movies object
+     * @throws IOException if fails to write out
+     */
+    public static void saveMovies()
+            throws IOException {
+        fileOut = ioaContext.openFileOutput(MFILE, Context.MODE_PRIVATE);
+        objectOut = new ObjectOutputStream(fileOut);
+        objectOut.writeObject(movies);
+        objectOut.close();
+        Log.println(Log.INFO, "GTMovies", MFILE + " saved.");
+    }
+
+    /**
      * save changes to USER and ACCOUNTS
      */
     protected static void commit() {
         try {
             saveAccounts();
             saveUser();
+            saveMovies();
         } catch (FileNotFoundException f) {
             Log.e("GTMovies", "FileNotFoundException: "+Log.getStackTraceString(f));
         } catch (IOException i) {
@@ -176,6 +211,44 @@ public class IOActions extends Application {
         String uname = user.getUsername();
         accounts.remove(user);
         Log.println(Log.INFO, "GTMovies", "User '" + uname + "' deleted.");
+        commit();
+    }
+
+    /**
+     * gets movies
+     * @return HashSet of movies
+     */
+    public static HashSet<Movie> getMovies() {
+        return movies;
+    }
+
+    /**
+     * add new movie
+     * @param movie movie object
+     */
+    public static void addMovie(Movie movie) {
+        if(movies.contains(movie)) {
+            throw new IllegalArgumentException("IOActions: this movie is already in the HashSet.");
+        } else {
+            movies.add(movie);
+            Log.println(Log.INFO, "GTMovies", "New movie added! (" + movie.getID() + ")");
+            commit();
+        }
+    }
+
+    /**
+     * remove movie from movies hashmap
+     * @param movie Movie object
+     */
+    public static void deleteMovie(Movie movie) {
+        if(movie == null) {
+            throw new IllegalArgumentException("Can't remove null movie!");
+        } else {
+            int movid = movie.getID();
+            movies.remove(movie);
+            Log.println(Log.INFO, "GTMovies", "Movie '" + movid + "' deleted.");
+            commit();
+        }
     }
 
     /**
