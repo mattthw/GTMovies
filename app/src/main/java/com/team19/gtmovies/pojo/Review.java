@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.pojo;
 
 import java.io.Serializable;
 
