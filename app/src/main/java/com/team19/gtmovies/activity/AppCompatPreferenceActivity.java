@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 
 /**
  * A {@link android.preference.PreferenceActivity} which implements and proxies the necessary calls
- * to be used with AppCompat.
+ * to be used with AppCompat. Class maight be able to be deleted.
+ * @author anonymous
+ * @version 1.0
  */
 public abstract class AppCompatPreferenceActivity extends PreferenceActivity {
 

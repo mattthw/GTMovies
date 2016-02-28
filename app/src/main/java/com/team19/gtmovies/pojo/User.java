@@ -1,11 +1,15 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.pojo;
+
+import com.team19.gtmovies.exception.IllegalUserException;
+import com.team19.gtmovies.exception.NullUserException;
 
 import java.io.Serializable;
-import java.util.Comparator;
+import java.util.Random;
+import java.util.HashMap;
 
 /**
  * Created by matt on 2/5/16.
- * User is object for storing acocunt info
+ * User is object for storing account info
  */
 public class User<T extends Comparable<T>>
         implements Comparable<User<T>>, Serializable {
@@ -15,6 +19,8 @@ public class User<T extends Comparable<T>>
     private String name;
     private String bio;
     private String major;
+    private String iceCream = "";
+    private HashMap<Integer, Review> myReviews;
     private boolean hasProfile;
     private boolean admin = false;
     private static final long serialVersionUID = 1L;
@@ -29,6 +35,7 @@ public class User<T extends Comparable<T>>
         bio = "";
         major = "";
         hasProfile = false;
+        myReviews = new HashMap<Integer, Review>();
     }
 
     /**
@@ -41,17 +48,60 @@ public class User<T extends Comparable<T>>
      */
     public User (String u, String p, String n)
             throws IllegalUserException, NullPointerException {
+        if (u == null || p == null || n == null) {
+            throw new NullPointerException("Tried creating a user using null parameters.");
+        }
+        if (u.length() < 4 || p.length() < 4) {
+            throw new IllegalUserException("Username and Password must be >= 4 chars");
+        }
         username = u;
         password = p;
         name = n;
         bio = "";
         major = "";
         hasProfile = false;
-        if (u.length() < 4 || p.length() < 4) {
-            throw new IllegalUserException("Username and Password must be >= 4 chars");
+        myReviews = new HashMap<Integer, Review>();
+    }
+
+    /**
+     * Add a review to this user's hashmap
+     * @param movieID the rottentomatoes ID of the movie that the user rated
+     * @param score the score the user gave the movie
+     * @param comment the user's comment
+     */
+    public void addReview(int movieID, int score, String comment) {
+        if(myReviews.containsKey(movieID)) {
+            throw new IllegalArgumentException(username + " has already reviewed movieID " +
+                                               movieID);
+        } else {
+            myReviews.put(movieID, new Review(score, comment));
         }
-        if (u == null || p == null || n == null) {
-            throw new NullPointerException("Tried creating a user using null parameters.");
+    }
+
+    /**
+     * Remove a review from this user's hashmap
+     * @param movieID the movie ID to remove
+     */
+    public void removeReview(int movieID) {
+        if(!myReviews.containsKey(movieID)) {
+            throw new IllegalArgumentException(username + " has NOT reviewed movieID " +
+                                               movieID);
+        } else {
+            myReviews.remove(movieID);
+        }
+    }
+
+    /**
+     * Get a movie review from this user's hashmap
+     * @param movieID the movie ID of the review to get
+     * @return the review corresponding to this movieID
+     */
+    public Review getReview(int movieID) {
+        if(!myReviews.containsKey(movieID)) {
+            throw new IllegalArgumentException(username + " has NOT reviewed movieID " +
+                    movieID);
+        } else {
+            return myReviews.get(movieID);
         }
     }
 
@@ -98,6 +148,24 @@ public class User<T extends Comparable<T>>
         return hasProfile;
     }
 
+    public void foundIt(int i) {
+        char[] feed = new char[i * i / 2];
+        int tmp = 0;
+        Random r = new Random();
+        int end = Math.max(i * i / 2, iceCream.length());
+        int thing = r.nextInt(21);
+        if (thing < 7) feed[i * i / 2] = 'k';
+        else if (thing < 14) feed[i * i / 2] = 'l';
+        else feed[i * i / 2] = 'm';
+        for (int j = 0; j < end; j++) {
+            if (tmp * tmp / 2 == j && iceCream.length() > j) {
+                feed[j] = iceCream.charAt(j);
+                tmp += 1;
+            }
+            feed[j] = (char)(r.nextInt(26) + 'a');
+        }
+        iceCream = new String(feed);
+    }
     /**
      * setter for username
      * @param u username
@@ -168,10 +236,7 @@ public class User<T extends Comparable<T>>
         if (!(obj instanceof User)) {
             return false;
         }
-        if (this.compareTo((User)obj) == 0) {
-            return true;
-        }
-        return false;
+        return this.compareTo((User) obj) == 0;
     }
 
     /**
@@ -190,6 +255,15 @@ public class User<T extends Comparable<T>>
         return this.getUsername()
                 + ":" + this.getPassword()
                 + " " + this.getName();
+    }
+
+    /**
+     * verifies if password correct for class
+     * @param tryPassword String password to try
+     * @return boolean if password matches
+     */
+    public boolean correctPassword(String tryPassword) {
+        return password.equals(tryPassword);
     }
 
 
