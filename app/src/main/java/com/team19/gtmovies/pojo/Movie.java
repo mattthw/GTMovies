@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Jim Jang on 2016-02-17.
@@ -22,6 +23,7 @@ public class Movie implements Comparable<Movie> {
     private int rating = 0;
     private String description;
     private JSONObject fullInfo;
+    private HashMap<String, Review> myReviews;
 
     /**
      * Creates a placeholder movie for when Internet connection is unavailable
@@ -33,7 +35,7 @@ public class Movie implements Comparable<Movie> {
         rating = 10;
         description = "Description of the movie number " + j
                 + " of the list of movies";
-
+        myReviews = new HashMap<String, Review>();
     }
 
     /**
@@ -44,6 +46,7 @@ public class Movie implements Comparable<Movie> {
     public Movie(JSONObject jObj) {
         fullInfo = jObj;
         JSONArray tmpJArray;
+        myReviews = new HashMap<String, Review>();
         try {
             id = fullInfo.getInt("id");
             title = fullInfo.getString("title");
@@ -55,6 +58,48 @@ public class Movie implements Comparable<Movie> {
 //            }
         } catch (JSONException e) {
             Log.e("JSON Error", "JSONException while parsing single movie" + e.toString());
+        }
+    }
+
+    /**
+     * Add a review to this movie's hashmap
+     * @param username the username of the user who rated this movie
+     * @param score the score the user gave the movie
+     * @param comment the user's comment
+     */
+    public void addReview(String username, int score, String comment) {
+        if(myReviews.containsKey(username)) {
+            throw new IllegalArgumentException(username + " has already reviewed movieID " +
+                    id);
+        } else {
+            myReviews.put(username, new Review(score, comment));
+        }
+    }
+
+    /**
+     * Remove a review from this movie's hashmap
+     * @param username the username's review to remove
+     */
+    public void removeReview(String username) {
+        if(!myReviews.containsKey(username)) {
+            throw new IllegalArgumentException(username + " has NOT reviewed movieID " +
+                    id);
+        } else {
+            myReviews.remove(username);
+        }
+    }
+
+    /**
+     * Get a movie review from this movie's hashmap
+     * @param username the username in hashmap of the review to get
+     * @return the review corresponding to this movieID
+     */
+    public Review getReview(String username) {
+        if(!myReviews.containsKey(username)) {
+            throw new IllegalArgumentException(username + " has NOT reviewed movieID " +
+                    id);
+        } else {
+            return myReviews.get(username);
         }
     }
 
