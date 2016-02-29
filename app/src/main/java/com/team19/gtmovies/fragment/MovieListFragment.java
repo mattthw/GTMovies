@@ -33,6 +33,7 @@ public class MovieListFragment extends Fragment {
     private static List<List<Movie>> tabMovieList = null;
     private static int currentTab = 0;
     private static List<Movie> searchMovieList = null;
+    private boolean search = false;
 
     private static boolean mTwoPane = false;
 
@@ -101,8 +102,15 @@ public class MovieListFragment extends Fragment {
             fillTabMovieList(null);
         }
 
-        if (searchMovieList != null) {
-            mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+        if (search) {
+            if (searchMovieList != null) {
+                mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+            } else {
+                //TODO: write error message to screen
+                Log.e("GTMovies", "No searchMovieList");
+                mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
+            }
+            search = false;
         } else {
             mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
         }
@@ -177,10 +185,17 @@ public class MovieListFragment extends Fragment {
     }
 
     /**
+     * Set search to true
+     */
+    public void setSearch() {
+        search = true;
+    }
+
+    /**
      * A getter for where or not able to display in two panes
      * @return true if able to display in two panes
      */
-    public static boolean isTwoPane() {
+    public static boolean isTwoPane() {         //TODO: fix isTwoPane
         return mTwoPane;
     }
 
