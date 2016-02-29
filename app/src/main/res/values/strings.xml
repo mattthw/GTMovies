@@ -136,4 +136,8 @@
     <string name="user_bio">User Bio:</string>
     <string name="title_test_list">Items</string>
     <string name="title_test_detail">TEST Detail</string>
+    <string name="description">Description:</string>
+    <string name="rating">Tomato Rating:</string>
+    <string name="comments">Comments:</string>
+    <string name="user_rating">User Rating:</string>
 </resources>

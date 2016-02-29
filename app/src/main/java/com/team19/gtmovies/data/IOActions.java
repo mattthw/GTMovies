@@ -274,6 +274,19 @@ public class IOActions extends Application {
     }
 
     /**
+     * gets the Movie object if titles match
+     * @param title title of movie
+     * @return Movie object
+     */
+    public static Movie getMovieByTitle(String title) {
+        for (Movie m: movies) {
+            if (m.getTitle().equalsIgnoreCase(title))
+                return m;
+        }
+        return null;
+    }
+
+    /**
      * log user in and commit changes
      * @param uname username
      * @param p password

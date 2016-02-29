@@ -45,7 +45,7 @@ public class MovieListActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_movie_list);
-        Log.e("GTMovies", "going to activity");
+        Log.i("GTMovies", "going to activity");
 
         View recyclerView = findViewById(R.id.movie_list_view);
         assert recyclerView != null;

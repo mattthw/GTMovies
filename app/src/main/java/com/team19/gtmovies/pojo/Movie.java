@@ -196,4 +196,10 @@ public class Movie implements Comparable<Movie> {
     public JSONObject getFullInfo() {
         return fullInfo;
     }
+
+    public String toString() {
+        return ("{title:" + getTitle() + "},"
+                + "{rating:" + getRating() +"},"
+                + "{description:" + getDescription() + "}");
+    }
 }

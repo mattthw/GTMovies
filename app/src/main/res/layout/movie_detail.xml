@@ -1,4 +1,4 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/movie_detail"
     style="?android:attr/textAppearanceLarge"
@@ -6,4 +6,143 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:textIsSelectable="true"
-    tools:context=".fragment.MovieDetailFragment" />
+    tools:context=".fragment.MovieDetailFragment"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:layout_marginTop="20dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/big_card"
+                android:id="@+id/relativeLayout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:text="@string/rating"
+                    android:id="@+id/ratingTitleView"
+                    android:paddingLeft="5dp"
+                    android:padding="5dp"
+                    android:layout_gravity="left|center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ratingView"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:padding="10dp"
+                    android:layout_gravity="center|right"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="null" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/big_card"
+                android:layout_below="@+id/relativeLayout"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:text="@string/user_rating"
+                    android:id="@+id/userRatingTitleView"
+                    android:paddingLeft="5dp"
+                    android:padding="5dp"
+                    android:layout_gravity="left|center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="null"
+                    android:id="@+id/userRatingView"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:padding="10dp"
+                    android:layout_gravity="center|right"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/big_card"
+            android:clickable="false"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:text="@string/description"
+                android:id="@+id/textView"
+                android:paddingLeft="5dp"
+                android:padding="5dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="null"
+                android:id="@+id/detailView"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_gravity="left|center_vertical"
+                android:layout_below="@+id/textView"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:scrollIndicators="right"
+                android:scrollbars = "vertical"
+                android:maxLines="7"
+                android:paddingTop="3dp"
+                android:paddingBottom="5dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/big_card"
+            android:clickable="false"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:text="@string/comments"
+                android:id="@+id/textView2"
+                android:paddingLeft="5dp"
+                android:padding="5dp" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/listView"
+                android:layout_below="@+id/textView2"
+                android:layout_marginTop="5dp"
+                android:layout_alignParentStart="false"
+                android:backgroundTint="@color/cardview_light_background" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</RelativeLayout>
