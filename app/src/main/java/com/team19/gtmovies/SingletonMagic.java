@@ -1,9 +1,13 @@
 package com.team19.gtmovies;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
+import android.util.LruCache;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 /**
@@ -29,6 +33,7 @@ public class SingletonMagic {
 
     private static SingletonMagic ourInstance;
     private RequestQueue mRequestQueue;
+    private ImageLoader mImageLoader;
     private static Context mCtx;
 
     /**
@@ -38,6 +43,15 @@ public class SingletonMagic {
     private SingletonMagic(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
+        mImageLoader = new ImageLoader(this.mRequestQueue, new ImageLoader.ImageCache() {
+            private final LruCache<String, Bitmap> mCache = new LruCache<String, Bitmap>(10);
+            public void putBitmap(String url, Bitmap bitmap) {
+                mCache.put(url, bitmap);
+            }
+            public Bitmap getBitmap(String url) {
+                return mCache.get(url);
+            }
+        });
     }
 
     /**
@@ -64,6 +78,17 @@ public class SingletonMagic {
             mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
         }
         return mRequestQueue;
+    }
+
+    /**
+     * Returns the Singleton ImageLoader
+     * @return the Singleton ImageLoader
+     */
+    public ImageLoader getImageLoader() {
+        if (mImageLoader == null) {
+            Log.e("Singleton Error", "ImageLoader is null");
+        }
+        return mImageLoader;
     }
 
     /**
