@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -83,6 +84,13 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             String queryURI = Uri.encode(query);
+            if (query.equals("Matt McCoy")) {
+                list.add(new Movie(-1));
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Achievement Unlocked!!!",
+                        Toast.LENGTH_LONG).show();
+            }
             // Creating the JSONRequest
             String urlRaw = String.format(
                     SingletonMagic.baseURL, SingletonMagic.search, "q=" + queryURI, SingletonMagic.profKey);
@@ -132,7 +140,7 @@ public class SearchActivity extends AppCompatActivity {
                                 prevable = false;
                             }
 
-                            // AUSTIN THING JUST CTRL C Ved
+                            // AUSTIN THING JUST CTRL C V-ed
                             MovieListFragment movieListFragment = MovieListFragment.newInstance(0);
                             MovieListFragment.fillSearchMovieList(list);
                             Log.d("GTMovies", "line1");
@@ -142,7 +150,7 @@ public class SearchActivity extends AppCompatActivity {
                                         movieListFragment).commit();
                                 Log.d("GTMovies", "line2");
                             } else {
-                                Log.e("GTMovies", "No fragmentmanager");
+                                Log.e("GTMovies", "No fragmentManager");
                             }
                             Log.d("GTMovies", "here1");
                             //  movieListFragment.fillSearchMovieList(null);    //nulls for next query
