@@ -4,8 +4,8 @@ import com.team19.gtmovies.exception.IllegalUserException;
 import com.team19.gtmovies.exception.NullUserException;
 
 import java.io.Serializable;
-import java.util.Random;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Created by matt on 2/5/16.

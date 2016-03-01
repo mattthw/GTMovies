@@ -1,6 +1,5 @@
 package com.team19.gtmovies.pojo;
 
-import android.media.Image;
 import android.util.Log;
 
 import org.json.JSONArray;
