@@ -143,6 +143,20 @@ public class Movie implements Comparable<Movie> {
         return rating;
     }
 
+    public int getUserRating() {
+        double runningtotal = 0;
+        int numusers = 0;
+        for(Review i : myReviews.values()) {
+            runningtotal += i.getScore();
+            numusers++;
+        }
+        if(numusers == 0) { // in case of divide by zero
+            return 0;
+        } else {
+            return (int)((runningtotal/((double)numusers)) * 100);
+        }
+    }
+
     /**
      * This is a method hidden from Matt.
      * If you find this don't tell Matt.
