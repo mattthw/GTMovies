@@ -10,6 +10,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -19,8 +20,10 @@ import android.preference.RingtonePreference;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 
+import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
 
 import java.util.List;
@@ -83,6 +86,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     }
                 }
 
+            } else if (preference instanceof EditTextPreference) {
+                CurrentState.getUser().setName(((EditTextPreference) preference).getText());
+                Log.d("SETTINGS", "Set User DisplayName");
             } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.

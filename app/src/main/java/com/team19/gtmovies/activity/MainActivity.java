@@ -18,11 +18,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.SingletonMagic;
 import com.team19.gtmovies.data.IOActions;
@@ -32,6 +34,7 @@ import com.team19.gtmovies.pojo.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +98,8 @@ public class MainActivity extends AppCompatActivity
         // Populate lists of new movies and top rentals
         getMovies();
 
+        // Change John Smith to username
+        ((TextView) navHeader.findViewById(R.id.headerName)).setText(CurrentState.getUser().getName());
 
         // Place view
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
@@ -328,6 +333,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         Log.d("GTMovies", "Item selected");
         int id = item.getItemId();
+        // Change John Smith to username
+        ((TextView) findViewById(R.id.headerName)).setText(CurrentState.getUser().getName());
 
         if (id == R.id.nav_manage_profile) {
             Intent intent = new Intent(this, UserProfileActivity.class);

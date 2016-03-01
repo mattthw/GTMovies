@@ -228,7 +228,7 @@ public class MovieListFragment extends Fragment {
 
                 mView = itemView;
                 mMoviePosterView = (NetworkImageView) itemView.findViewById(R.id.movie_poster);
-                mMoviePosterView.setDefaultImageResId(R.mipmap.ic_launcher);
+                mMoviePosterView.setDefaultImageResId(R.mipmap.slowpoke);
                 mMoviePosterView.setErrorImageResId(R.mipmap.load_error3);
                 mMovieTitleView = (TextView) itemView.findViewById(R.id.movie_title);
                 mMovieRatingView = (TextView) itemView.findViewById(R.id.movie_rating);
