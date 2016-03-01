@@ -33,6 +33,7 @@ public class MovieDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
+    public static final String ARG_ITEM_TITLE = "item_title";
     public static final String ARG_ITEM_ID = "item_id";
     public static final String ARG_ITEM_DESC = "item_description";
     public static final String ARG_ITEM_RATE = "item_rating";
@@ -61,23 +62,14 @@ public class MovieDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
+        if (getArguments().containsKey(ARG_ITEM_TITLE)) {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            //mItem = MovieListFragment.getSearchMovieList().getValue(getArguments().getString(ARG_ITEM_ID)); //TODO: @Jinu using string title of movie to get movie to display in this view
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(getArguments().getString(ARG_ITEM_ID));
-//                Log.println(Log.INFO, "GTMovies", "ARG_ITEM_ID:" + getArguments().getString(ARG_ITEM_ID));
-//                mItem = IOActions.getMovieByTitle(getArguments().getString(ARG_ITEM_ID));
-//                if (mItem == null) {
-//                    Log.println(Log.ERROR, "GTMovies", "mItem in MovieDetailFragment is null!");
-//                    Log.println(Log.ERROR, "GTMovies", IOActions.getMovies().toString());
-//                } else {
-//                    Log.println(Log.INFO, "GTMovies", mItem.toString());
-//                }
+                appBarLayout.setTitle(getArguments().getString(ARG_ITEM_TITLE));
             }
         }
     }
@@ -87,12 +79,10 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
+        //if users have review this movie then it will exist
+        //and we will get their averaged scores.
         if (mItem != null) {
-            //((TextView) rootView.findViewById(R.id.movie_detail)).setText(mItem.getTitle());
-            getActivity().setTitle(mItem.getTitle());
-            ((TextView) rootView.findViewById(R.id.ratingView)).setText(mItem.getRating());
-
+            ((TextView) rootView.findViewById(R.id.userRatingView)).setText(mItem.getRating());
         }
         if (getArguments().containsKey(ARG_ITEM_DESC)) {
             ((TextView) rootView.findViewById(R.id.detailView))
