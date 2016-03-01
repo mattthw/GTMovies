@@ -5,6 +5,7 @@ import com.team19.gtmovies.exception.NullUserException;
 
 import java.io.Serializable;
 import java.util.Random;
+import java.util.HashMap;
 
 /**
  * Created by matt on 2/5/16.
@@ -19,6 +20,7 @@ public class User<T extends Comparable<T>>
     private String bio;
     private String major;
     private String iceCream = "";
+    private HashMap<Integer, Review> myReviews;
     private boolean hasProfile;
     private boolean admin = false;
     private static final long serialVersionUID = 1L;
@@ -33,6 +35,7 @@ public class User<T extends Comparable<T>>
         bio = "";
         major = "";
         hasProfile = false;
+        myReviews = new HashMap<Integer, Review>();
     }
 
     /**
@@ -45,17 +48,60 @@ public class User<T extends Comparable<T>>
      */
     public User (String u, String p, String n)
             throws IllegalUserException, NullPointerException {
+        if (u == null || p == null || n == null) {
+            throw new NullPointerException("Tried creating a user using null parameters.");
+        }
+        if (u.length() < 4 || p.length() < 4) {
+            throw new IllegalUserException("Username and Password must be >= 4 chars");
+        }
         username = u;
         password = p;
         name = n;
         bio = "";
         major = "";
         hasProfile = false;
-        if (u.length() < 4 || p.length() < 4) {
-            throw new IllegalUserException("Username and Password must be >= 4 chars");
+        myReviews = new HashMap<Integer, Review>();
+    }
+
+    /**
+     * Add a review to this user's hashmap
+     * @param movieID the rottentomatoes ID of the movie that the user rated
+     * @param score the score the user gave the movie
+     * @param comment the user's comment
+     */
+    public void addReview(int movieID, int score, String comment) {
+        if(myReviews.containsKey(movieID)) {
+            throw new IllegalArgumentException(username + " has already reviewed movieID " +
+                                               movieID);
+        } else {
+            myReviews.put(movieID, new Review(score, comment));
         }
-        if (u == null || p == null || n == null) {
-            throw new NullPointerException("Tried creating a user using null parameters.");
+    }
+
+    /**
+     * Remove a review from this user's hashmap
+     * @param movieID the movie ID to remove
+     */
+    public void removeReview(int movieID) {
+        if(!myReviews.containsKey(movieID)) {
+            throw new IllegalArgumentException(username + " has NOT reviewed movieID " +
+                                               movieID);
+        } else {
+            myReviews.remove(movieID);
+        }
+    }
+
+    /**
+     * Get a movie review from this user's hashmap
+     * @param movieID the movie ID of the review to get
+     * @return the review corresponding to this movieID
+     */
+    public Review getReview(int movieID) {
+        if(!myReviews.containsKey(movieID)) {
+            throw new IllegalArgumentException(username + " has NOT reviewed movieID " +
+                    movieID);
+        } else {
+            return myReviews.get(movieID);
         }
     }
 

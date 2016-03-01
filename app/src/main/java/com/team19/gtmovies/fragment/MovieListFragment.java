@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.SingletonMagic;
 import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
 import com.team19.gtmovies.pojo.Movie;
@@ -211,7 +213,7 @@ public class MovieListFragment extends Fragment {
          */
         public class MovieViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final ImageView mMoviePosterView;
+            public final NetworkImageView mMoviePosterView;
             public final TextView mMovieTitleView;
             public final TextView mMovieRatingView;
             public final TextView mMovieDescriptionView;
@@ -227,7 +229,9 @@ public class MovieListFragment extends Fragment {
                 Log.d("GTMovie", "create new MovieViewHolder");
 
                 mView = itemView;
-                mMoviePosterView = (ImageView) itemView.findViewById(R.id.movie_poster);
+                mMoviePosterView = (NetworkImageView) itemView.findViewById(R.id.movie_poster);
+                mMoviePosterView.setDefaultImageResId(R.mipmap.ic_launcher);
+                mMoviePosterView.setErrorImageResId(R.mipmap.load_error3);
                 mMovieTitleView = (TextView) itemView.findViewById(R.id.movie_title);
                 mMovieRatingView = (TextView) itemView.findViewById(R.id.movie_rating);
                 mMovieDescriptionView = (TextView) itemView.findViewById(R.id.movie_description);
@@ -266,6 +270,9 @@ public class MovieListFragment extends Fragment {
             //holder.poster.setImageResource(mMovieInfo.poster);
             if (holder != null) {
                 Log.d("GTMovie", "holder not null");
+                holder.mMoviePosterView.setImageUrl(
+                        holder.mMovieInfo.getPosterURL(),
+                        SingletonMagic.getInstance(getContext()).getImageLoader());
                 holder.mMovieTitleView.setText(holder.mMovieInfo.getTitle());
                 String rating = holder.mMovieInfo.getRating() + "%";
                 holder.mMovieRatingView.setText(rating);
