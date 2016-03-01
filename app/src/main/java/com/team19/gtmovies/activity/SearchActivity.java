@@ -142,6 +142,7 @@ public class SearchActivity extends AppCompatActivity {
 
                             // AUSTIN THING JUST CTRL C V-ed
                             MovieListFragment movieListFragment = MovieListFragment.newInstance(0);
+                            movieListFragment.setSearch();
                             MovieListFragment.fillSearchMovieList(list);
                             Log.d("GTMovies", "line1");
                             FragmentManager fragmentManager = getSupportFragmentManager();

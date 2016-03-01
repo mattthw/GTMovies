@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -35,8 +34,8 @@ public class MovieListFragment extends Fragment {
     private static List<List<Movie>> tabMovieList = null;
     private static int currentTab = 0;
     private static List<Movie> searchMovieList = null;
-
     private static boolean mTwoPane = false;
+    private boolean search = false;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -103,11 +102,17 @@ public class MovieListFragment extends Fragment {
             fillTabMovieList(null);
         }
 
-        if (searchMovieList != null) {
-            mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+        if (search) {
+            if (searchMovieList != null) {
+                mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+            } else {
+                mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
+            }
+            search = false;
         } else {
             mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
         }
+
         if (mRecyclerView != null) {
             mRecyclerView.setAdapter(mAdapter);
         } else {
@@ -119,7 +124,7 @@ public class MovieListFragment extends Fragment {
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
             // activity should be in two-pane mode.
-            mTwoPane = true;
+            mTwoPane = true;                                                //TODO: implement twopane check
         }
 
         return rootView;
@@ -176,6 +181,14 @@ public class MovieListFragment extends Fragment {
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * Sets fragment to display search
+     */
+    public void setSearch() {
+        search = true;
     }
 
     /**
