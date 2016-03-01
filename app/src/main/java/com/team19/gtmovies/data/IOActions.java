@@ -8,6 +8,7 @@ import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.exception.DuplicateUserException;
 import com.team19.gtmovies.exception.NullUserException;
 import com.team19.gtmovies.pojo.Movie;
+import com.team19.gtmovies.pojo.Review;
 import com.team19.gtmovies.pojo.User;
 
 import java.io.FileInputStream;
@@ -322,5 +323,41 @@ public class IOActions extends Application {
         CurrentState.setUser(new User());
         commit();
         return true;
+    }
+
+    public void SaveANewRating(int movieid, int score, String comment) {
+        User ouruser = CurrentState.getUser();
+        Movie ourmovie = null;
+
+        // Find the movie for the given username;
+        try {
+            for(Movie m : movies) {
+                if(m.getID() == score) {
+                    ourmovie = m;
+                    break;
+                }
+            }
+        } catch(Exception e) {
+            Log.println(Log.ERROR, "GTMovies", "Something wrong!!!!!!!" + e);
+        }
+        if(ourmovie == null) {
+            movies.add(new Movie(movieid, 'c'));
+        }
+
+        // Remove both from hashsets
+        accounts.remove(ouruser);
+        movies.remove(ourmovie);
+
+        // Add the new rating to each
+        Review r = new Review(score, comment, ouruser.getUsername(), ourmovie.getID());
+        ouruser.addReview(r);
+        ourmovie.addReview(r);
+
+        // Add both back to hashsets
+        accounts.add(ouruser);
+        movies.add(ourmovie);
+
+        // Save stuff
+        commit();
     }
 }
