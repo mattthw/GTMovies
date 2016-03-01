@@ -110,6 +110,7 @@ public class MovieListFragment extends Fragment {
             }
             search = false;
         } else {
+            Log.e("GTMovies: onCreateView", currentTab + "");
             mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
         }
 
@@ -175,12 +176,9 @@ public class MovieListFragment extends Fragment {
      * @param position position of current tab
      * @return true if successfully set
      */
-    public static boolean setTabPosition(int position) {
-        if (position >= 0 && position < tabMovieList.size()) {
-            currentTab = position;
-            return true;
-        }
-        return false;
+    public static void setTabPosition(int position) {
+        currentTab = position % 3;
+        Log.e("GTMovies: setTab", position + " : " + (position % 3));
     }
 
 
