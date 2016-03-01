@@ -16,7 +16,7 @@ import com.team19.gtmovies.fragment.MovieListFragment;
 public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     private static final int PAGE_COUNT = 3;
     private static String tabTitles[] = new String[] {"New Movies",
-            "New Rentals", "Your Recommendations"};
+            "Top Rentals", "Your Recommendations"};
     private Context context;
 
     /**

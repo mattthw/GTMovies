@@ -4,15 +4,21 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
+import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.pojo.Movie;
+
+import org.w3c.dom.Text;
 
 /**
  * A fragment representing a single Movie detail screen.
@@ -28,6 +34,8 @@ public class MovieDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_ITEM_DESC = "item_description";
+    public static final String ARG_ITEM_RATE = "item_rating";
 
     /**
      * The dummy content this fragment is presenting.
@@ -62,6 +70,14 @@ public class MovieDetailFragment extends Fragment {
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
                 appBarLayout.setTitle(getArguments().getString(ARG_ITEM_ID));
+//                Log.println(Log.INFO, "GTMovies", "ARG_ITEM_ID:" + getArguments().getString(ARG_ITEM_ID));
+//                mItem = IOActions.getMovieByTitle(getArguments().getString(ARG_ITEM_ID));
+//                if (mItem == null) {
+//                    Log.println(Log.ERROR, "GTMovies", "mItem in MovieDetailFragment is null!");
+//                    Log.println(Log.ERROR, "GTMovies", IOActions.getMovies().toString());
+//                } else {
+//                    Log.println(Log.INFO, "GTMovies", mItem.toString());
+//                }
             }
         }
     }
@@ -73,9 +89,23 @@ public class MovieDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.movie_detail)).setText(mItem.getTitle());
-        }
+            //((TextView) rootView.findViewById(R.id.movie_detail)).setText(mItem.getTitle());
+            getActivity().setTitle(mItem.getTitle());
+            ((TextView) rootView.findViewById(R.id.ratingView)).setText(mItem.getRating());
 
+        }
+        if (getArguments().containsKey(ARG_ITEM_DESC)) {
+            ((TextView) rootView.findViewById(R.id.detailView))
+                    .setText(getArguments().getString(ARG_ITEM_DESC));
+        } else {
+            Log.println(Log.ERROR, "GTMovie", "No description for movie");
+        }
+        if (getArguments().containsKey(ARG_ITEM_RATE)) {
+            ((TextView) rootView.findViewById(R.id.ratingView))
+                    .setText(getArguments().getString(ARG_ITEM_RATE));
+        } else {
+            Log.println(Log.ERROR, "GTMovie", "No rating for movie");
+        }
         return rootView;
     }
 }
