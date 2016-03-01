@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,9 +21,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.fragment.MovieDetailFragment;
 
 /**
@@ -37,6 +41,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private FragmentManager fm;
     private ReviewDialogFragment reviewDialog;
+    private static int score = 0;
+    private static String comment = "null";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -63,6 +69,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
+            arguments.putString(MovieDetailFragment.ARG_ITEM_TITLE,
+                    getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_TITLE));
             arguments.putString(MovieDetailFragment.ARG_ITEM_ID,
                     getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_ID));
             arguments.putString(MovieDetailFragment.ARG_ITEM_DESC,
@@ -78,18 +86,6 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         fm = getSupportFragmentManager();
         reviewDialog = new ReviewDialogFragment();
-//
-//        //spinner adapter setup
-//        LayoutInflater inflater = this.getLayoutInflater();
-////        View dialogView = inflater.inflate(R.layout.dialog_review, null);
-////        scoreSpin = (Spinner)dialogView.findViewById(R.id.spinnerScore);
-//        View temp = inflater.inflate(R.layout.movie_detail, null);
-//        scoreSpin = (Spinner) findViewById(R.id.testSpin);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.scores, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        scoreSpin.setAdapter(adapter);
-//        //scoreSpin.setSelection(2);
-//        addListenerOnSpinnerItemSelection();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -123,31 +119,14 @@ public class MovieDetailActivity extends AppCompatActivity {
      */
     public static class ReviewDialogFragment extends DialogFragment {
         protected Spinner scoreSpin;
+        private Integer tempScore;
+        private EditText mComment;
 
-        protected String score = "";
-
-//        /** The system calls this to get the DialogFragment's layout, regardless
-//         of whether it's being displayed as a dialog or an embedded fragment. */
-//        @Override
-//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                                 Bundle savedInstanceState) {
-//            //spinner adapter setup
-//            View dialogView = inflater.inflate(R.layout.dialog_review, null);
-//            scoreSpin = (Spinner)dialogView.findViewById(R.id.spinnerScore);
-//            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.scores, android.R.layout.simple_spinner_item);
-//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//            scoreSpin.setAdapter(adapter);
-//            //scoreSpin.setSelection(2);
-//            addListenerOnSpinnerItemSelection();
-//
-//            // Inflate the layout to use as dialog or embedded fragment
-//            return inflater.inflate(R.layout.dialog_review, container, false);
-//        }
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             //make builder
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             // Get the layout inflater
-            LayoutInflater inflater = getActivity().getLayoutInflater();
+            //LayoutInflater inflater = getActivity().getLayoutInflater();
 
             View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_review, null);
             scoreSpin = (Spinner)view.findViewById(R.id.spinnerScore);
@@ -157,6 +136,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             //scoreSpin.setSelection(2);
             addListenerOnSpinnerItemSelection();
 
+            mComment = (EditText) view.findViewById(R.id.commentView);
+
             // Inflate and set the layout for the dialog
             // Pass null as the parent view because its going in the dialog layout
             builder.setView(view)
@@ -164,7 +145,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-
+                            comment = mComment.getText().toString();
+                            score = tempScore;
+                            Log.println(Log.INFO, "GTMovies", "SCORE: " + score);
+                            Log.println(Log.INFO, "GTMovies", "COMMENT: " + comment);
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -184,9 +168,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         private class ScoreSpinnerListener implements AdapterView.OnItemSelectedListener {
             @Override
             public void onItemSelected(AdapterView parent, View view, int pos, long id) {
-//            Toast.makeText(parent.getContext(), "Selected Country : " + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_SHORT).show();
-                score = (String)parent.getItemAtPosition(pos);
-//            Log.println(Log.INFO, "GTMovies", "selected: " + parent.getItemAtPosition(pos).toString());
+                try {
+                    tempScore = Integer.parseInt((String)parent.getItemAtPosition(pos));
+                } catch (Exception e) {
+                    Log.println(Log.ERROR, "GTMovies", "Couldint parse selected score as Integer");
+                    tempScore = 0;
+                }
+                Log.println(Log.INFO, "GTMovies", "selected: " + tempScore.toString());
             }
             @Override
             public void onNothingSelected(AdapterView parent) {

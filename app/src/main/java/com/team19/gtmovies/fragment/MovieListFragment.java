@@ -293,8 +293,10 @@ public class MovieListFragment extends Fragment {
                             Log.d("GTMovie", "one pane");
                             Context context = v.getContext();
                             Intent intent = new Intent(context, MovieDetailActivity.class);
-                            intent.putExtra(MovieDetailFragment.ARG_ITEM_ID,
+                            intent.putExtra(MovieDetailFragment.ARG_ITEM_TITLE,
                                     holder.mMovieInfo.getTitle());
+                            intent.putExtra(MovieDetailFragment.ARG_ITEM_ID,
+                                    holder.mMovieInfo.getID());
                             intent.putExtra(MovieDetailFragment.ARG_ITEM_DESC,
                                     holder.mMovieInfo.getDescription());
                             intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
@@ -309,8 +311,10 @@ public class MovieListFragment extends Fragment {
                         Log.d("GTMovie", "one pane");
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID,
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_TITLE,
                                 holder.mMovieInfo.getTitle());
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID,
+                                holder.mMovieInfo.getID());
                         intent.putExtra(MovieDetailFragment.ARG_ITEM_DESC,
                                 holder.mMovieInfo.getDescription());
                         intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
