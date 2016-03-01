@@ -68,18 +68,21 @@ public class Movie implements Comparable<Movie> {
         }
     }
 
+    public Movie(int movieid, char placeholder) {
+        myReviews = new HashMap<String, Review>();
+        this.id = movieid;
+    }
+
     /**
      * Add a review to this movie's hashmap
-     * @param username the username of the user who rated this movie
-     * @param score the score the user gave the movie
-     * @param comment the user's comment
+     * @param rev the review object
      */
-    public void addReview(String username, int score, String comment) {
-        if(myReviews.containsKey(username)) {
-            throw new IllegalArgumentException(username + " has already reviewed movieID " +
+    public void addReview(Review rev) {
+        if(myReviews.containsKey(rev.getUsername())) {
+            throw new IllegalArgumentException(rev.getUsername() + " has already reviewed movieID " +
                     id);
         } else {
-            myReviews.put(username, new Review(score, comment));
+            myReviews.put(rev.getUsername(), rev);
         }
     }
 

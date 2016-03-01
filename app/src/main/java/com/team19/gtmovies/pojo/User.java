@@ -65,16 +65,14 @@ public class User<T extends Comparable<T>>
 
     /**
      * Add a review to this user's hashmap
-     * @param movieID the rottentomatoes ID of the movie that the user rated
-     * @param score the score the user gave the movie
-     * @param comment the user's comment
+     * @param rev the review object to add
      */
-    public void addReview(int movieID, int score, String comment) {
-        if(myReviews.containsKey(movieID)) {
+    public void addReview(Review rev) {
+        if(myReviews.containsKey(rev.getMovieID())) {
             throw new IllegalArgumentException(username + " has already reviewed movieID " +
-                                               movieID);
+                                               rev.getMovieID());
         } else {
-            myReviews.put(movieID, new Review(score, comment));
+            myReviews.put(rev.getMovieID(), rev);
         }
     }
 
