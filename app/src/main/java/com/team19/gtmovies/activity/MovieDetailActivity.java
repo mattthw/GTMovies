@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -34,9 +35,6 @@ import com.team19.gtmovies.fragment.MovieDetailFragment;
  */
 public class MovieDetailActivity extends AppCompatActivity {
 
-    protected Spinner scoreSpin;
-    protected int score = 0;
-    protected String comment = "";
     private FragmentManager fm;
     private ReviewDialogFragment reviewDialog;
 
@@ -46,8 +44,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-        final Context context = this;
-
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -82,42 +78,88 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         fm = getSupportFragmentManager();
         reviewDialog = new ReviewDialogFragment();
-
-        //spinner adapter setup
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_review, null);
-        scoreSpin = (Spinner)dialogView.findViewById(R.id.spinnerScore);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.profMajors, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        scoreSpin.setAdapter(adapter);
-        //scoreSpin.setSelection(2);
-        addListenerOnSpinnerItemSelection();
+//
+//        //spinner adapter setup
+//        LayoutInflater inflater = this.getLayoutInflater();
+////        View dialogView = inflater.inflate(R.layout.dialog_review, null);
+////        scoreSpin = (Spinner)dialogView.findViewById(R.id.spinnerScore);
+//        View temp = inflater.inflate(R.layout.movie_detail, null);
+//        scoreSpin = (Spinner) findViewById(R.id.testSpin);
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.scores, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        scoreSpin.setAdapter(adapter);
+//        //scoreSpin.setSelection(2);
+//        addListenerOnSpinnerItemSelection();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showReviewDialog();
+                reviewDialog.show(fm, "fragment_edit_name");
             }
         });
     }
 
-    public void showReviewDialog() {
-        reviewDialog.show(fm, "fragment_edit_name");
-    }
     /**
      * inner anonymous class to create review dialog fragment
      */
-    public static class ReviewDialogFragment extends DialogFragment {
+    /**
+     * Class needed for spinner XML item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            // This ID represents the Home or Up button. In the case of this
+            // activity, the Up button is shown.
+            navigateUpTo(new Intent(this, MovieListActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    /**
+     * inner class for dialog
+     */
+    public static class ReviewDialogFragment extends DialogFragment {
+        protected Spinner scoreSpin;
+
+        protected String score = "";
+
+//        /** The system calls this to get the DialogFragment's layout, regardless
+//         of whether it's being displayed as a dialog or an embedded fragment. */
+//        @Override
+//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                                 Bundle savedInstanceState) {
+//            //spinner adapter setup
+//            View dialogView = inflater.inflate(R.layout.dialog_review, null);
+//            scoreSpin = (Spinner)dialogView.findViewById(R.id.spinnerScore);
+//            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.scores, android.R.layout.simple_spinner_item);
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            scoreSpin.setAdapter(adapter);
+//            //scoreSpin.setSelection(2);
+//            addListenerOnSpinnerItemSelection();
+//
+//            // Inflate the layout to use as dialog or embedded fragment
+//            return inflater.inflate(R.layout.dialog_review, container, false);
+//        }
         public Dialog onCreateDialog(Bundle savedInstanceState) {
+            //make builder
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             // Get the layout inflater
             LayoutInflater inflater = getActivity().getLayoutInflater();
 
+            View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_review, null);
+            scoreSpin = (Spinner)view.findViewById(R.id.spinnerScore);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.scores, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            scoreSpin.setAdapter(adapter);
+            //scoreSpin.setSelection(2);
+            addListenerOnSpinnerItemSelection();
+
             // Inflate and set the layout for the dialog
             // Pass null as the parent view because its going in the dialog layout
-            builder.setView(inflater.inflate(R.layout.dialog_review, null))
+            builder.setView(view)
                     // Add action buttons
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
@@ -132,42 +174,25 @@ public class MovieDetailActivity extends AppCompatActivity {
                     });
             return builder.create();
         }
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            navigateUpTo(new Intent(this, MovieListActivity.class));
-            return true;
+
+        /**
+         * add listener to spinner item
+         */
+        public void addListenerOnSpinnerItemSelection() {
+            scoreSpin.setOnItemSelectedListener(new ScoreSpinnerListener());
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * add listener to spinner item
-     */
-    public void addListenerOnSpinnerItemSelection() {
-        scoreSpin.setOnItemSelectedListener(new ScoreSpinnerListener());
-    }
-
-    /**
-     * Class needed for spinner XML item
-     */
-    private class ScoreSpinnerListener implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView parent, View view, int pos, long id) {
+        private class ScoreSpinnerListener implements AdapterView.OnItemSelectedListener {
+            @Override
+            public void onItemSelected(AdapterView parent, View view, int pos, long id) {
 //            Toast.makeText(parent.getContext(), "Selected Country : " + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_SHORT).show();
-            score = (Integer) parent.getItemAtPosition(pos);
+                score = (String)parent.getItemAtPosition(pos);
 //            Log.println(Log.INFO, "GTMovies", "selected: " + parent.getItemAtPosition(pos).toString());
-        }
-        @Override
-        public void onNothingSelected(AdapterView parent) {
+            }
+            @Override
+            public void onNothingSelected(AdapterView parent) {
+            }
         }
     }
+
+
 }
