@@ -58,7 +58,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         gotIntent = getIntent();
-        rootView = findViewById(R.id.movie_detail);
+        rootView = findViewById(R.id.movie_detail_container);
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
@@ -161,7 +161,11 @@ public class MovieDetailActivity extends AppCompatActivity {
                                 Log.println(Log.ERROR, "GTMovies", e.getMessage());
                                 Snackbar.make(rootView, "Movie already reviewed.", Snackbar.LENGTH_SHORT).show();
                             }
-                            Log.println(Log.ASSERT, "GTMovies", "Movies: " + IOActions.getMovies());
+                            Log.println(Log.DEBUG, "GTMovies", "Movies: " + IOActions.getMovies());
+                            MovieDetailFragment frag = (MovieDetailFragment)getFragmentManager()
+                                    .findFragmentById(R.id.movie_detail_container);
+                            frag.updateFrag();
+
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

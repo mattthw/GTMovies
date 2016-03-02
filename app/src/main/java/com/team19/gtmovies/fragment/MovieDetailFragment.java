@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ public class MovieDetailFragment extends Fragment {
     public static final String ARG_ITEM_RATE = "item_rating";
 
     private static ListView commentsList;
+    private TextView userRatingView;
 
     /**
      * The dummy content this fragment is presenting.
@@ -96,16 +98,22 @@ public class MovieDetailFragment extends Fragment {
         } else {
             Log.println(Log.ERROR, "GTMovie", "No rating for movie");
         }
+        userRatingView = ((TextView) rootView.findViewById(R.id.userRatingView));
+        commentsList = (ListView) rootView.findViewById(R.id.listView);
         //if users have review this movie then it will exist
         //and we will get their averaged scores.
         if (mItem != null) {
             int temp = mItem.getUserRating();
+            userRatingView.setText(mItem.getUserRating() + "%");
             Log.println(Log.DEBUG, "GTMovies", "user rating: " + temp + "");
-            ((TextView) rootView.findViewById(R.id.userRatingView)).setText(mItem.getUserRating() + "%");
-            commentsList = (ListView) rootView.findViewById(R.id.listView);
         } else {
             Log.println(Log.DEBUG, "GTMovies", "mItem is null in MovieDetailFragment");
         }
         return rootView;
+    }
+    public boolean updateFrag() {
+        mItem = IOActions.getMovieById(getArguments().getInt(ARG_ITEM_ID, -1));
+        userRatingView.setText(mItem.getUserRating() + "%");
+        return true;
     }
 }
