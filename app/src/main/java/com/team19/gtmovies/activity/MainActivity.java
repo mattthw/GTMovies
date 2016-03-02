@@ -34,7 +34,6 @@ import com.team19.gtmovies.pojo.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,10 +157,9 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                if (MovieListFragment.setTabPosition(position)) {
-                    fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                            MovieListFragment.newInstance(0)).commit();
-                }
+                MovieListFragment.setTabPosition(position);
+                fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                        MovieListFragment.newInstance(0)).commit();
             }
 
             @Override
@@ -351,4 +349,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
