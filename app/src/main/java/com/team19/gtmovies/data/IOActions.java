@@ -325,14 +325,14 @@ public class IOActions extends Application {
         return true;
     }
 
-    public void SaveANewRating(int movieid, int score, String comment) {
+    public static boolean SaveNewRating(int movieid, int score, String comment) {
         User ouruser = CurrentState.getUser();
         Movie ourmovie = null;
 
         // Find the movie for the given username;
         try {
             for(Movie m : movies) {
-                if(m.getID() == score) {
+                if(m.getID() == movieid) {
                     ourmovie = m;
                     break;
                 }
@@ -341,17 +341,26 @@ public class IOActions extends Application {
             Log.println(Log.ERROR, "GTMovies", "Something wrong!!!!!!!" + e);
         }
         if(ourmovie == null) {
-            movies.add(new Movie(movieid, 'c'));
+            ourmovie = new Movie(movieid, 'c');
+        } else {
+            //remove existing movie
+            movies.remove(ourmovie);
         }
-
         // Remove both from hashsets
         accounts.remove(ouruser);
-        movies.remove(ourmovie);
 
         // Add the new rating to each
         Review r = new Review(score, comment, ouruser.getUsername(), ourmovie.getID());
-        ouruser.addReview(r);
-        ourmovie.addReview(r);
+        try {
+            ouruser.addReview(r);
+            ourmovie.addReview(r);
+        } catch (Exception e){
+            Log.println(Log.ASSERT, "GTMovies", e.getMessage());
+            // Add both back to hashsets
+            accounts.add(ouruser);
+            movies.add(ourmovie);
+            return false;
+        }
 
         // Add both back to hashsets
         accounts.add(ouruser);
@@ -359,5 +368,6 @@ public class IOActions extends Application {
 
         // Save stuff
         commit();
+        return true;
     }
 }

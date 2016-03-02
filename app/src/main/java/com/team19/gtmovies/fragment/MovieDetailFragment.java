@@ -1,6 +1,7 @@
 package com.team19.gtmovies.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.team19.gtmovies.R;
@@ -37,6 +39,8 @@ public class MovieDetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
     public static final String ARG_ITEM_DESC = "item_description";
     public static final String ARG_ITEM_RATE = "item_rating";
+
+    private static ListView commentsList;
 
     /**
      * The dummy content this fragment is presenting.
@@ -83,6 +87,7 @@ public class MovieDetailFragment extends Fragment {
         //and we will get their averaged scores.
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.userRatingView)).setText(mItem.getRating());
+            commentsList = (ListView) rootView.findViewById(R.id.listView);
         }
         if (getArguments().containsKey(ARG_ITEM_DESC)) {
             ((TextView) rootView.findViewById(R.id.detailView))

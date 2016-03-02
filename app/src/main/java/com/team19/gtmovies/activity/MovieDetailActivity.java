@@ -43,6 +43,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ReviewDialogFragment reviewDialog;
     private static int score = 0;
     private static String comment = "null";
+    private static Intent gotIntent;
+    private static View rootView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        gotIntent = getIntent();
+        rootView = findViewById(R.id.movie_detail);
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
@@ -71,8 +75,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putString(MovieDetailFragment.ARG_ITEM_TITLE,
                     getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_TITLE));
-            arguments.putString(MovieDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_ID));
+            arguments.putInt(MovieDetailFragment.ARG_ITEM_ID,
+                    getIntent().getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1));
             arguments.putString(MovieDetailFragment.ARG_ITEM_DESC,
                     getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_DESC));
             arguments.putString(MovieDetailFragment.ARG_ITEM_RATE,
@@ -149,6 +153,15 @@ public class MovieDetailActivity extends AppCompatActivity {
                             score = tempScore;
                             Log.println(Log.INFO, "GTMovies", "SCORE: " + score);
                             Log.println(Log.INFO, "GTMovies", "COMMENT: " + comment);
+                            Integer tempID = gotIntent.getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1);
+                            //save the rating
+                            try {
+                                IOActions.SaveNewRating(tempID,score,comment);
+                            } catch (IllegalArgumentException e) {
+                                Log.println(Log.ERROR, "GTMovies", e.getMessage());
+                                Snackbar.make(rootView, "Movie already reviewed.", Snackbar.LENGTH_SHORT).show();
+                            }
+                            Log.println(Log.ASSERT, "GTMovies", "Movies: " + IOActions.getMovies());
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

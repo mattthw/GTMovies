@@ -7,13 +7,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by Jim Jang on 2016-02-17.
  */
-public class Movie implements Comparable<Movie> {
+public class Movie implements Comparable<Movie>, Serializable {
     // Remembers immediate things
     // Rest in JSON
     private int id;
