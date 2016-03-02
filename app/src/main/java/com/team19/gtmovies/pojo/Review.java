@@ -14,6 +14,7 @@ public class Review implements Serializable {
     private String comment;
     private String username;
     private int movieID;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor for the Review Class.

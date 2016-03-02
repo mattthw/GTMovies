@@ -76,6 +76,7 @@ public class MovieDetailFragment extends Fragment {
                 appBarLayout.setTitle(getArguments().getString(ARG_ITEM_TITLE));
             }
         }
+        mItem = IOActions.getMovieById(getArguments().getInt(ARG_ITEM_ID, -1));
     }
 
     @Override
@@ -83,12 +84,6 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_detail, container, false);
 
-        //if users have review this movie then it will exist
-        //and we will get their averaged scores.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.userRatingView)).setText(mItem.getRating());
-            commentsList = (ListView) rootView.findViewById(R.id.listView);
-        }
         if (getArguments().containsKey(ARG_ITEM_DESC)) {
             ((TextView) rootView.findViewById(R.id.detailView))
                     .setText(getArguments().getString(ARG_ITEM_DESC));
@@ -100,6 +95,16 @@ public class MovieDetailFragment extends Fragment {
                     .setText(getArguments().getString(ARG_ITEM_RATE));
         } else {
             Log.println(Log.ERROR, "GTMovie", "No rating for movie");
+        }
+        //if users have review this movie then it will exist
+        //and we will get their averaged scores.
+        if (mItem != null) {
+            int temp = mItem.getUserRating();
+            Log.println(Log.DEBUG, "GTMovies", "user rating: " + temp + "");
+            ((TextView) rootView.findViewById(R.id.userRatingView)).setText(mItem.getUserRating() + "%");
+            commentsList = (ListView) rootView.findViewById(R.id.listView);
+        } else {
+            Log.println(Log.DEBUG, "GTMovies", "mItem is null in MovieDetailFragment");
         }
         return rootView;
     }

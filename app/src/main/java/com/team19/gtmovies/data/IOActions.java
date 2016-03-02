@@ -370,4 +370,21 @@ public class IOActions extends Application {
         commit();
         return true;
     }
+
+    public static Movie getMovieById(int movieid) {
+        Movie ourmovie = null;
+
+        // Find the movie for the given username;
+        try {
+            for(Movie m : movies) {
+                if(m.getID() == movieid) {
+                    ourmovie = m;
+                    break;
+                }
+            }
+        } catch(Exception e) {
+            Log.println(Log.ERROR, "GTMovies", "Something wrong!!!!!!!" + e);
+        }
+        return ourmovie;
+    }
 }

@@ -26,6 +26,7 @@ public class Movie implements Comparable<Movie>, Serializable {
     private JSONObject posterURLs;
     private JSONObject fullInfo;
     private HashMap<String, Review> myReviews;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates a placeholder movie for when Internet connection is unavailable
@@ -154,7 +155,7 @@ public class Movie implements Comparable<Movie>, Serializable {
         if(numusers == 0) { // in case of divide by zero
             return 0;
         } else {
-            return (int)((runningtotal/((double)numusers)) * 100);
+            return (int)((runningtotal/((double)numusers)) * 20);
         }
     }
 
@@ -216,7 +217,8 @@ public class Movie implements Comparable<Movie>, Serializable {
     }
 
     public String toString() {
-        return ("{title:" + getTitle() + "},"
+        return ("{id:" + getID() + "},"
+                +"{title:" + getTitle() + "},"
                 + "{rating:" + getRating() +"},"
                 + "{description:" + getDescription() + "}");
     }
