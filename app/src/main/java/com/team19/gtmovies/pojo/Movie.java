@@ -70,6 +70,11 @@ public class Movie implements Comparable<Movie>, Serializable {
         }
     }
 
+    /**
+     * creates empty movie for storing local user ratings
+     * @param movieid
+     * @param placeholder
+     */
     public Movie(int movieid, char placeholder) {
         myReviews = new HashMap<String, Review>();
         this.id = movieid;
@@ -115,11 +120,17 @@ public class Movie implements Comparable<Movie>, Serializable {
         }
     }
 
+
     @Override
     public int compareTo(Movie other) {
         return this.id - other.getID();
     }
 
+    /**
+     * equals
+     * @param obj other Movie
+     * @return true/false
+     */
     public boolean equals(Object obj) {
         if (!(obj instanceof Movie)) {
             return false;
@@ -145,6 +156,10 @@ public class Movie implements Comparable<Movie>, Serializable {
         return rating;
     }
 
+    /**
+     * calculate and return average rating of all users for this movie
+     * @return
+     */
     public int getUserRating() {
         double runningtotal = 0;
         int numusers = 0;
@@ -216,6 +231,10 @@ public class Movie implements Comparable<Movie>, Serializable {
         return fullInfo;
     }
 
+    /**
+     * toString
+     * @return string
+     */
     public String toString() {
         return ("{id:" + getID() + "},"
                 +"{title:" + getTitle() + "},"

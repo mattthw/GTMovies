@@ -85,13 +85,14 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_detail, container, false);
-
+        //set description
         if (getArguments().containsKey(ARG_ITEM_DESC)) {
             ((TextView) rootView.findViewById(R.id.detailView))
                     .setText(getArguments().getString(ARG_ITEM_DESC));
         } else {
             Log.println(Log.ERROR, "GTMovie", "No description for movie");
         }
+        //set tomato rating
         if (getArguments().containsKey(ARG_ITEM_RATE)) {
             ((TextView) rootView.findViewById(R.id.ratingView))
                     .setText(getArguments().getString(ARG_ITEM_RATE));
@@ -104,6 +105,7 @@ public class MovieDetailFragment extends Fragment {
         //and we will get their averaged scores.
         if (mItem != null) {
             int temp = mItem.getUserRating();
+            //set user rating
             userRatingView.setText(mItem.getUserRating() + "%");
             Log.println(Log.DEBUG, "GTMovies", "user rating: " + temp + "");
         } else {
@@ -112,6 +114,7 @@ public class MovieDetailFragment extends Fragment {
         return rootView;
     }
     public boolean updateFrag() {
+        //update user rating
         mItem = IOActions.getMovieById(getArguments().getInt(ARG_ITEM_ID, -1));
         userRatingView.setText(mItem.getUserRating() + "%");
         return true;

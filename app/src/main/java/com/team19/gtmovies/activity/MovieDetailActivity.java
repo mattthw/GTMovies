@@ -73,6 +73,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
+            //add info about movie from tomato API to fragment args
             arguments.putString(MovieDetailFragment.ARG_ITEM_TITLE,
                     getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_TITLE));
             arguments.putInt(MovieDetailFragment.ARG_ITEM_ID,
@@ -90,7 +91,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         fm = getSupportFragmentManager();
         reviewDialog = new ReviewDialogFragment();
-
+        //open review dialog
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,15 +130,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             //make builder
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            // Get the layout inflater
-            //LayoutInflater inflater = getActivity().getLayoutInflater();
 
+            //setup Spinner for user rating
             View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_review, null);
             scoreSpin = (Spinner)view.findViewById(R.id.spinnerScore);
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.scores, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             scoreSpin.setAdapter(adapter);
-            //scoreSpin.setSelection(2);
             addListenerOnSpinnerItemSelection();
 
             mComment = (EditText) view.findViewById(R.id.commentView);
@@ -153,8 +152,9 @@ public class MovieDetailActivity extends AppCompatActivity {
                             score = tempScore;
                             Log.println(Log.INFO, "GTMovies", "SCORE: " + score);
                             Log.println(Log.INFO, "GTMovies", "COMMENT: " + comment);
+                            //get movie id
                             Integer tempID = gotIntent.getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1);
-                            //save the rating
+                            //save the review
                             try {
                                 IOActions.SaveNewRating(tempID,score,comment);
                             } catch (IllegalArgumentException e) {
@@ -168,6 +168,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                         }
                     })
+                    //close dialog
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             ReviewDialogFragment.this.getDialog().cancel();
