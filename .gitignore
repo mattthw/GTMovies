@@ -90,9 +90,11 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
+/volley
 fabric.properties
 
 # Top level build.gradle with Gradle version problem between systems
 !build.gradle
+!app/build.gradle
 
 #dummy
