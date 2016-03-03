@@ -1,6 +1,5 @@
 package com.team19.gtmovies.pojo;
 
-import android.media.Image;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -10,6 +9,8 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jim Jang on 2016-02-17.
@@ -19,13 +20,13 @@ public class Movie implements Comparable<Movie>, Serializable {
     // Rest in JSON
     private int id;
     private String title;
-    private ArrayList<Genre> genres = new ArrayList<>();
+    private List<Genre> genres = new ArrayList<>();
     private String posterURL;
     private int rating = 0;
     private String description;
     private JSONObject posterURLs;
     private JSONObject fullInfo;
-    private HashMap<String, Review> myReviews;
+    private Map<String, Review> myReviews;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -120,7 +121,7 @@ public class Movie implements Comparable<Movie>, Serializable {
         return this.id - other.getID();
     }
 
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj) { //TODO: override hashCode
         if (!(obj instanceof Movie)) {
             return false;
         }
@@ -203,7 +204,7 @@ public class Movie implements Comparable<Movie>, Serializable {
      *
      * @return the Genres of the Movie as an ArrayList
      */
-    public ArrayList<Genre> getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 

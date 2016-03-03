@@ -4,8 +4,9 @@ import com.team19.gtmovies.exception.IllegalUserException;
 import com.team19.gtmovies.exception.NullUserException;
 
 import java.io.Serializable;
-import java.util.Random;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by matt on 2/5/16.
@@ -20,7 +21,7 @@ public class User<T extends Comparable<T>>
     private String bio;
     private String major;
     private String iceCream = "";
-    private HashMap<Integer, Review> myReviews;
+    private Map<Integer, Review> myReviews;
     private boolean hasProfile;
     private boolean admin = false;
     private static final long serialVersionUID = 1L;

@@ -26,15 +26,17 @@ android {
 /*
 task checkstyle(type: Checkstyle) {
     apply plugin: 'checkstyle'
-    configFile file("${project.rootDir}/checkstyle.xml")
-    source 'src' */
-// include '**/*.java'
-//  exclude '**/gen/**'
-/*
+    configFile file("${project.rootDir}/google_checks.xml")
+    source 'src'
+*/
+ //   include '**/*.java'
+//    exclude '**/gen/**'
 
+/*
     classpath = files()
 }
 */
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')

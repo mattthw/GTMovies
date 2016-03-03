@@ -24,7 +24,7 @@ import com.team19.gtmovies.exception.IllegalUserException;
 import com.team19.gtmovies.exception.NullUserException;
 import com.team19.gtmovies.pojo.User;
 
-import java.util.HashSet;
+import java.util.Set;
 
 //import com.team19.gtmovies.JinuTestActivity;
 
@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     //app user status
     public static final String USER_STATUS = "USER";
     //app users storage
-    protected static HashSet<User> accounts;
+    protected static Set<User> accounts;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -125,10 +125,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data != null) {
-            if (!data.getBooleanExtra("login", true)) {
+        if (data != null && !data.getBooleanExtra("login", true)) {
                 onRegisterPressed();
-            }
         }
     }
 
@@ -153,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * XML/UI function to change layout from registering back to just
      * signing in
-     * @param view
+     * @param view current view
      */
     public void cancel(View view) {
         ActionBar actionBar = getSupportActionBar();

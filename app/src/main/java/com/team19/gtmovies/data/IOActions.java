@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
+import java.util.Set;
 
 //import com.team19.gtmovies.pojo.User;
 
@@ -38,8 +39,8 @@ public class IOActions extends Application {
     private static final String AFILE = "ACCOUNTS.txt";
     private static final String UFILE = "USER.txt";
     private static final String MFILE = "MOVIES.txt";
-    private static HashSet<User> accounts;
-    private static HashSet<Movie> movies;
+    private static Set<User> accounts;
+    private static Set<Movie> movies;
 
     /**
      * constructor for IOActions
@@ -180,7 +181,7 @@ public class IOActions extends Application {
      * gets accounts
      * @return HashSet of accounts
      */
-    public static HashSet<User> getAccounts() {
+    public static Set<User> getAccounts() {
         return accounts;
     }
 
@@ -218,7 +219,7 @@ public class IOActions extends Application {
      * gets movies
      * @return HashSet of movies
      */
-    public static HashSet<Movie> getMovies() {
+    public static Set<Movie> getMovies() {
         return movies;
     }
 

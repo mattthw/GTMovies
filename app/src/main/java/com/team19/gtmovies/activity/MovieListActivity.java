@@ -52,6 +52,7 @@ public class MovieListActivity extends AppCompatActivity {
         setupRecyclerView((RecyclerView) recyclerView);
 
         if (findViewById(R.id.movie_detail_container) != null) {
+            //TODO: check if twoPane
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the

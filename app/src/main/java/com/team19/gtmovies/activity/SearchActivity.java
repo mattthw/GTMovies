@@ -203,7 +203,6 @@ public class SearchActivity extends AppCompatActivity {
     /**
      * Grabs the JSONObject from the next Page
      *
-     * @return the JSONObject from the next Page
      * @throws UnsupportedOperationException when no nextPage exists currently
      */
     public void grabNextPage() throws UnsupportedOperationException {

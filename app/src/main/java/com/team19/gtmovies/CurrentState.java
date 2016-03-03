@@ -22,7 +22,7 @@ public class CurrentState {
 
     /**
      * current user getter
-     * @return
+     * @return returns current user
      */
     public static User getUser() {
         return currentUser;

@@ -174,7 +174,6 @@ public class MovieListFragment extends Fragment {
     /**
      * Sets current tab
      * @param position position of current tab
-     * @return true if successfully set
      */
     public static void setTabPosition(int position) {
         currentTab = position % 3;

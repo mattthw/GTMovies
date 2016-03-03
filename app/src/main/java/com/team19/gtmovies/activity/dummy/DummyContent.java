@@ -13,6 +13,10 @@ import java.util.Map;
  */
 public class DummyContent {
 
+    private DummyContent() {
+        // Override constructor to be private
+    }
+
     /**
      * An array of sample (dummy) items.
      */
