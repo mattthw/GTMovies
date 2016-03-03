@@ -372,6 +372,11 @@ public class IOActions extends Application {
         return true;
     }
 
+    /**
+     * return Movie object for given id
+     * @param movieid id form tomato API
+     * @return Movie object with matching ID
+     */
     public static Movie getMovieById(int movieid) {
         Movie ourmovie = null;
 

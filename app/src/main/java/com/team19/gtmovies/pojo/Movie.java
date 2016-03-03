@@ -1,5 +1,6 @@
 package com.team19.gtmovies.pojo;
 
+import android.media.Image;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -8,7 +9,6 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +71,11 @@ public class Movie implements Comparable<Movie>, Serializable {
         }
     }
 
+    /**
+     * creates empty movie for storing local user ratings
+     * @param movieid
+     * @param placeholder
+     */
     public Movie(int movieid, char placeholder) {
         myReviews = new HashMap<String, Review>();
         this.id = movieid;
@@ -121,6 +126,11 @@ public class Movie implements Comparable<Movie>, Serializable {
         return this.id - other.getID();
     }
 
+    /**
+     * equals
+     * @param obj other Movie
+     * @return true/false
+     */
     public boolean equals(Object obj) { //TODO: override hashCode
         if (!(obj instanceof Movie)) {
             return false;
@@ -146,6 +156,10 @@ public class Movie implements Comparable<Movie>, Serializable {
         return rating;
     }
 
+    /**
+     * calculate and return average rating of all users for this movie
+     * @return
+     */
     public int getUserRating() {
         double runningtotal = 0;
         int numusers = 0;
@@ -217,6 +231,10 @@ public class Movie implements Comparable<Movie>, Serializable {
         return fullInfo;
     }
 
+    /**
+     * toString
+     * @return string
+     */
     public String toString() {
         return ("{id:" + getID() + "},"
                 +"{title:" + getTitle() + "},"
