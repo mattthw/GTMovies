@@ -35,7 +35,13 @@ public class MovieListFragment extends Fragment {
     private static int currentTab = 0;
     private static List<Movie> searchMovieList = null;
     private static boolean mTwoPane = false;
+    private static boolean tabs = false;
     private boolean search = false;
+
+    private static final MovieListFragment tab0 = new MovieListFragment(0);
+    private static final MovieListFragment tab1 = new MovieListFragment(1);
+    private static final MovieListFragment tab2 = new MovieListFragment(2);
+    private static final MovieListFragment searchFragment = new MovieListFragment(3);
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -50,6 +56,17 @@ public class MovieListFragment extends Fragment {
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
+     * @param page number for page
+     */
+    private MovieListFragment(int page) { //TODO: The comment above indicates this change will be a problem later
+        Bundle mBundle = new Bundle();
+        mBundle.putInt(ARG_ITEM_ID, page);
+        setArguments(mBundle);
+    }
+
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
      */
     public MovieListFragment() {
     }
@@ -60,12 +77,33 @@ public class MovieListFragment extends Fragment {
      * @return new MovieListFragment instance
      */
     public static MovieListFragment newInstance(int page) {
-        Log.d("GTMovie", "create new fragment");
+        /*switch (page) {
+            case 0: return tab0;
+            case 1: return tab1;
+            case 2: return tab2;
+            case 3: return searchFragment;
+            default: return null;
+        }*/
         Bundle mBundle = new Bundle();
-        mBundle.putInt(ARG_ITEM_ID, page + 1);
-        MovieListFragment fragment = new MovieListFragment();
+        mBundle.putInt(ARG_ITEM_ID, page);
+        MovieListFragment fragment = new MovieListFragment(page + 1);
         fragment.setArguments(mBundle);
         return fragment;
+    }
+
+    /**
+     * obtains MovieListFragment instance
+     * @param page number for page
+     * @return current MovieListFragment instance
+     */
+    public static MovieListFragment getInstance(int page) {
+        switch (page) {
+            case 0: return tab0;
+            case 1: return tab1;
+            case 2: return tab2;
+            case 3: return searchFragment;
+            default: return null;
+        }
     }
 
     /*@Override
@@ -109,9 +147,15 @@ public class MovieListFragment extends Fragment {
                 mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
             }
             search = false;
-        } else {
+        } else if (getArguments() != null) {
             Log.e("GTMovies: onCreateView", currentTab + "");
-            mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
+            mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(getArguments().getInt(ARG_ITEM_ID)));
+            Log.d("GTMovies", tabMovieList.get(currentTab).toString());
+            tabs = false;
+        } else if (getArguments() != null) {
+            Log.e("GTMovies: getargs", getArguments().toString());
+        } else {
+            Log.e("GTMovies:", "No bundle.");
         }
 
         if (mRecyclerView != null) {
@@ -176,7 +220,7 @@ public class MovieListFragment extends Fragment {
      * @param position position of current tab
      */
     public static void setTabPosition(int position) {
-        currentTab = position % 3;
+        currentTab = position;
         Log.e("GTMovies: setTab", position + " : " + (position % 3));
     }
 
@@ -186,6 +230,13 @@ public class MovieListFragment extends Fragment {
      */
     public void setSearch() {
         search = true;
+    }
+
+    /**
+     * Sets fragment to display tabs
+     */
+    public static void setTabs() {
+        tabs = true;
     }
 
     /**

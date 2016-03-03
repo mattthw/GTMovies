@@ -101,6 +101,8 @@ public class MainActivity extends AppCompatActivity
         ((TextView) navHeader.findViewById(R.id.headerName)).setText(CurrentState.getUser().getName());
 
         // Place view
+        MovieListFragment.setTabs();
+        Log.e("GTMovies", "Tabs1");
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();
     }
@@ -152,20 +154,28 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPageScrolled(int position, float positionOffset,
                                        int positionOffsetPixels) {
-                onPageSelected(position);
+                MovieListFragment.setTabPosition(position);
+                MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
+
+                Log.e("GTMovies", "scroll. Position: " + position);
+                fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                        movieListFragment).commit();
             }
 
             @Override
             public void onPageSelected(int position) {
                 MovieListFragment.setTabPosition(position);
+                //MovieListFragment.setTabs();
+                Log.e("GTMovies", "Tabs2. Position: " + position);
                 fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                        MovieListFragment.newInstance(0)).commit();
+                        MovieListFragment.newInstance(position)).commit();
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 //don't know what to do here
-                onPageSelected(state);
+                Log.e("GTMovies", "Tabs this one called. State: " + state);
+                //MovieListFragment.setTabPosition(state);
             }
         });
 

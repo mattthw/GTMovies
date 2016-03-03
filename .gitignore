@@ -45,7 +45,7 @@ gen-external-apklibs
 *.iml
 
 # Note this is redundant, but included to be thorough
-app/app.iml
+!app/app.iml
 
 ## Directory-based project format:
 .idea/
@@ -93,5 +93,4 @@ crashlytics-build.properties
 fabric.properties
 
 # Top level build.gradle with Gradle version problem between systems
-build.gradle
-!app/build.gradle
+!build.gradle

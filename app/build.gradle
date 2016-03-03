@@ -23,19 +23,19 @@ android {
     }
 }
 
-/*
+
 task checkstyle(type: Checkstyle) {
     apply plugin: 'checkstyle'
-    configFile file("${project.rootDir}/google_checks.xml")
+    configFile file("${project.rootDir}/checkstyle.xml")
     source 'src'
-*/
- //   include '**/*.java'
-//    exclude '**/gen/**'
 
-/*
+    include '**/*.java'
+    exclude '**/gen/**'
+
     classpath = files()
 }
-*/
+
+
 
 
 dependencies {

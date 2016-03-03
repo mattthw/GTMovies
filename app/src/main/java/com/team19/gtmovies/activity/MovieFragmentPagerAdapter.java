@@ -1,6 +1,7 @@
 package com.team19.gtmovies.activity;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -18,6 +19,12 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     private static String tabTitles[] = new String[] {"New Movies",
             "Top Rentals", "Your Recommendations"};
     private Context context;
+
+    /**
+     * The fragment argument representing the item ID that this fragment
+     * represents.
+     */
+    public static final String ARG_ITEM_ID = "item_id";
 
     /**
      * Constructor for MovieFragmentPagerAdapter
@@ -39,8 +46,13 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Log.e("GTMovies", "getItem");
-        return MovieListFragment.newInstance(position + 1);
+        Log.e("GTMovies", "getItem ");
+        Log.e("GTMovies", "Tabs3");
+        MovieListFragment fragment = new MovieListFragment();
+        Bundle arguments = new Bundle();
+        arguments.putInt(ARG_ITEM_ID, position);
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     @Override

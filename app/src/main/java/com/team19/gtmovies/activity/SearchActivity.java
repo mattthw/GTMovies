@@ -141,6 +141,7 @@ public class SearchActivity extends AppCompatActivity {
                             }
 
                             // AUSTIN THING JUST CTRL C V-ed
+                            Log.e("GTMovies", "TabsSearch");
                             MovieListFragment movieListFragment = MovieListFragment.newInstance(0);
                             movieListFragment.setSearch();
                             MovieListFragment.fillSearchMovieList(list);

@@ -1,17 +1,13 @@
 package com.team19.gtmovies.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,8 +16,6 @@ import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.pojo.Movie;
-
-import org.w3c.dom.Text;
 
 /**
  * A fragment representing a single Movie detail screen.

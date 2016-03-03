@@ -45,7 +45,7 @@
 /GTMovies/*.iml
 
 # Note this is redundant, but included to be thorough
-app.iml
+!app.iml
 
 ## Directory-based project format:
 /GTMovies/.idea/
@@ -93,5 +93,5 @@ app.iml
 /GTMovies/fabric.properties
 
 # Top level build.gradle with Gradle version problem between systems
-/GTMovies/build.gradle
+!/GTMovies/build.gradle
 !/GTMovies/app/build.gradle
