@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="32dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:radius="50dp"
+    android:background="@drawable/rounded_edittext"
+    android:backgroundTint="?attr/colorPrimary">
+
+    <TextView
+        android:id="@+id/chip_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:layout_centerInParent="true"
+        android:text="Hello"/>
+</RelativeLayout>

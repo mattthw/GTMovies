@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     protected static DrawerLayout drawer;
     protected static View navHeader;
     protected static FragmentManager fragmentManager;
+    protected static CriteriaActivity criteriaActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity
 
         // Setup tabs and search
         fragmentManager = getSupportFragmentManager();
+        //criteriaActivity = (CriteriaActivity) findViewById(R.id.criteria_bar);
         setupTabs();
         setupSearch();
 
@@ -157,6 +159,14 @@ public class MainActivity extends AppCompatActivity
                 MovieListFragment.setTabPosition(position);
                 MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
 
+                if (position == 2) {
+                    findViewById(R.id.criteria_bar).setVisibility(View.VISIBLE);
+                    Log.d("GTMovies", "show criteria");
+                } else {
+                    findViewById(R.id.criteria_bar).setVisibility(View.GONE);
+                    Log.d("GTMovies", "don't show criteria 2");
+                }
+
                 Log.e("GTMovies", "scroll. Position: " + position);
                 fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                         movieListFragment).commit();
@@ -166,6 +176,16 @@ public class MainActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 MovieListFragment.setTabPosition(position);
                 //MovieListFragment.setTabs();
+
+
+                if (position == 2) {
+                    findViewById(R.id.criteria_bar).setVisibility(View.VISIBLE);
+                    Log.d("GTMovies", "show criteria 2");
+                } else {
+                    findViewById(R.id.criteria_bar).setVisibility(View.GONE);
+                    Log.d("GTMovies", "don't show criteria 2");
+                }
+
                 Log.e("GTMovies", "Tabs2. Position: " + position);
                 fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                         MovieListFragment.newInstance(position)).commit();

@@ -151,4 +151,10 @@
     <string name="score">score:</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
+
+    <string-array name="criteria">
+        <item>Major</item>
+        <item>Genre</item>
+        <item>Rating</item>
+    </string-array>
 </resources>
