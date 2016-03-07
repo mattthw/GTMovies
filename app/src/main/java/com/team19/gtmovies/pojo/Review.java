@@ -12,6 +12,9 @@ public class Review implements Serializable {
 
     private int score;
     private String comment;
+    private String username;
+    private int movieID;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor for the Review Class.
@@ -19,7 +22,7 @@ public class Review implements Serializable {
      * customer with a 0 score and an empty comment section.
      */
     public Review() {
-        this(0, "");
+        this(0, "", "", 0);
     }
 
     /**
@@ -29,9 +32,11 @@ public class Review implements Serializable {
      * @param score the score the Customer gave the movie
      * @param comment the "review/comment" the user gave the movie.
      */
-    public Review(int score, String comment) {
+    public Review(int score, String comment, String username, int movieID) {
         this.score = score;
         this.comment = comment;
+        this.username = username;
+        this.movieID = movieID;
     }
 
     /**
@@ -64,5 +69,37 @@ public class Review implements Serializable {
      */
     public void setComment(String newComment) {
         comment = newComment;
+    }
+
+    /**
+     * Method returns the username recorded in this review.
+     * @return score the review's username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * Method returns the movie ID recorded in this review.
+     * @return score the review's movie ID
+     */
+    public int getMovieID() {
+        return movieID;
+    }
+
+    /**
+     * Method updates the username associated with this review.
+     * @param username the new username to associate with this rating.
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * Method updates the movie ID associated with this review.
+     * @param movieID the new movie ID to associate with this rating.
+     */
+    public void setMovieID(int movieID) {
+        this.movieID = movieID;
     }
 }

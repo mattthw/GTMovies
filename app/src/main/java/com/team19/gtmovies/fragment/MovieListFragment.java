@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -35,8 +34,14 @@ public class MovieListFragment extends Fragment {
     private static List<List<Movie>> tabMovieList = null;
     private static int currentTab = 0;
     private static List<Movie> searchMovieList = null;
-
     private static boolean mTwoPane = false;
+    private static boolean tabs = false;
+    private boolean search = false;
+
+    private static final MovieListFragment tab0 = new MovieListFragment(0);
+    private static final MovieListFragment tab1 = new MovieListFragment(1);
+    private static final MovieListFragment tab2 = new MovieListFragment(2);
+    private static final MovieListFragment searchFragment = new MovieListFragment(3);
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -51,6 +56,17 @@ public class MovieListFragment extends Fragment {
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
+     * @param page number for page
+     */
+    private MovieListFragment(int page) { //TODO: The comment above indicates this change will be a problem later
+        Bundle mBundle = new Bundle();
+        mBundle.putInt(ARG_ITEM_ID, page);
+        setArguments(mBundle);
+    }
+
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
      */
     public MovieListFragment() {
     }
@@ -61,12 +77,33 @@ public class MovieListFragment extends Fragment {
      * @return new MovieListFragment instance
      */
     public static MovieListFragment newInstance(int page) {
-        Log.d("GTMovie", "create new fragment");
+        /*switch (page) {
+            case 0: return tab0;
+            case 1: return tab1;
+            case 2: return tab2;
+            case 3: return searchFragment;
+            default: return null;
+        }*/
         Bundle mBundle = new Bundle();
-        mBundle.putInt(ARG_ITEM_ID, page + 1);
-        MovieListFragment fragment = new MovieListFragment();
+        mBundle.putInt(ARG_ITEM_ID, page);
+        MovieListFragment fragment = new MovieListFragment(page + 1);
         fragment.setArguments(mBundle);
         return fragment;
+    }
+
+    /**
+     * obtains MovieListFragment instance
+     * @param page number for page
+     * @return current MovieListFragment instance
+     */
+    public static MovieListFragment getInstance(int page) {
+        switch (page) {
+            case 0: return tab0;
+            case 1: return tab1;
+            case 2: return tab2;
+            case 3: return searchFragment;
+            default: return null;
+        }
     }
 
     /*@Override
@@ -103,11 +140,24 @@ public class MovieListFragment extends Fragment {
             fillTabMovieList(null);
         }
 
-        if (searchMovieList != null) {
-            mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+        if (search) {
+            if (searchMovieList != null) {
+                mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+            } else {
+                mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
+            }
+            search = false;
+        } else if (getArguments() != null) {
+            Log.e("GTMovies: onCreateView", currentTab + "");
+            mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(getArguments().getInt(ARG_ITEM_ID)));
+            Log.d("GTMovies", tabMovieList.get(currentTab).toString());
+            tabs = false;
+        } else if (getArguments() != null) {
+            Log.e("GTMovies: getargs", getArguments().toString());
         } else {
-            mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
+            Log.e("GTMovies:", "No bundle.");
         }
+
         if (mRecyclerView != null) {
             mRecyclerView.setAdapter(mAdapter);
         } else {
@@ -119,7 +169,7 @@ public class MovieListFragment extends Fragment {
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
             // activity should be in two-pane mode.
-            mTwoPane = true;
+            mTwoPane = true;                                                //TODO: implement twopane check
         }
 
         return rootView;
@@ -168,14 +218,25 @@ public class MovieListFragment extends Fragment {
     /**
      * Sets current tab
      * @param position position of current tab
-     * @return true if successfully set
      */
-    public static boolean setTabPosition(int position) {
-        if (position >= 0 && position < tabMovieList.size()) {
-            currentTab = position;
-            return true;
-        }
-        return false;
+    public static void setTabPosition(int position) {
+        currentTab = position;
+        Log.e("GTMovies: setTab", position + " : " + (position % 3));
+    }
+
+
+    /**
+     * Sets fragment to display search
+     */
+    public void setSearch() {
+        search = true;
+    }
+
+    /**
+     * Sets fragment to display tabs
+     */
+    public static void setTabs() {
+        tabs = true;
     }
 
     /**
@@ -215,7 +276,7 @@ public class MovieListFragment extends Fragment {
 
                 mView = itemView;
                 mMoviePosterView = (NetworkImageView) itemView.findViewById(R.id.movie_poster);
-                mMoviePosterView.setDefaultImageResId(R.mipmap.ic_launcher);
+                mMoviePosterView.setDefaultImageResId(R.mipmap.slowpoke);
                 mMoviePosterView.setErrorImageResId(R.mipmap.load_error3);
                 mMovieTitleView = (TextView) itemView.findViewById(R.id.movie_title);
                 mMovieRatingView = (TextView) itemView.findViewById(R.id.movie_rating);
@@ -280,7 +341,14 @@ public class MovieListFragment extends Fragment {
                             Log.d("GTMovie", "one pane");
                             Context context = v.getContext();
                             Intent intent = new Intent(context, MovieDetailActivity.class);
-                            intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
+                            intent.putExtra(MovieDetailFragment.ARG_ITEM_TITLE,
+                                    holder.mMovieInfo.getTitle());
+                            intent.putExtra(MovieDetailFragment.ARG_ITEM_ID,
+                                    holder.mMovieInfo.getID());
+                            intent.putExtra(MovieDetailFragment.ARG_ITEM_DESC,
+                                    holder.mMovieInfo.getDescription());
+                            intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
+                                    holder.mMovieInfo.getRating() + "%");
 
                             context.startActivity(intent);
                         }
@@ -291,7 +359,14 @@ public class MovieListFragment extends Fragment {
                         Log.d("GTMovie", "one pane");
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_TITLE,
+                                holder.mMovieInfo.getTitle());
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID,
+                                holder.mMovieInfo.getID());
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_DESC,
+                                holder.mMovieInfo.getDescription());
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
+                                holder.mMovieInfo.getRating());
 
                         context.startActivity(intent);
                     }

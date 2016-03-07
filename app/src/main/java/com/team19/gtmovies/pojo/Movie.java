@@ -1,30 +1,33 @@
 package com.team19.gtmovies.pojo;
 
-import android.media.Image;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jim Jang on 2016-02-17.
  */
-public class Movie implements Comparable<Movie> {
+public class Movie implements Comparable<Movie>, Serializable {
     // Remembers immediate things
     // Rest in JSON
     private int id;
     private String title;
-    private ArrayList<Genre> genres = new ArrayList<>();
+    private List<Genre> genres = new ArrayList<>();
     private String posterURL;
     private int rating = 0;
     private String description;
     private JSONObject posterURLs;
     private JSONObject fullInfo;
-    private HashMap<String, Review> myReviews;
+    private Map<String, Review> myReviews;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates a placeholder movie for when Internet connection is unavailable
@@ -69,17 +72,25 @@ public class Movie implements Comparable<Movie> {
     }
 
     /**
-     * Add a review to this movie's hashmap
-     * @param username the username of the user who rated this movie
-     * @param score the score the user gave the movie
-     * @param comment the user's comment
+     * creates empty movie for storing local user ratings
+     * @param movieid
+     * @param placeholder
      */
-    public void addReview(String username, int score, String comment) {
-        if(myReviews.containsKey(username)) {
-            throw new IllegalArgumentException(username + " has already reviewed movieID " +
+    public Movie(int movieid, char placeholder) {
+        myReviews = new HashMap<String, Review>();
+        this.id = movieid;
+    }
+
+    /**
+     * Add a review to this movie's hashmap
+     * @param rev the review object
+     */
+    public void addReview(Review rev) {
+        if(myReviews.containsKey(rev.getUsername())) {
+            throw new IllegalArgumentException(rev.getUsername() + " has already reviewed movieID " +
                     id);
         } else {
-            myReviews.put(username, new Review(score, comment));
+            myReviews.put(rev.getUsername(), rev);
         }
     }
 
@@ -115,7 +126,12 @@ public class Movie implements Comparable<Movie> {
         return this.id - other.getID();
     }
 
-    public boolean equals(Object obj) {
+    /**
+     * equals
+     * @param obj other Movie
+     * @return true/false
+     */
+    public boolean equals(Object obj) { //TODO: override hashCode
         if (!(obj instanceof Movie)) {
             return false;
         }
@@ -138,6 +154,24 @@ public class Movie implements Comparable<Movie> {
      */
     public int getRating() {
         return rating;
+    }
+
+    /**
+     * calculate and return average rating of all users for this movie
+     * @return
+     */
+    public int getUserRating() {
+        double runningtotal = 0;
+        int numusers = 0;
+        for(Review i : myReviews.values()) {
+            runningtotal += i.getScore();
+            numusers++;
+        }
+        if(numusers == 0) { // in case of divide by zero
+            return 0;
+        } else {
+            return (int)((runningtotal/((double)numusers)) * 20);
+        }
     }
 
     /**
@@ -184,7 +218,7 @@ public class Movie implements Comparable<Movie> {
      *
      * @return the Genres of the Movie as an ArrayList
      */
-    public ArrayList<Genre> getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 
@@ -195,5 +229,16 @@ public class Movie implements Comparable<Movie> {
      */
     public JSONObject getFullInfo() {
         return fullInfo;
+    }
+
+    /**
+     * toString
+     * @return string
+     */
+    public String toString() {
+        return ("{id:" + getID() + "},"
+                +"{title:" + getTitle() + "},"
+                + "{rating:" + getRating() +"},"
+                + "{description:" + getDescription() + "}");
     }
 }

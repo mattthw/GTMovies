@@ -45,13 +45,14 @@ public class MovieListActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_movie_list);
-        Log.e("GTMovies", "going to activity");
+        Log.i("GTMovies", "going to activity");
 
         View recyclerView = findViewById(R.id.movie_list_view);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
         if (findViewById(R.id.movie_detail_container) != null) {
+            //TODO: check if twoPane
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the

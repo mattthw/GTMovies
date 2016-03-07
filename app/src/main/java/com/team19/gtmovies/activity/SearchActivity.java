@@ -141,7 +141,9 @@ public class SearchActivity extends AppCompatActivity {
                             }
 
                             // AUSTIN THING JUST CTRL C V-ed
+                            Log.e("GTMovies", "TabsSearch");
                             MovieListFragment movieListFragment = MovieListFragment.newInstance(0);
+                            movieListFragment.setSearch();
                             MovieListFragment.fillSearchMovieList(list);
                             Log.d("GTMovies", "line1");
                             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -202,7 +204,6 @@ public class SearchActivity extends AppCompatActivity {
     /**
      * Grabs the JSONObject from the next Page
      *
-     * @return the JSONObject from the next Page
      * @throws UnsupportedOperationException when no nextPage exists currently
      */
     public void grabNextPage() throws UnsupportedOperationException {

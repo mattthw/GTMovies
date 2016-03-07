@@ -4,8 +4,9 @@ import com.team19.gtmovies.exception.IllegalUserException;
 import com.team19.gtmovies.exception.NullUserException;
 
 import java.io.Serializable;
-import java.util.Random;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by matt on 2/5/16.
@@ -20,7 +21,7 @@ public class User<T extends Comparable<T>>
     private String bio;
     private String major;
     private String iceCream = "";
-    private HashMap<Integer, Review> myReviews;
+    private Map<Integer, Review> myReviews;
     private boolean hasProfile;
     private boolean admin = false;
     private static final long serialVersionUID = 1L;
@@ -65,16 +66,14 @@ public class User<T extends Comparable<T>>
 
     /**
      * Add a review to this user's hashmap
-     * @param movieID the rottentomatoes ID of the movie that the user rated
-     * @param score the score the user gave the movie
-     * @param comment the user's comment
+     * @param rev the review object to add
      */
-    public void addReview(int movieID, int score, String comment) {
-        if(myReviews.containsKey(movieID)) {
+    public void addReview(Review rev) {
+        if(myReviews.containsKey(rev.getMovieID())) {
             throw new IllegalArgumentException(username + " has already reviewed movieID " +
-                                               movieID);
+                                               rev.getMovieID());
         } else {
-            myReviews.put(movieID, new Review(score, comment));
+            myReviews.put(rev.getMovieID(), rev);
         }
     }
 

@@ -8,6 +8,7 @@ import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.exception.DuplicateUserException;
 import com.team19.gtmovies.exception.NullUserException;
 import com.team19.gtmovies.pojo.Movie;
+import com.team19.gtmovies.pojo.Review;
 import com.team19.gtmovies.pojo.User;
 
 import java.io.FileInputStream;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
-import java.util.StringTokenizer;
+import java.util.Set;
 
 //import com.team19.gtmovies.pojo.User;
 
@@ -38,8 +39,8 @@ public class IOActions extends Application {
     private static final String AFILE = "ACCOUNTS.txt";
     private static final String UFILE = "USER.txt";
     private static final String MFILE = "MOVIES.txt";
-    private static HashSet<User> accounts;
-    private static HashSet<Movie> movies;
+    private static Set<User> accounts;
+    private static Set<Movie> movies;
 
     /**
      * constructor for IOActions
@@ -180,7 +181,7 @@ public class IOActions extends Application {
      * gets accounts
      * @return HashSet of accounts
      */
-    public static HashSet<User> getAccounts() {
+    public static Set<User> getAccounts() {
         return accounts;
     }
 
@@ -218,7 +219,7 @@ public class IOActions extends Application {
      * gets movies
      * @return HashSet of movies
      */
-    public static HashSet<Movie> getMovies() {
+    public static Set<Movie> getMovies() {
         return movies;
     }
 
@@ -274,6 +275,19 @@ public class IOActions extends Application {
     }
 
     /**
+     * gets the Movie object if titles match
+     * @param title title of movie
+     * @return Movie object
+     */
+    public static Movie getMovieByTitle(String title) {
+        for (Movie m: movies) {
+            if (m.getTitle().equalsIgnoreCase(title))
+                return m;
+        }
+        return null;
+    }
+
+    /**
      * log user in and commit changes
      * @param uname username
      * @param p password
@@ -310,5 +324,73 @@ public class IOActions extends Application {
         CurrentState.setUser(new User());
         commit();
         return true;
+    }
+
+    public static boolean SaveNewRating(int movieid, int score, String comment) {
+        User ouruser = CurrentState.getUser();
+        Movie ourmovie = null;
+
+        // Find the movie for the given username;
+        try {
+            for(Movie m : movies) {
+                if(m.getID() == movieid) {
+                    ourmovie = m;
+                    break;
+                }
+            }
+        } catch(Exception e) {
+            Log.println(Log.ERROR, "GTMovies", "Something wrong!!!!!!!" + e);
+        }
+        if(ourmovie == null) {
+            ourmovie = new Movie(movieid, 'c');
+        } else {
+            //remove existing movie
+            movies.remove(ourmovie);
+        }
+        // Remove both from hashsets
+        accounts.remove(ouruser);
+
+        // Add the new rating to each
+        Review r = new Review(score, comment, ouruser.getUsername(), ourmovie.getID());
+        try {
+            ouruser.addReview(r);
+            ourmovie.addReview(r);
+        } catch (Exception e){
+            Log.println(Log.ASSERT, "GTMovies", e.getMessage());
+            // Add both back to hashsets
+            accounts.add(ouruser);
+            movies.add(ourmovie);
+            return false;
+        }
+
+        // Add both back to hashsets
+        accounts.add(ouruser);
+        movies.add(ourmovie);
+
+        // Save stuff
+        commit();
+        return true;
+    }
+
+    /**
+     * return Movie object for given id
+     * @param movieid id form tomato API
+     * @return Movie object with matching ID
+     */
+    public static Movie getMovieById(int movieid) {
+        Movie ourmovie = null;
+
+        // Find the movie for the given username;
+        try {
+            for(Movie m : movies) {
+                if(m.getID() == movieid) {
+                    ourmovie = m;
+                    break;
+                }
+            }
+        } catch(Exception e) {
+            Log.println(Log.ERROR, "GTMovies", "Something wrong!!!!!!!" + e);
+        }
+        return ourmovie;
     }
 }

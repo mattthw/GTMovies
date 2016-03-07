@@ -18,11 +18,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.SingletonMagic;
 import com.team19.gtmovies.data.IOActions;
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         // Layout navigation
@@ -95,8 +97,12 @@ public class MainActivity extends AppCompatActivity
         // Populate lists of new movies and top rentals
         getMovies();
 
+        // Change John Smith to username
+        ((TextView) navHeader.findViewById(R.id.headerName)).setText(CurrentState.getUser().getName());
 
         // Place view
+        MovieListFragment.setTabs();
+        Log.e("GTMovies", "Tabs1");
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();
     }
@@ -148,21 +154,28 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPageScrolled(int position, float positionOffset,
                                        int positionOffsetPixels) {
-                onPageSelected(position);
+                MovieListFragment.setTabPosition(position);
+                MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
+
+                Log.e("GTMovies", "scroll. Position: " + position);
+                fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                        movieListFragment).commit();
             }
 
             @Override
             public void onPageSelected(int position) {
-                if (MovieListFragment.setTabPosition(position)) {
-                    fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                            MovieListFragment.newInstance(0)).commit();
-                }
+                MovieListFragment.setTabPosition(position);
+                //MovieListFragment.setTabs();
+                Log.e("GTMovies", "Tabs2. Position: " + position);
+                fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                        MovieListFragment.newInstance(position)).commit();
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 //don't know what to do here
-                onPageSelected(state);
+                Log.e("GTMovies", "Tabs this one called. State: " + state);
+                //MovieListFragment.setTabPosition(state);
             }
         });
 
@@ -328,6 +341,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         Log.d("GTMovies", "Item selected");
         int id = item.getItemId();
+        // Change John Smith to username
+        ((TextView) findViewById(R.id.headerName)).setText(CurrentState.getUser().getName());
 
         if (id == R.id.nav_manage_profile) {
             Intent intent = new Intent(this, UserProfileActivity.class);
@@ -344,4 +359,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
