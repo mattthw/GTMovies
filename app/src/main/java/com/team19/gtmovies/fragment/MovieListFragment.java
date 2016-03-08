@@ -150,7 +150,7 @@ public class MovieListFragment extends Fragment {
         } else if (getArguments() != null) {
             Log.e("GTMovies: onCreateView", currentTab + "");
             mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(getArguments().getInt(ARG_ITEM_ID)));
-            Log.d("GTMovies", tabMovieList.get(currentTab).toString());
+            //Log.d("GTMovies", tabMovieList.get(currentTab).toString());
             tabs = false;
         } else if (getArguments() != null) {
             Log.e("GTMovies: getargs", getArguments().toString());
@@ -169,7 +169,7 @@ public class MovieListFragment extends Fragment {
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
             // activity should be in two-pane mode.
-            mTwoPane = true;                                                //TODO: implement twopane check
+            mTwoPane = true;                        //TODO: implement twopane check for extra credit
         }
 
         return rootView;
@@ -181,7 +181,7 @@ public class MovieListFragment extends Fragment {
      * @return true if successfully set to provided argument false if unable to
      */
     public static boolean fillTabMovieList(List<List<Movie>> list) {
-        if (list != null ) {
+        if (list != null) {
             tabMovieList = list;
             return true;
         } else {
@@ -196,7 +196,22 @@ public class MovieListFragment extends Fragment {
                 tabMovieList.add(arrayList);
             }
         }
-        return true;
+        return false;
+    }
+
+       /**
+     * Changes movielist.
+     * @param list list to set recommendations to
+     * @return true if successfully set to provided argument false if unable to
+     */
+    public static boolean changeRecommendations(List<Movie> list) {
+        Log.d("GTMovies", "Rec method called");
+        if (list != null && tabMovieList != null) {
+            Log.d("GTMovies", "Rec method success");
+            tabMovieList.add(2, list);
+            return true;
+        }
+        return false;
     }
 
     /**

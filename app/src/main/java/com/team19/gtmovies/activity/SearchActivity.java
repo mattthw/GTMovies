@@ -79,7 +79,7 @@ public class SearchActivity extends AppCompatActivity {
             ActionBar actionBar = getSupportActionBar();
             Log.d("GTMovies", "got actionBar");
             if (actionBar != null) {
-                Log.d("GTMovies", "Hitting actionBar in handleIntent with query:- " +  query);
+                //Log.d("GTMovies", "Hitting actionBar in handleIntent with query:- " +  query);
                 actionBar.setTitle(query);
             }
 
@@ -170,7 +170,6 @@ public class SearchActivity extends AppCompatActivity {
             // Add Requests to RequestQueue
             SingletonMagic.getInstance(this).addToRequestQueue(searchRequest);
         }
-        MovieListFragment.fillSearchMovieList(null);
     }
 
     /*public void setupSearch() {

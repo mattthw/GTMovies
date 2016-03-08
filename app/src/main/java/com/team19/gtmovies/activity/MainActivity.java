@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The Main Activity
@@ -104,7 +105,6 @@ public class MainActivity extends AppCompatActivity
 
         // Place view
         MovieListFragment.setTabs();
-        Log.e("GTMovies", "Tabs1");
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();
     }
@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (position == 2) {
                     findViewById(R.id.criteria_bar).setVisibility(View.VISIBLE);
+                    MovieListFragment.changeRecommendations(getRecommendations());
                     Log.d("GTMovies", "show criteria");
                 } else {
                     findViewById(R.id.criteria_bar).setVisibility(View.GONE);
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 Log.e("GTMovies", "scroll. Position: " + position);
+                MovieListFragment.setTabs();
                 fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                         movieListFragment).commit();
             }
@@ -187,6 +189,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 Log.e("GTMovies", "Tabs2. Position: " + position);
+                MovieListFragment.setTabs();
                 fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                         MovieListFragment.newInstance(position)).commit();
             }
@@ -213,7 +216,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d("GTMovies", "break here");
-                Log.d("GTMovies", "query: " + searchView.getQuery().toString());
+                //Log.d("GTMovies", "query: " + searchView.getQuery().toString());
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 intent.putExtra(SearchManager.QUERY, searchView.getQuery().toString());
                 intent.setAction(Intent.ACTION_SEARCH);
@@ -237,10 +240,12 @@ public class MainActivity extends AppCompatActivity
         // Get the movies
         List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.newMovie);
         List<Movie> topRentals = getMoviesFromAPI(SingletonMagic.topRental);
+        List<Movie> recommendations = getRecommendations();
         // Set the View
         List<List<Movie>> listList = new ArrayList<>();
         listList.add(newMovies);
         listList.add(topRentals);
+        listList.add(recommendations);
         listList.add(new ArrayList<Movie>()); //dummy arraylist for recommendations
         MovieListFragment.fillTabMovieList(listList);
     }
@@ -300,6 +305,107 @@ public class MainActivity extends AppCompatActivity
         // Retrun the finished movieArray ArrayList to be added to movieList
         return movieArray;
     }
+
+    /**
+     * Retrieves initial recommendations based on highest rating
+     * @return list of Movies
+     */
+    public List getRecommendations() {
+        ArrayList<Movie> list = new ArrayList<>();
+        Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
+        Log.d("GTMovies", "we gitin 2 dis met??");
+        for (Movie movie : movieSet) {
+            Log.d("GTMovies", "any here " + movie.getRating());
+            if (movie.getRating() >= 0) {
+                Log.d("GTMovies", "rec found: " + movie);
+                movie = getMovie(movie);
+                if (movie != null) {
+                    Log.d("GTMovies", "rec detail found: " + movie);
+                    list.add(movie);
+                }
+            }
+        }
+        return list;
+    }
+
+    private Movie getMovie(Movie movie) {
+        Log.d("GTMovies", "Got to handleIntent");
+        if (movie == null) {
+            return null;
+        }
+
+        final List<Movie> tempList = new ArrayList<>(1);
+        // Creating the JSONRequest
+        String urlRaw = "http://api.rottentomatoes.com/api/public/v1.0/movies/" + movie.getID()
+                + ".json?apikey=" + SingletonMagic.profKey;
+        Log.d("API", urlRaw);
+        JsonObjectRequest detailRequest = new JsonObjectRequest
+                (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject resp) {
+                if (resp == null) {
+                    Log.e("JSONRequest ERROR", "Null Response Received");
+                }
+
+                // put movies into a JSONArray
+                JSONArray tmpMovies = null;
+                try {
+                    tmpMovies = resp.getJSONArray("movies");
+                } catch (JSONException e) {
+                    Log.e("JSON ERROR", "Error when getting movies in Search.");
+                }
+                if (tmpMovies == null) {
+                    Log.e("Movie Error", "movies JSONArray is null!");
+                }
+                //Log.e("WHEE", Integer.toString(tmpMovies.length()));
+                try {
+                    tempList.add(new Movie(tmpMovies.getJSONObject(0)));
+                } catch (NullPointerException e) {
+                    Log.e("Movie Error", "Could not find movie");
+                } catch (JSONException e) {
+                    Log.e("Movie Error", "Couldn't make Movie");
+                }
+                try {
+                    JSONObject tmpJ = resp.getJSONObject("links");
+                    //nextURL = tmpJ.getString("next");
+                    //prevURL = tmpJ.getString("prev");
+                } catch (JSONException e) {
+                    Log.e("JSON ERROR", "Fail to get connected URLs in search");
+                }
+                /*
+                if (nextURL != null) {
+                    nextable = true;
+                } else {
+                    nextable = false;
+                }
+                if (prevURL != null) {
+                    prevable = true;
+                } else {
+                    prevable = false;
+                }
+                */
+
+                // AUSTIN THING JUST CTRL C V-ed
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VOLLEY FAIL", "Couldn't getJSON");
+            }
+        });
+
+        // Access the RequestQueue through singleton class.
+        // Add Requests to RequestQueue
+        SingletonMagic.getInstance(this).addToRequestQueue(detailRequest);
+        if (!tempList.isEmpty()) {
+            return tempList.get(0);
+        } else {
+            return null;
+        }
+    }
+
 
     /**
      * close drawer if open
@@ -379,5 +485,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
 }

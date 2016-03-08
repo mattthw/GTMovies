@@ -157,7 +157,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                                 Snackbar.make(rootView, "Movie already reviewed.", Snackbar.LENGTH_SHORT).show();
                             }
                             Log.println(Log.DEBUG, "GTMovies", "Movies: " + IOActions.getMovies());
-                            MovieDetailFragment frag = (MovieDetailFragment)getFragmentManager()
+                            MovieDetailFragment frag = (MovieDetailFragment) getFragmentManager()
                                     .findFragmentById(R.id.movie_detail_container);
                             frag.updateFrag();
 

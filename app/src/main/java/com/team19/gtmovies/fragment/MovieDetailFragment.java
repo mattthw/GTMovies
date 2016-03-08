@@ -107,6 +107,7 @@ public class MovieDetailFragment extends Fragment {
         }
         return rootView;
     }
+
     public boolean updateFrag() {
         //update user rating
         mItem = IOActions.getMovieById(getArguments().getInt(ARG_ITEM_ID, -1));
