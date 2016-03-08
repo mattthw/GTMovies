@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity
      * @param requestType differetiates new movies and top rental
      * @return a list of movies from the Rotten Tomatoes API
      */
-    private List getMoviesFromAPI(String requestType) {
+    private List getMoviesFromAPI(final String requestType) {
         //initializing new movieArray to return
         final List<Movie> movieArray = new ArrayList<>();
 
@@ -309,6 +309,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("VOLLEY FAIL", "Couldn't getJSON");
+                        getMoviesFromAPI(requestType);
                     }
                 });
 

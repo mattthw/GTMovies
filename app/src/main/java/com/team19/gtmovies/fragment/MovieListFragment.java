@@ -208,6 +208,7 @@ public class MovieListFragment extends Fragment {
         Log.d("GTMovies", "Rec method called");
         if (list != null && tabMovieList != null) {
             Log.d("GTMovies", "Rec method success");
+            tabMovieList.remove(2);
             tabMovieList.add(2, list);
             return true;
         }
