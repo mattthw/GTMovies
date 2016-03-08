@@ -20,10 +20,19 @@ public class User<T extends Comparable<T>>
     private String name;
     private String bio;
     private String major;
+    /*
+        PERMISSION:
+            2: admin
+            1: active
+            0: locked
+           -1: banned
+
+           default: 1/active
+     */
+    private int permission;
     private String iceCream = "";
     private Map<Integer, Review> myReviews;
     private boolean hasProfile;
-    private boolean admin = false;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -60,6 +69,7 @@ public class User<T extends Comparable<T>>
         name = n;
         bio = "";
         major = "";
+        permission = 1;
         hasProfile = false;
         myReviews = new HashMap<Integer, Review>();
     }

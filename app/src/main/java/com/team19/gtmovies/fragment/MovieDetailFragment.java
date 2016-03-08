@@ -88,8 +88,10 @@ public class MovieDetailFragment extends Fragment {
         }
         //set tomato rating
         if (getArguments().containsKey(ARG_ITEM_RATE)) {
-            ((TextView) rootView.findViewById(R.id.ratingView))
-                    .setText(getArguments().getString(ARG_ITEM_RATE));
+            if (!getArguments().getString(ARG_ITEM_RATE).contains("-1")) {
+                ((TextView) rootView.findViewById(R.id.ratingView))
+                        .setText(getArguments().getString(ARG_ITEM_RATE));
+            }
         } else {
             Log.println(Log.ERROR, "GTMovie", "No rating for movie");
         }
@@ -100,7 +102,7 @@ public class MovieDetailFragment extends Fragment {
         if (mItem != null) {
             int temp = mItem.getUserRating();
             //set user rating
-            userRatingView.setText(mItem.getUserRating() + "%");
+            userRatingView.setText(temp + "%");
             Log.println(Log.DEBUG, "GTMovies", "user rating: " + temp + "");
         } else {
             Log.println(Log.DEBUG, "GTMovies", "mItem is null in MovieDetailFragment");
