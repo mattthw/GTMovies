@@ -169,7 +169,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             ReviewDialogFragment.this.getDialog().cancel();
                         }
-                    });
+                    })
+                    .setTitle("My Review");
             return builder.create();
         }
 
