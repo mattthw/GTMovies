@@ -20,8 +20,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -327,67 +325,66 @@ public class MainActivity extends AppCompatActivity
      * @return list of Movies
      */
     public List getRecommendations() {
-        ArrayList<Movie> list = new ArrayList<>();
+        List<Movie> list = new ArrayList<>();
         Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
         Log.d("GTMovies", "we gitin 2 dis met??");
         for (Movie movie : movieSet) {
             Log.d("GTMovies", "any here " + movie.getUserRating());
             if (movie.getUserRating() >= 0) {
                 Log.d("GTMovies", "rec found: " + movie);
-                List movieList = getMovie(movie);
-                if (movieList != null && !movieList.isEmpty()) {
-                    Log.d("GTMovies", "rec detail found: " + movie);
-                    list.add((Movie) movieList.get(0));
-                }
+                getMovie(movie, list);
+                Log.d("GTMovies", "rec list: " + list);
             }
         }
+        Log.d("GTMovies getRec", "rec " + list.toString());
         return list;
     }
 
-    private List getMovie(Movie movie) {
-        Log.d("GTMovies", "Got to handleIntent");
+    /**
+     *
+     * @param movie
+     * @param list
+     */
+    private void getMovie(Movie movie, final List<Movie> list) {
+        Log.d("GTMovies", "getMovie Got to handleIntent");
         if (movie == null) {
-            return null;
+            return;
         }
-
-
-        //initializing new movieArray to return
-        final List<Movie> movieArray = new ArrayList<>(1);
         // Creating the JSONRequest
         String movieID = SingletonMagic.search + "/" + movie.getID();
-        String urlRaw = String.format(
+        final String urlRaw = String.format(
                 SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
 
-        Log.d("API", urlRaw);
+        Log.d("getMovie API", urlRaw);
         JsonObjectRequest detailRequest = new JsonObjectRequest
                 (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject resp) {
                 if (resp == null) {
-                    Log.e("JSONRequest ERROR", "Null Response Received");
+                    Log.e("JSONRequest ERROR", "getMovie Null Response Received");
                 }
 
                 ////////////////////JINU REMOVED FROM HERE //////////////////////
 
                 // put movies into a JSONArray
-                JSONArray tmpMovies = null;
+                /*JSONArray tmpMovies = null;
                 try {
                     tmpMovies = resp.getJSONArray("movies");
                 } catch (JSONException e) {
-                    Log.e("JSON ERROR", "Error when getting movies in Recommendations.");
+                    Log.e("getMovie JSON ERROR", "Error when getting movies in Recommendations.");
                 }
                 if (tmpMovies == null) {
-                    Log.e("Movie Error", "movies JSONArray is null!");
+                    Log.e("getMovie Movie Error", "movies JSONArray is null!");
                 }
                 //Log.e("WHEE", Integer.toString(tmpMovies.length()));
                 try {
                     movieArray.add(new Movie(tmpMovies.getJSONObject(0)));
                 } catch (NullPointerException e) {
-                    Log.e("Movie Error", "Could not find movie");
+                    Log.e("getMovie Movie Error", "Could not find movie");
                 } catch (JSONException e) {
-                    Log.e("Movie Error", "Couldn't make Movie");
-                }
+                    Log.e("getMovie Movie Error", "Couldn't make Movie");
+                }*/
                 ////////////////////////TO HERE /////////////////////////////////
 
                 // NOTE TO AUSTANG
@@ -402,20 +399,20 @@ public class MainActivity extends AppCompatActivity
                 //  the exceptions would be
                 //    release_dates: (theMovie).getFullInfo.getJSONObject("release_dates");
                 //    cast && directors: (theMovie).getFullInfo.getJSONArray("the thing you want");
-                //tempList.add(new Movie(resp));
-
+                list.add(new Movie(resp));
+                Log.d("getMovie movie success", "rec movie:" + new Movie(resp));
+                Log.d("getMovie volley success", "rec movie:" + urlRaw);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("VOLLEY FAIL", "Couldn't getJSON");
+                Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
             }
         });
 
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(detailRequest);
-        return movieArray;
     }
 
 
