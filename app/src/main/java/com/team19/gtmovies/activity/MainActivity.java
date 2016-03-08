@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +19,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -60,6 +65,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rootView = findViewById(R.id.main_view);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(),
+                R.color.colorPrimaryDark));
 
         //startActivity(new Intent(this, MovieListActivity.class));
 
@@ -153,6 +161,13 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager(), MainActivity.this);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            LinearLayout criteriaBar = (LinearLayout) findViewById(R.id.criteria_bar);
+            //Sliding animations to use for the additional criteria bar in recommendations
+            Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                    R.anim.slide_down);
+            Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                    R.anim.slide_up);
+
             @Override
             public void onPageScrolled(int position, float positionOffset,
                                        int positionOffsetPixels) {
@@ -160,11 +175,11 @@ public class MainActivity extends AppCompatActivity
                 MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
 
                 if (position == 2) {
-                    findViewById(R.id.criteria_bar).setVisibility(View.VISIBLE);
+                    criteriaBar.setVisibility(View.VISIBLE);
                     MovieListFragment.changeRecommendations(getRecommendations());
                     Log.d("GTMovies", "show criteria");
                 } else {
-                    findViewById(R.id.criteria_bar).setVisibility(View.GONE);
+                    criteriaBar.setVisibility(View.GONE);
                     Log.d("GTMovies", "don't show criteria 2");
                 }
 
@@ -181,10 +196,11 @@ public class MainActivity extends AppCompatActivity
 
 
                 if (position == 2) {
-                    findViewById(R.id.criteria_bar).setVisibility(View.VISIBLE);
-                    Log.d("GTMovies", "show criteria 2");
+                    criteriaBar.setVisibility(View.VISIBLE);
+                    MovieListFragment.changeRecommendations(getRecommendations());
+                    Log.d("GTMovies", "show criteria");
                 } else {
-                    findViewById(R.id.criteria_bar).setVisibility(View.GONE);
+                    criteriaBar.setVisibility(View.GONE);
                     Log.d("GTMovies", "don't show criteria 2");
                 }
 
@@ -255,7 +271,7 @@ public class MainActivity extends AppCompatActivity
      * @param requestType differetiates new movies and top rental
      * @return a list of movies from the Rotten Tomatoes API
      */
-    public List getMoviesFromAPI(String requestType) {
+    private List getMoviesFromAPI(String requestType) {
         //initializing new movieArray to return
         final List<Movie> movieArray = new ArrayList<>();
 
@@ -315,26 +331,28 @@ public class MainActivity extends AppCompatActivity
         Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
         Log.d("GTMovies", "we gitin 2 dis met??");
         for (Movie movie : movieSet) {
-            Log.d("GTMovies", "any here " + movie.getRating());
-            if (movie.getRating() >= 0) {
+            Log.d("GTMovies", "any here " + movie.getUserRating());
+            if (movie.getUserRating() >= 0) {
                 Log.d("GTMovies", "rec found: " + movie);
-                movie = getMovie(movie);
-                if (movie != null) {
+                List movieList = getMovie(movie);
+                if (movieList != null && !movieList.isEmpty()) {
                     Log.d("GTMovies", "rec detail found: " + movie);
-                    list.add(movie);
+                    list.add((Movie) movieList.get(0));
                 }
             }
         }
         return list;
     }
 
-    private Movie getMovie(Movie movie) {
+    private List getMovie(Movie movie) {
         Log.d("GTMovies", "Got to handleIntent");
         if (movie == null) {
             return null;
         }
 
-        final List<Movie> tempList = new ArrayList<>(1);
+
+        //initializing new movieArray to return
+        final List<Movie> movieArray = new ArrayList<>(1);
         // Creating the JSONRequest
         String urlRaw = "http://api.rottentomatoes.com/api/public/v1.0/movies/" + movie.getID()
                 + ".json?apikey=" + SingletonMagic.profKey;
@@ -353,40 +371,19 @@ public class MainActivity extends AppCompatActivity
                 try {
                     tmpMovies = resp.getJSONArray("movies");
                 } catch (JSONException e) {
-                    Log.e("JSON ERROR", "Error when getting movies in Search.");
+                    Log.e("JSON ERROR", "Error when getting movies in Recommendations.");
                 }
                 if (tmpMovies == null) {
                     Log.e("Movie Error", "movies JSONArray is null!");
                 }
                 //Log.e("WHEE", Integer.toString(tmpMovies.length()));
                 try {
-                    tempList.add(new Movie(tmpMovies.getJSONObject(0)));
+                    movieArray.add(new Movie(tmpMovies.getJSONObject(0)));
                 } catch (NullPointerException e) {
                     Log.e("Movie Error", "Could not find movie");
                 } catch (JSONException e) {
                     Log.e("Movie Error", "Couldn't make Movie");
                 }
-                try {
-                    JSONObject tmpJ = resp.getJSONObject("links");
-                    //nextURL = tmpJ.getString("next");
-                    //prevURL = tmpJ.getString("prev");
-                } catch (JSONException e) {
-                    Log.e("JSON ERROR", "Fail to get connected URLs in search");
-                }
-                /*
-                if (nextURL != null) {
-                    nextable = true;
-                } else {
-                    nextable = false;
-                }
-                if (prevURL != null) {
-                    prevable = true;
-                } else {
-                    prevable = false;
-                }
-                */
-
-                // AUSTIN THING JUST CTRL C V-ed
 
             }
         }, new Response.ErrorListener() {
@@ -399,11 +396,7 @@ public class MainActivity extends AppCompatActivity
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(detailRequest);
-        if (!tempList.isEmpty()) {
-            return tempList.get(0);
-        } else {
-            return null;
-        }
+        return movieArray;
     }
 
 
