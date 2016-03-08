@@ -336,8 +336,10 @@ public class MainActivity extends AppCompatActivity
 
         final List<Movie> tempList = new ArrayList<>(1);
         // Creating the JSONRequest
-        String urlRaw = "http://api.rottentomatoes.com/api/public/v1.0/movies/" + movie.getID()
-                + ".json?apikey=" + SingletonMagic.profKey;
+        String movieID = SingletonMagic.search + "/" + movie.getID();
+        String urlRaw = String.format(
+                SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
+
         Log.d("API", urlRaw);
         JsonObjectRequest detailRequest = new JsonObjectRequest
                 (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
@@ -348,46 +350,19 @@ public class MainActivity extends AppCompatActivity
                     Log.e("JSONRequest ERROR", "Null Response Received");
                 }
 
-                // put movies into a JSONArray
-                JSONArray tmpMovies = null;
-                try {
-                    tmpMovies = resp.getJSONArray("movies");
-                } catch (JSONException e) {
-                    Log.e("JSON ERROR", "Error when getting movies in Search.");
-                }
-                if (tmpMovies == null) {
-                    Log.e("Movie Error", "movies JSONArray is null!");
-                }
-                //Log.e("WHEE", Integer.toString(tmpMovies.length()));
-                try {
-                    tempList.add(new Movie(tmpMovies.getJSONObject(0)));
-                } catch (NullPointerException e) {
-                    Log.e("Movie Error", "Could not find movie");
-                } catch (JSONException e) {
-                    Log.e("Movie Error", "Couldn't make Movie");
-                }
-                try {
-                    JSONObject tmpJ = resp.getJSONObject("links");
-                    //nextURL = tmpJ.getString("next");
-                    //prevURL = tmpJ.getString("prev");
-                } catch (JSONException e) {
-                    Log.e("JSON ERROR", "Fail to get connected URLs in search");
-                }
-                /*
-                if (nextURL != null) {
-                    nextable = true;
-                } else {
-                    nextable = false;
-                }
-                if (prevURL != null) {
-                    prevable = true;
-                } else {
-                    prevable = false;
-                }
-                */
-
-                // AUSTIN THING JUST CTRL C V-ed
-
+                // NOTE TO AUSTANG
+                // yeah this is it
+                // this should initialize id, title, description, critic rating, posterURL, Genres
+                // if you need anything else, you have access to:
+                //     year, mpaa_rating, runtime, release_dates, abridged_cast, abridged_directors
+                //     studio
+                //  and a few more things that you really don't need to care about
+                //  everything i just stated above you can get through
+                //     (theMovie).getFullInfo.getString("the thing you want");
+                //  the exceptions would be
+                //    release_dates: (theMovie).getFullInfo.getJSONObject("release_dates");
+                //    cast && directors: (theMovie).getFullInfo.getJSONArray("the thing you want");
+                tempList.add(new Movie(resp));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -399,11 +374,7 @@ public class MainActivity extends AppCompatActivity
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(detailRequest);
-        if (!tempList.isEmpty()) {
-            return tempList.get(0);
-        } else {
-            return null;
-        }
+        return tempList.get(0);
     }
 
 

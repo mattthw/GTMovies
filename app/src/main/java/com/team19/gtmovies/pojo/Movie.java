@@ -62,10 +62,10 @@ public class Movie implements Comparable<Movie>, Serializable {
             rating = fullInfo.getJSONObject("ratings").getInt("critics_score");
             posterURLs = fullInfo.getJSONObject("posters");
             posterURL = posterURLs.getString("thumbnail");
-//            tmpJArray = fullInfo.getJSONArray("genres");
-//            for (int i = 0; i < tmpJArray.length(); i++) {
-//                genres.add(Genre.toGenre(tmpJArray.getString(i)));
-//            }
+            tmpJArray = fullInfo.getJSONArray("genres");
+            for (int i = 0; i < tmpJArray.length(); i++) {
+                genres.add(Genre.toGenre(tmpJArray.getString(i)));
+            }
         } catch (JSONException e) {
             Log.e("JSON Error", "JSONException while parsing single movie" + e.toString());
         }
