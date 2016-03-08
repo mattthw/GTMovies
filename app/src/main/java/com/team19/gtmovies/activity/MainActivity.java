@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity
             Log.d("GTMovies", "any here " + movie.getUserRating());
             if (movie.getUserRating() >= 0) {
                 Log.d("GTMovies", "rec found: " + movie);
-                getMovie(movie, list);
+                    getMovie(movie, list);
                 Log.d("GTMovies", "rec list: " + list);
             }
         }
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity
      * @param movie
      * @param list
      */
-    private void getMovie(Movie movie, final List<Movie> list) {
+    private void getMovie(final Movie movie, final List<Movie> list) {
         Log.d("GTMovies", "getMovie Got to handleIntent");
         if (movie == null) {
             return;
@@ -407,6 +407,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
+                getMovie(movie, list);
             }
         });
 
