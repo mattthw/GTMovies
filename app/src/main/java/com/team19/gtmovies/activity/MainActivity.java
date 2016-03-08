@@ -163,10 +163,10 @@ public class MainActivity extends AppCompatActivity
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             LinearLayout criteriaBar = (LinearLayout) findViewById(R.id.criteria_bar);
             //Sliding animations to use for the additional criteria bar in recommendations
-            Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+            /*Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_down);
             Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                    R.anim.slide_up);
+                    R.anim.slide_up);*/
 
             @Override
             public void onPageScrolled(int position, float positionOffset,
@@ -354,8 +354,10 @@ public class MainActivity extends AppCompatActivity
         //initializing new movieArray to return
         final List<Movie> movieArray = new ArrayList<>(1);
         // Creating the JSONRequest
-        String urlRaw = "http://api.rottentomatoes.com/api/public/v1.0/movies/" + movie.getID()
-                + ".json?apikey=" + SingletonMagic.profKey;
+        String movieID = SingletonMagic.search + "/" + movie.getID();
+        String urlRaw = String.format(
+                SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
+
         Log.d("API", urlRaw);
         JsonObjectRequest detailRequest = new JsonObjectRequest
                 (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
@@ -365,6 +367,8 @@ public class MainActivity extends AppCompatActivity
                 if (resp == null) {
                     Log.e("JSONRequest ERROR", "Null Response Received");
                 }
+
+                ////////////////////JINU REMOVED FROM HERE //////////////////////
 
                 // put movies into a JSONArray
                 JSONArray tmpMovies = null;
@@ -384,6 +388,21 @@ public class MainActivity extends AppCompatActivity
                 } catch (JSONException e) {
                     Log.e("Movie Error", "Couldn't make Movie");
                 }
+                ////////////////////////TO HERE /////////////////////////////////
+
+                // NOTE TO AUSTANG
+                // yeah this is it
+                // this should initialize id, title, description, critic rating, posterURL, Genres
+                // if you need anything else, you have access to:
+                //     year, mpaa_rating, runtime, release_dates, abridged_cast, abridged_directors
+                //     studio
+                //  and a few more things that you really don't need to care about
+                //  everything i just stated above you can get through
+                //     (theMovie).getFullInfo.getString("the thing you want");
+                //  the exceptions would be
+                //    release_dates: (theMovie).getFullInfo.getJSONObject("release_dates");
+                //    cast && directors: (theMovie).getFullInfo.getJSONArray("the thing you want");
+                //tempList.add(new Movie(resp));
 
             }
         }, new Response.ErrorListener() {
