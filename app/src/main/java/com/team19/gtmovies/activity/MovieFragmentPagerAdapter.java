@@ -50,7 +50,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         Log.e("GTMovies", "getItem ");
         Log.e("GTMovies", "Tabs3");
-        MovieListFragment fragment = new MovieListFragment();
+        MovieListFragment fragment = MovieListFragment.newInstance(position);
         Bundle arguments = new Bundle();
         arguments.putInt(ARG_ITEM_ID, position);
         fragment.setArguments(arguments);

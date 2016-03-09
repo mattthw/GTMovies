@@ -193,7 +193,7 @@ public class MovieListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_list, container, false);
-
+        Log.d("MLFrag", "popping into onCreateView");
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list_view);
         if (rootView.findViewById(R.id.movie_list_view) == null) {
             Log.e("GTMovies", "Well there's your problem");
@@ -484,8 +484,7 @@ public class MovieListFragment extends Fragment {
          */
         public MovieRecyclerViewAdapter(List<Movie> movieInfo) {
             movieList = movieInfo;
-
-            Log.d("GTMovie", "create new MovieRecyclerViewAdapter");
+            Log.d("GTMovie", "create new MovieRecyclerViewAdapter " + movieList);
         }
 
         @Override

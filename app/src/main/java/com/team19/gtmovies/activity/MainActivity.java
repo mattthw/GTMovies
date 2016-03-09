@@ -494,6 +494,7 @@ public class MainActivity extends AppCompatActivity
             MovieListFragment movieListFragment = MovieListFragment.newInstance(tab);
             fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                     movieListFragment).commitAllowingStateLoss();
+            fragmentManager.executePendingTransactions();
             Log.d("Main", "update UI" + movieListFragment.toPrettyString(tab));
         }
     }

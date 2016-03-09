@@ -42,16 +42,23 @@ public class ReviewController {
      */
     public static List getRecommendations(int code) {
         //TODO: implement using switch
+        switch (code) {
+            case BY_MAJOR:
+                return getRecommendationsByMajor();
+            default:
+                return null;
+        }
+    }
+
+    private static List getRecommendationsByMajor() {
         List<Movie> list = new ArrayList<>();
         Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
-        Log.d("GTMovies", "we gitin 2 dis met??" + IOActions.getMovies().size());
+        String major = CurrentState.getUser().getMajor();
         for (Movie movie : movieSet) {
-            Log.d("GTMovies", "any here " + movie.getUserRating());
-            if (movie.getUserRating() >= 0) {
+            if (movie.getUserRatingByMajor(major) >= 0) {
                 list.add(movie);
             }
         }
-        Log.d("GTMovies getRec", "rec " + list.toString());
         return list;
     }
 }

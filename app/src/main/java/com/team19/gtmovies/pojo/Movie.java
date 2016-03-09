@@ -2,6 +2,8 @@ package com.team19.gtmovies.pojo;
 
 import android.util.Log;
 
+import com.team19.gtmovies.data.IOActions;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -158,7 +160,7 @@ public class Movie implements Comparable<Movie>, Serializable {
 
     /**
      * calculate and return average rating of all users for this movie
-     * @return
+     * @return rating of movie based on users' reviews
      */
     public int getUserRating() {
         double runningtotal = 0;
@@ -172,6 +174,26 @@ public class Movie implements Comparable<Movie>, Serializable {
         } else {
             return (int)((runningtotal/((double)numusers)) * 20);
         }
+    }
+
+    /**
+     * Returns average user rating of movie base on reviewers having specified major
+     * @param major major to filter by
+     * @return rating by users with specified major
+     */
+    public int getUserRatingByMajor(String major) {
+        int majorRating = 0;
+        int majorUsers = 0;
+        for (Review review : myReviews.values()) {
+            if (major.equals(IOActions.getUserByUsername(review.getUsername()).getMajor())) {
+                majorUsers++;
+                majorRating += review.getScore();
+            }
+        }
+        if (majorUsers != 0) {
+            return majorRating/majorUsers;
+        }
+        return 0;
     }
 
     /**
