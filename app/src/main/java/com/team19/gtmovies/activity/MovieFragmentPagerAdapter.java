@@ -9,6 +9,8 @@ import android.util.Log;
 
 import com.team19.gtmovies.fragment.MovieListFragment;
 
+import java.util.Arrays;
+
 /**
  * Created by Austin Leal on 2/23/2016.
  * @author Austin Leal
@@ -57,6 +59,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
+        Log.d("Jinu MFragPagerAdapt",  Arrays.toString(Thread.currentThread().getStackTrace()));
         //way of returning each title to populate tabs
         Log.e("GTMovies", "getPageTitle " + tabTitles);
         return tabTitles[position];

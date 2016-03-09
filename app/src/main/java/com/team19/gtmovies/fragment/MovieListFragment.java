@@ -73,6 +73,62 @@ public class MovieListFragment extends Fragment {
         setArguments(mBundle);
     }*/
 
+    //TODO: ERASE THIS FUNCTION AFTER DEBUG
+    public String toPrettyString(int position) {
+        String result = "";
+        if (position == NEW_MOVIES_TAB) {
+            result += "New Movies!\n";
+            if (newMoviesList == null) {
+                result += "List is null";
+                return result;
+            } else {
+                for (Movie m : newMoviesList) {
+                    result += m.getTitle();
+                    result += "\n";
+                }
+                return result;
+            }
+        } else if (position == TOP_RENTALS_TAB) {
+            result += "Top Rentals!\n";
+            if (topRentalsList == null) {
+                result += "List is null";
+                return result;
+            } else {
+                for (Movie m : topRentalsList) {
+                    result += m.getTitle();
+                    result += "\n";
+                }
+                return result;
+            }
+        } else if (position == YOUR_RECOMMENDATIONS_TAB) {
+            result += "Recommendations!\n";
+            if (yourRecommendationsList == null) {
+                result += "List is null";
+                return result;
+            } else {
+                for (Movie m : yourRecommendationsList) {
+                    result += m.getTitle();
+                    result += "\n";
+                }
+                return result;
+            }
+        } else if (position == SEARCH) {
+            result += "Search!\n";
+            if (searchMovieList == null) {
+                result += "List is null";
+                return result;
+            } else {
+                for (Movie m : searchMovieList) {
+                    result += m.getTitle();
+                    result += "\n";
+                }
+                return result;
+            }
+        } else {
+            return "Wrong position given";
+        }
+    }
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -163,26 +219,42 @@ public class MovieListFragment extends Fragment {
         if (getArguments() != null) {
             switch (getArguments().getInt(ARG_ITEM_ID)) {
                 case NEW_MOVIES_TAB:
+                    Log.d("JinuMLFrag", "newMoviesList RecyclerViewAdapter");
+                    if (null == newMoviesList || newMoviesList.isEmpty()) {
+                        Log.e("MovieListFragment", "newMovieList is null or empty");
+                    }
                     mAdapter = new MovieRecyclerViewAdapter(newMoviesList);
                     break;
                 case TOP_RENTALS_TAB:
+                    Log.d("JinuMLFrag", "topRentalsList RecyclerViewAdapter");
+                    if (null == newMoviesList || newMoviesList.isEmpty()) {
+                        Log.e("MovieListFragment", "topRentalsList is null or empty");
+                    }
                     mAdapter = new MovieRecyclerViewAdapter(topRentalsList);
                     break;
                 case YOUR_RECOMMENDATIONS_TAB:
+                    Log.d("JinuMLFrag", "yourRecommendationsList RecyclerViewAdapter");
+                    if (null == newMoviesList || newMoviesList.isEmpty()) {
+                        Log.e("MovieListFragment", "yourRecommendationsList is null or empty");
+                    }
                     mAdapter = new MovieRecyclerViewAdapter(yourRecommendationsList);
                     break;
                 case SEARCH:
+                    Log.d("JinuMLFrag", "searchMovieList RecyclerViewAdapter");
+                    if (null == newMoviesList || newMoviesList.isEmpty()) {
+                        Log.e("MovieListFragment", "searchMovieList is null or empty");
+                    }
                     mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
                     break;
                 default:
-                    Log.e("GTMovies", "Incorrect int for fragment list.");
+                    Log.e("MLFrag", "Incorrect int for fragment list.");
             }
         }
 
         if (mRecyclerView != null) {
             mRecyclerView.setAdapter(mAdapter);
         } else {
-            Log.e("GTMovies", "This shouldn't be null :)");
+            Log.e("MLFrag", "This shouldn't be null :)");
         }
 
         if (rootView.findViewById(R.id.movie_detail_container) != null) {
@@ -302,7 +374,7 @@ public class MovieListFragment extends Fragment {
      */
     public static void setTabPosition(int position) {
         currentTab = position;
-        Log.e("GTMovies: setTab", position + " : " + (position % 3));
+        Log.e("MLFrag: setTab", position + " : " + (position % 3));
     }
 
 
@@ -366,7 +438,7 @@ public class MovieListFragment extends Fragment {
             public MovieViewHolder(View itemView) {
                 super(itemView);
 
-                Log.d("GTMovie", "create new MovieViewHolder");
+                Log.d("MLFrag", "create new MovieViewHolder");
 
                 mView = itemView;
                 mMoviePosterView = (NetworkImageView) itemView.findViewById(R.id.movie_poster);
@@ -405,7 +477,7 @@ public class MovieListFragment extends Fragment {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.movie_list_content, parent, false);
 
-            Log.d("GTMovie", "onCreateViewHolder");
+            Log.d("MLFrag", "onCreateViewHolder");
             return new MovieViewHolder(itemView);
         }
 
@@ -413,33 +485,29 @@ public class MovieListFragment extends Fragment {
         public void onBindViewHolder(final MovieRecyclerViewAdapter.MovieViewHolder holder, int position) {
             holder.mMovieInfo = movieList.get(position);
 
-            Log.d("GTMovie", "pnBindViewHolder");
+            Log.d("MLFrag", "onBindViewHolder");
             //holder.poster.setImageResource(mMovieInfo.poster);
-            if (holder != null) {
-                Log.d("GTMovie", "holder not null");
-                holder.mMoviePosterView.setImageUrl(
-                        holder.mMovieInfo.getPosterURL(),
-                        SingletonMagic.getInstance(getContext()).getImageLoader());
-                holder.mMovieTitleView.setText(holder.mMovieInfo.getTitle());
-                String rating = holder.mMovieInfo.getRating() + "%";
-                holder.mMovieRatingView.setText(rating);
-                holder.mMovieDescriptionView.setText(holder.mMovieInfo.getDescription());
-            } else {
-                Log.e("GTMovies", "No holder.");
-            }
+            holder.mMoviePosterView.setImageUrl(
+                    holder.mMovieInfo.getPosterURL(),
+                    SingletonMagic.getInstance(getContext()).getImageLoader());
+            holder.mMovieTitleView.setText(holder.mMovieInfo.getTitle());
+            String rating = holder.mMovieInfo.getRating() + "%";
+            holder.mMovieRatingView.setText(rating);
+            holder.mMovieDescriptionView.setText(holder.mMovieInfo.getDescription());
+
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("GTMovie", "holder setOnClickListener");
+                    Log.d("MLFrag", "holder setOnClickListener");
                     if (MovieListFragment.isTwoPane()) {
-                        Log.d("GTMovie", "TWO PANE PROBLEM!!!");
+                        Log.d("MLFrag", "TWO PANE PROBLEM!!!");
                         Bundle arguments = new Bundle();
                         arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
                         if (!fragment.isVisible()) {
-                            Log.d("GTMovie", "one pane");
+                            Log.d("MLFrag", "one pane");
                             Context context = v.getContext();
                             Intent intent = new Intent(context, MovieDetailActivity.class);
                             intent.putExtra(MovieDetailFragment.ARG_ITEM_TITLE,
@@ -457,7 +525,7 @@ public class MovieListFragment extends Fragment {
                                 .replace(R.id.content_main, fragment)
                                 .commit();*/
                     } else {
-                        Log.d("GTMovie", "one pane");
+                        Log.d("MLFrag", "one pane");
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
                         intent.putExtra(MovieDetailFragment.ARG_ITEM_TITLE,
@@ -480,6 +548,7 @@ public class MovieListFragment extends Fragment {
             if (movieList != null) {
                 return movieList.size();
             } else {
+                Log.e("MLFrag", "null movieList given for getItemCount");
                 return -1;
             }
         }
@@ -497,8 +566,8 @@ public class MovieListFragment extends Fragment {
 
 
 ///////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////
 /////////////////////////JINU LOOK HERE////////////////////////////////
+/////////////////////////IS THAT A BIRD////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 /*Comments for Jinu

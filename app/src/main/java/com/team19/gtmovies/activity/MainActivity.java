@@ -177,48 +177,58 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPageScrolled(int position, float positionOffset,
                                        int positionOffsetPixels) {
-                switch (position) {
-                    case MovieListFragment.TOP_RENTALS_TAB:
-                        if (!MovieListFragment.hasTopRentalsList()) {
-                            getMoviesFromAPI(SingletonMagic.topRental, null);
-                        } //otherwise fall through
-                    case MovieListFragment.NEW_MOVIES_TAB:
-                        //MovieListFragment has already been displayed. Display again.
-                        MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
-                        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                                movieListFragment).commit();
-                        break;
-                    case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                        scroller();
-                        criteriaBar.setVisibility(View.VISIBLE);
-                        if (!MovieListFragment.hasYourRecommendationsList()) {
-                            getMoviesFromAPI(SingletonMagic.recommendations,
-                                    ReviewController.getRecommendations());
-                        } else {
-                            movieListFragment = MovieListFragment.newInstance(position);
-                            fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                                    movieListFragment).commit();
-                        }
-                        break;
-                    default:
-                        Log.e("GTMovies", "Incorrect int for tab.");
-                }
+//                switch (position) {
+//                    case MovieListFragment.TOP_RENTALS_TAB:
+//                        if (!MovieListFragment.hasTopRentalsList()) {
+//                            getMoviesFromAPI(SingletonMagic.topRental, null);
+//                        } //otherwise fall through
+//                    case MovieListFragment.NEW_MOVIES_TAB:
+//                        //MovieListFragment has already been displayed. Display again.
+//                        MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
+//                        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+//                                movieListFragment).commit();
+//                        break;
+//                    case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
+//                        scroller();
+//                        criteriaBar.setVisibility(View.VISIBLE);
+//                        if (!MovieListFragment.hasYourRecommendationsList()) {
+//                            getMoviesFromAPI(SingletonMagic.recommendations,
+//                                    ReviewController.getRecommendations());
+//                        } else {
+//                            movieListFragment = MovieListFragment.newInstance(position);
+//                            fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+//                                    movieListFragment).commit();
+//                        }
+//                        break;
+//                    default:
+//                        Log.e("GTMovies", "Incorrect int for tab.");
+//                }
             }
 
             @Override
             public void onPageSelected(int position) {
                 switch (position) {
                     case MovieListFragment.TOP_RENTALS_TAB:
+                        Log.d("Main", "onPageSelected case TOP_RENTALS");
+
                         if (!MovieListFragment.hasTopRentalsList()) {
+                            Log.d("Main", "onPageSelected getMovies called");
                             getMoviesFromAPI(SingletonMagic.topRental, null);
                         } //otherwise fall through
+                        Log.d("Main", "onPageSelected Falling Through");
                     case MovieListFragment.NEW_MOVIES_TAB:
+                        Log.d("Main", "onPageSelected case NEW_MOVIES");
+                        Log.d("Main", "onPageSelected position: " + position);
+
                         //MovieListFragment has already been displayed. Display again.
                         MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
+                        Log.d("Main", movieListFragment.toPrettyString(position));
                         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                                 movieListFragment).commit();
                         break;
                     case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
+                        Log.d("Main", "onPageSelected case YOUR_RECOMMENDATIONS_TAB");
+
                         scroller();
                         criteriaBar.setVisibility(View.VISIBLE);
                         if (!MovieListFragment.hasYourRecommendationsList()) {
@@ -239,7 +249,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPageScrollStateChanged(int state) {
                 //don't know what to do here
-                Log.e("GTMovies", "Tabs this one called. State: " + state);
+                Log.d("GTMovies", "Tabs this one called. State: " + state);
+                fragmentManager.executePendingTransactions();
+                Log.d("JinuMain", "executePendingTransactions called onPageScrollStateChan");
                 //MovieListFragment.setTabPosition(state);
             }
         });
@@ -404,14 +416,17 @@ public class MainActivity extends AppCompatActivity
                     //Create proper MovieListFragment
                     MovieListFragment movieListFragment;
                     if (requestType.equals(SingletonMagic.newMovie)) {
+                        Log.d("JinuMain", "newMovieFragment");
                         MovieListFragment.setNewMoviesList(movieArray);
                         movieListFragment = MovieListFragment.newInstance(
                                 MovieListFragment.NEW_MOVIES_TAB);
-                    } else if (requestType.equals(SingletonMagic.newMovie)) {
+                    } else if (requestType.equals(SingletonMagic.topRental)) {
+                        Log.d("JinuMain", "topRentalFragment");
                         MovieListFragment.setTopRentalsList(movieArray);
                         movieListFragment = MovieListFragment.newInstance(
-                                MovieListFragment.NEW_MOVIES_TAB);
+                                MovieListFragment.TOP_RENTALS_TAB);
                     } else {
+                        Log.d("JinuMain", "nullFragment");
                         movieListFragment = null;
                     }
 
@@ -421,8 +436,13 @@ public class MainActivity extends AppCompatActivity
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.main_frame_layout,
                             movieListFragment);
-                    fragmentTransaction.commitAllowingStateLoss();
-                    fragmentManager.executePendingTransactions();
+                    fragmentTransaction.commit();
+                    // Austin stuff
+//                    fragmentTransaction.commitAllowingStateLoss();
+//                    fragmentManager.executePendingTransactions();
+                    // Added the executePend....() thing to onScrollStateChanged
+                    //
+                    Log.d("JinuMain", "End of request");
                 }
             }, new Response.ErrorListener() {
 
