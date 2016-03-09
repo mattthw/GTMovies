@@ -19,7 +19,6 @@ import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
 import com.team19.gtmovies.pojo.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,17 +30,27 @@ import java.util.List;
  * @version 1.0
  */
 public class MovieListFragment extends Fragment {
-    private static List<List<Movie>> tabMovieList = null;
+    //private static List<List<Movie>> tabMovieList = null;
+    public static final int NEW_MOVIES_TAB = 0;
+    public static final int TOP_RENTALS_TAB = 1;
+    public static final int YOUR_RECOMMENDATIONS_TAB = 2;
+    public static final int SEARCH = 3;
+
     private static int currentTab = 0;
+
+    private static List<Movie> newMoviesList = null;
+    private static List<Movie> topRentalsList = null;
+    private static List<Movie> yourRecommendationsList = null;
     private static List<Movie> searchMovieList = null;
+
     private static boolean mTwoPane = false;
     private static boolean tabs = false;
     private boolean search = false;
 
-    private static final MovieListFragment tab0 = new MovieListFragment(0);
+    /*private static final MovieListFragment tab0 = new MovieListFragment(0);
     private static final MovieListFragment tab1 = new MovieListFragment(1);
     private static final MovieListFragment tab2 = new MovieListFragment(2);
-    private static final MovieListFragment searchFragment = new MovieListFragment(3);
+    private static final MovieListFragment searchFragment = new MovieListFragment(3);*/
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -53,16 +62,16 @@ public class MovieListFragment extends Fragment {
      */
     public static final String ARG_ITEM_ID = "item_id";
 
-    /**
+    /*
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      * @param page number for page
      */
-    private MovieListFragment(int page) { //TODO: The comment above indicates this change will be a problem later
+    /*private MovieListFragment(int page) { //TODO: The comment above indicates this change will be a problem later
         Bundle mBundle = new Bundle();
         mBundle.putInt(ARG_ITEM_ID, page);
         setArguments(mBundle);
-    }
+    }*/
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -71,13 +80,13 @@ public class MovieListFragment extends Fragment {
     public MovieListFragment() {
     }
 
-    /**
+    /*
      * creates new MovieListFragment instance
      * @param page number for page
      * @return new MovieListFragment instance
      */
     public static MovieListFragment newInstance(int page) {
-        /*switch (page) {
+        /*switch (page) { //this was commented out before
             case 0: return tab0;
             case 1: return tab1;
             case 2: return tab2;
@@ -86,17 +95,17 @@ public class MovieListFragment extends Fragment {
         }*/
         Bundle mBundle = new Bundle();
         mBundle.putInt(ARG_ITEM_ID, page);
-        MovieListFragment fragment = new MovieListFragment(page + 1);
+        MovieListFragment fragment = new MovieListFragment();
         fragment.setArguments(mBundle);
         return fragment;
     }
 
-    /**
+    /*
      * obtains MovieListFragment instance
      * @param page number for page
      * @return current MovieListFragment instance
      */
-    public static MovieListFragment getInstance(int page) {
+    /*public static MovieListFragment getInstance(int page) {
         switch (page) {
             case 0: return tab0;
             case 1: return tab1;
@@ -104,7 +113,7 @@ public class MovieListFragment extends Fragment {
             case 3: return searchFragment;
             default: return null;
         }
-    }
+    }*/
 
     /*@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -128,23 +137,17 @@ public class MovieListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_list, container, false);
 
-        Log.d("GTMovie", "fragment onCreateView");
-
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list_view);
         if (rootView.findViewById(R.id.movie_list_view) == null) {
             Log.e("GTMovies", "Well there's your problem");
         }
 
         mLayoutManager = new LinearLayoutManager(getActivity());
-        if (tabMovieList == null) {
-            fillTabMovieList(null);
-        }
 
+        /*
         if (search) {
             if (searchMovieList != null) {
                 mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
-            } else {
-                mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(currentTab));
             }
             search = false;
         } else if (getArguments() != null) {
@@ -156,6 +159,24 @@ public class MovieListFragment extends Fragment {
             Log.e("GTMovies: getargs", getArguments().toString());
         } else {
             Log.e("GTMovies:", "No bundle.");
+        }*/
+        if (getArguments() != null) {
+            switch (getArguments().getInt(ARG_ITEM_ID)) {
+                case NEW_MOVIES_TAB:
+                    mAdapter = new MovieRecyclerViewAdapter(newMoviesList);
+                    break;
+                case TOP_RENTALS_TAB:
+                    mAdapter = new MovieRecyclerViewAdapter(topRentalsList);
+                    break;
+                case YOUR_RECOMMENDATIONS_TAB:
+                    mAdapter = new MovieRecyclerViewAdapter(yourRecommendationsList);
+                    break;
+                case SEARCH:
+                    mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+                    break;
+                default:
+                    Log.e("GTMovies", "Incorrect int for fragment list.");
+            }
         }
 
         if (mRecyclerView != null) {
@@ -175,12 +196,12 @@ public class MovieListFragment extends Fragment {
         return rootView;
     }
 
-    /**
+    /*
      * Fills movie list if able to. If unable to, sets movieList to default.
      * @param list list to set movie list to
      * @return true if successfully set to provided argument false if unable to
      */
-    public static boolean fillTabMovieList(List<List<Movie>> list) {
+    /*public static boolean fillTabMovieList(List<List<Movie>> list) {
         if (list != null) {
             tabMovieList = list;
             return true;
@@ -197,37 +218,82 @@ public class MovieListFragment extends Fragment {
             }
         }
         return false;
-    }
+    }*/
 
-       /**
-     * Changes movielist.
-     * @param list list to set recommendations to
+    /**
+     * Changes newMovieList.
+     * @param list list to set new movies list to
      * @return true if successfully set to provided argument false if unable to
      */
-    public static boolean changeRecommendations(List<Movie> list) {
-        Log.d("GTMovies", "Rec method called");
-        if (list != null && tabMovieList != null) {
-            Log.d("GTMovies", "Rec method success");
-            tabMovieList.add(2, list);
+    public static boolean setNewMoviesList(List<Movie> list) {
+        if (list != null) {
+            newMoviesList = list;
             return true;
         }
         return false;
     }
 
     /**
-     * Fills movie list on search
+     * Changes topRentalsList.
+     * @param list list to set top rentals list to
+     * @return true if successfully set to provided argument false if unable to
+     */
+    public static boolean setTopRentalsList(List<Movie> list) {
+        if (list != null) {
+            topRentalsList = list;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Changes movielist.
+     * @param list list to set recommendations to
+     * @return true if successfully set to provided argument false if unable to
+     */
+    public static boolean setYourRecommendationsList(List<Movie> list) {
+        if (list != null) {
+            yourRecommendationsList = list;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Changes searchMovieList on search
      * @param list new list of movies from search query
      * @return boolean if list can be used to replace movie search list
      */
-    public static boolean fillSearchMovieList(List<Movie> list) {
+    public static boolean setSearchMovieList(List<Movie> list) {
         if (list != null) {
-            Log.d("GTMovies", list.toString());
             searchMovieList = list;
             return true;
-        } else {
-            searchMovieList = new ArrayList<>();
-            return false;
         }
+        return false;
+    }
+
+    /**
+     * Indicates whether newMoviesList has been set
+     * @return True if newMoviesList not null, false otherwise
+     */
+    public static boolean hasNewMoviesList() {
+        return newMoviesList != null;
+    }
+
+    /**
+     * Indicates whether topRentalsList has been set
+     * @return True if topRentalsList not null, false otherwise
+     */
+    public static boolean hasTopRentalsList() {
+        return topRentalsList != null;
+    }
+
+    /**
+     * Indicates whether yourRecommendationsList has been set
+     * @return True if yourRecommendationsList not null, false otherwise
+     */
+    public static boolean hasYourRecommendationsList() {
+        return yourRecommendationsList != null;
     }
 
     /**
@@ -261,6 +327,19 @@ public class MovieListFragment extends Fragment {
     public static boolean isTwoPane() {
         return mTwoPane;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Innter class for recyclerview adapter
@@ -303,6 +382,13 @@ public class MovieListFragment extends Fragment {
                 return super.toString() + " '" + mMovieTitleView.getText() + "'";
             }
         }
+
+
+
+
+
+
+
 
         /**
          * Public constructor for adapter
@@ -391,7 +477,11 @@ public class MovieListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return movieList.size();
+            if (movieList != null) {
+                return movieList.size();
+            } else {
+                return -1;
+            }
         }
     }
 
@@ -404,3 +494,69 @@ public class MovieListFragment extends Fragment {
         return searchMovieList;
     }
 }
+
+
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+/////////////////////////JINU LOOK HERE////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+/*Comments for Jinu
+    Whenever setting a tab/search use one of :
+
+    MovieListFragment.setNewMoviesList(list);
+    MovieListFragment.setTopRentalsList(list);
+    MovieListFragment.setYourRecommendationsList(list);
+    MovieListFragment.setSearchMovieList(list);
+
+
+
+    Whenever using MovieListFragment, do:
+
+    MovieListFragment movieListFragment = MovieListFragment.newInstance(page);
+
+    the page value can be:
+    MovieListFragment.NEW_MOVIES_TAB
+    MovieListFragment.TOP_RENTALS_TAB
+    MovieListFragment.YOUR_RENTALS_TAB
+    MovieListFragment.SEARCH
+
+
+    Last, but certainly not least, we need to update th UI.
+    fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                        movieListFragment).commit();
+
+
+
+
+    Search may get weird. In which case, I will need to look more into setting currenttab
+    Actually, performance may take a hit and we may be able to do movieListFragment with those
+    tabs that are at the top that I'm not currently using rather than creating a new fragment each
+    time.
+
+    In the case that search does not work properly, we need to try to place this on the line before
+    creating the new fragment instance:
+
+    MovieListFragment.setTabPosition(page);
+
+    with the page values I mentioned above. Likely will not work though.
+
+
+    So, putting it all together, I will provide the following example:
+
+    MovieListFragment.setNewMoviesList(list);
+    MovieListFragment movieListFragment = MovieListFragment.newInstance(
+            MovieListFragment.NEW_MOVIES_TAB);
+    fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                        movieListFragment).commit();
+
+
+
+
+ */
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////

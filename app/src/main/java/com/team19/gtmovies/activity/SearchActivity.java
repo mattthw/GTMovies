@@ -30,11 +30,12 @@ import java.util.List;
  * Activity to be searched
  */
 public class SearchActivity extends AppCompatActivity {
-    List<Movie> list = new ArrayList<>();
-    public boolean nextable = true;
-    public boolean prevable = false;
+    private List<Movie> list = new ArrayList<>();
+    private boolean nextable = true;
+    private boolean prevable = false;
     private String nextURL = null;
     private String prevURL = null;
+    private static FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +43,7 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         Log.d("GTMovies", "Got to search");
-
-        // Setup action bar
-        /*ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        Log.d("GTMovies", "Got past actionBar in onCreate");*/
-
-        // Layout toolbar and search
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.search_toolbar);
-        //setSupportActionBar(toolbar);
-        //windowActionBar
-        //setupSearch();
+        fragmentManager = getSupportFragmentManager();
 
         handleIntent(getIntent());
     }
@@ -142,21 +131,13 @@ public class SearchActivity extends AppCompatActivity {
 
                             // AUSTIN THING JUST CTRL C V-ed
                             Log.e("GTMovies", "TabsSearch");
-                            MovieListFragment movieListFragment = MovieListFragment.newInstance(0);
-                            movieListFragment.setSearch();
-                            MovieListFragment.fillSearchMovieList(list);
+                            MovieListFragment.setSearchMovieList(list);
+                            MovieListFragment movieListFragment = MovieListFragment.newInstance(
+                                    MovieListFragment.SEARCH);
                             Log.d("GTMovies", "line1");
-                            FragmentManager fragmentManager = getSupportFragmentManager();
-                            if (fragmentManager != null) {
-                                fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
-                                        movieListFragment).commit();
-                                Log.d("GTMovies", "line2");
-                            } else {
-                                Log.e("GTMovies", "No fragmentManager");
-                            }
-                            Log.d("GTMovies", "here1");
-                            //  movieListFragment.fillSearchMovieList(null);    //nulls for next query
-                            Log.d("GTMovies", "here2");
+                            fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
+                                    movieListFragment).commit();
+                            Log.d("GTMovies", "line2");
 
                         }
                     }, new Response.ErrorListener() {

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -18,9 +19,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -57,6 +61,8 @@ public class MainActivity extends AppCompatActivity
     protected static View navHeader;
     protected static FragmentManager fragmentManager;
     protected static CriteriaActivity criteriaActivity;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,15 +110,17 @@ public class MainActivity extends AppCompatActivity
         setupSearch();
 
         // Populate lists of new movies and top rentals
-        getMovies();
+        //getMovies();
+        getMoviesFromAPI(SingletonMagic.newMovie, null);
+        //getMoviesFromAPI(SingletonMagic.topRental, null);
 
         // Change John Smith to username
         ((TextView) navHeader.findViewById(R.id.headerName)).setText(CurrentState.getUser().getName());
 
         // Place view
-        MovieListFragment.setTabs();
+        /*MovieListFragment.setTabs();
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                MovieListFragment.newInstance(0)).commit();
+                MovieListFragment.newInstance(0)).commit();*/
     }
 
     /*@Override
@@ -169,43 +177,60 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPageScrolled(int position, float positionOffset,
                                        int positionOffsetPixels) {
-                MovieListFragment.setTabPosition(position);
-                MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
-
-                if (position == 2) {
-                    criteriaBar.setVisibility(View.VISIBLE);
-                    MovieListFragment.changeRecommendations(getRecommendations());
-                    Log.d("GTMovies", "show criteria");
-                } else {
-                    criteriaBar.setVisibility(View.GONE);
-                    Log.d("GTMovies", "don't show criteria 2");
+                switch (position) {
+                    case MovieListFragment.TOP_RENTALS_TAB:
+                        if (!MovieListFragment.hasTopRentalsList()) {
+                            getMoviesFromAPI(SingletonMagic.topRental, null);
+                        } //otherwise fall through
+                    case MovieListFragment.NEW_MOVIES_TAB:
+                        //MovieListFragment has already been displayed. Display again.
+                        MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
+                        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                                movieListFragment).commit();
+                        break;
+                    case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
+                        scroller();
+                        criteriaBar.setVisibility(View.VISIBLE);
+                        if (!MovieListFragment.hasYourRecommendationsList()) {
+                            getMoviesFromAPI(SingletonMagic.recommendations, getRecommendations());
+                        } else {
+                            movieListFragment = MovieListFragment.newInstance(position);
+                            fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                                    movieListFragment).commit();
+                        }
+                        break;
+                    default:
+                        Log.e("GTMovies", "Incorrect int for tab.");
                 }
-
-                Log.e("GTMovies", "scroll. Position: " + position);
-                MovieListFragment.setTabs();
-                fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                        movieListFragment).commit();
             }
 
             @Override
             public void onPageSelected(int position) {
-                MovieListFragment.setTabPosition(position);
-                //MovieListFragment.setTabs();
-
-
-                if (position == 2) {
-                    criteriaBar.setVisibility(View.VISIBLE);
-                    MovieListFragment.changeRecommendations(getRecommendations());
-                    Log.d("GTMovies", "show criteria");
-                } else {
-                    criteriaBar.setVisibility(View.GONE);
-                    Log.d("GTMovies", "don't show criteria 2");
+                switch (position) {
+                    case MovieListFragment.TOP_RENTALS_TAB:
+                        if (!MovieListFragment.hasTopRentalsList()) {
+                            getMoviesFromAPI(SingletonMagic.topRental, null);
+                        } //otherwise fall through
+                    case MovieListFragment.NEW_MOVIES_TAB:
+                        //MovieListFragment has already been displayed. Display again.
+                        MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
+                        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                                movieListFragment).commit();
+                        break;
+                    case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
+                        scroller();
+                        criteriaBar.setVisibility(View.VISIBLE);
+                        if (!MovieListFragment.hasYourRecommendationsList()) {
+                            getMoviesFromAPI(SingletonMagic.recommendations, getRecommendations());
+                        } else {
+                            movieListFragment = MovieListFragment.newInstance(position);
+                            fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                                    movieListFragment).commit();
+                        }
+                        break;
+                    default:
+                        Log.e("GTMovies", "Incorrect int for tab.");
                 }
-
-                Log.e("GTMovies", "Tabs2. Position: " + position);
-                MovieListFragment.setTabs();
-                fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                        MovieListFragment.newInstance(position)).commit();
             }
 
             @Override
@@ -251,7 +276,7 @@ public class MainActivity extends AppCompatActivity
      * Fills lists of movies for tabs.
      */
     public void getMovies() {
-        // Get the movies
+        /*// Get the movies
         List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.newMovie);
         List<Movie> topRentals = getMoviesFromAPI(SingletonMagic.topRental);
         List<Movie> recommendations = getRecommendations();
@@ -262,62 +287,138 @@ public class MainActivity extends AppCompatActivity
         listList.add(recommendations);
         listList.add(new ArrayList<Movie>()); //dummy arraylist for recommendations
         MovieListFragment.fillTabMovieList(listList);
+        */
     }
 
     /**
      * Obtains the movies from the API
      * @param requestType differetiates new movies and top rental
-     * @return a list of movies from the Rotten Tomatoes API
+     * @param movieList list of movies to get details about for recommendations
      */
-    private List getMoviesFromAPI(String requestType) {
+    private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
         final List<Movie> movieArray = new ArrayList<>();
 
         // Creating the JSONRequest
-        String urlRaw = String.format(
-                SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
+        JsonObjectRequest movieRequest = null;
+        if (requestType.equals(SingletonMagic.recommendations)) {
+            //The last url request. Used to compare to find last movie in onResponse
+            final String lastURL;
+            if (movieList != null && movieList.size() > 0) {
+                Movie movie = movieList.get(movieList.size() - 1);
+                String movieID = SingletonMagic.search + "/" + movie.getID();
+                lastURL = String.format(SingletonMagic.baseURL,
+                        movieID, "", SingletonMagic.profKey);
+            } else {
+                return;
+            }
 
-        JsonObjectRequest newMovieRequest = new JsonObjectRequest
-                (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
+            //Run for each of the recommended movies
+            if (movieList != null) {
+                for (Movie movie : movieList) {
 
-                    @Override
-                    public void onResponse(JSONObject resp) {
-                        if (resp == null) {
-                            Log.e("JSONRequest ERROR", "Null Response Received");
-                        }
+                    //create the request
+                    String movieID = SingletonMagic.search + "/" + movie.getID();
+                    final String urlRaw = String.format(
+                            SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
+                    JsonObjectRequest detailRequest = new JsonObjectRequest(Request.Method.GET,
+                            urlRaw, null, new Response.Listener<JSONObject>() {
 
-                        // put movies into a JSONArray
-                        JSONArray tmpMovies = null;
-                        try {
-                            tmpMovies = resp.getJSONArray("movies");
-                        } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Error when getting movies in Main.");
-                        }
-                        if (tmpMovies == null) {
-                            Log.e("Movie Error", "movies JSONArray is null!");
-                        }
-                        for (int i = 0; i < tmpMovies.length(); i++) {
-                            try {
-                                movieArray.add(new Movie(tmpMovies.getJSONObject(i)));
-                            } catch (JSONException e) {
-                                Log.e("Movie Error", "Couldn't make Movie" + i + "in Main");
+                        @Override
+                        public void onResponse(JSONObject resp) {
+                            if (resp == null) {
+                                Log.e("JSONRequest ERROR", "getMovie Null Response Received");
                             }
+
+                            movieArray.add(new Movie(resp));
+
+                            //Check if last
+                            if (urlRaw.equals(lastURL)) {
+                                //Now update UI
+                                MovieListFragment.setYourRecommendationsList(movieArray);
+                                MovieListFragment movieListFragment = MovieListFragment.newInstance(
+                                        MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
+                                fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                                        movieListFragment).commit();
+                            }
+
+                            Log.d("getMovie movie success", "rec movie:" + new Movie(resp));
+                            Log.d("getMovie volley success", "rec movie:" + urlRaw);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
+                        }
+                    });
+                }
+            }
+        } else {
+            final String urlRaw = String.format(
+                    SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
+
+            movieRequest = new JsonObjectRequest
+                    (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject resp) {
+                    if (resp == null) {
+                        Log.e("JSONRequest ERROR", "Null Response Received");
+                    }
+
+                    // put movies into a JSONArray
+                    JSONArray tmpMovies = null;
+                    try {
+                        tmpMovies = resp.getJSONArray("movies");
+                    } catch (JSONException e) {
+                        Log.e("JSON ERROR", "Error when getting movies in Main.");
+                    }
+                    if (tmpMovies == null) {
+                        Log.e("Movie Error", "movies JSONArray is null!");
+                    }
+                    for (int i = 0; i < tmpMovies.length(); i++) {
+                        try {
+                            movieArray.add(new Movie(tmpMovies.getJSONObject(i)));
+                        } catch (JSONException e) {
+                            Log.e("Movie Error", "Couldn't make Movie" + i + "in Main");
                         }
                     }
-                }, new Response.ErrorListener() {
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("VOLLEY FAIL", "Couldn't getJSON");
+                    //Create proper MovieListFragment
+                    MovieListFragment movieListFragment;
+                    if (requestType.equals(SingletonMagic.newMovie)) {
+                        MovieListFragment.setNewMoviesList(movieArray);
+                        movieListFragment = MovieListFragment.newInstance(
+                                MovieListFragment.NEW_MOVIES_TAB);
+                    } else if (requestType.equals(SingletonMagic.newMovie)) {
+                        MovieListFragment.setTopRentalsList(movieArray);
+                        movieListFragment = MovieListFragment.newInstance(
+                                MovieListFragment.NEW_MOVIES_TAB);
+                    } else {
+                        movieListFragment = null;
                     }
-                });
+
+                    Log.e("Austin", "Can not perform this action after onSaveInstanceState");
+                    //ERROR: Can not perform this action after onSaveInstanceState
+                    //Update UI
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.main_frame_layout,
+                            movieListFragment);
+                    fragmentTransaction.commitAllowingStateLoss();
+                    fragmentManager.executePendingTransactions();
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY FAIL", "Couldn't getJSON");
+                }
+            });
+        }
 
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
-        SingletonMagic.getInstance(this).addToRequestQueue(newMovieRequest);
-
-        // Retrun the finished movieArray ArrayList to be added to movieList
-        return movieArray;
+        SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
     }
 
     /**
@@ -327,13 +428,11 @@ public class MainActivity extends AppCompatActivity
     public List getRecommendations() {
         List<Movie> list = new ArrayList<>();
         Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
-        Log.d("GTMovies", "we gitin 2 dis met??");
+        Log.d("GTMovies", "we gitin 2 dis met??" + IOActions.getMovies().size());
         for (Movie movie : movieSet) {
             Log.d("GTMovies", "any here " + movie.getUserRating());
             if (movie.getUserRating() >= 0) {
-                Log.d("GTMovies", "rec found: " + movie);
-                getMovie(movie, list);
-                Log.d("GTMovies", "rec list: " + list);
+                list.add(movie);
             }
         }
         Log.d("GTMovies getRec", "rec " + list.toString());
@@ -350,6 +449,7 @@ public class MainActivity extends AppCompatActivity
         if (movie == null) {
             return;
         }
+
         // Creating the JSONRequest
         String movieID = SingletonMagic.search + "/" + movie.getID();
         final String urlRaw = String.format(
@@ -365,28 +465,6 @@ public class MainActivity extends AppCompatActivity
                     Log.e("JSONRequest ERROR", "getMovie Null Response Received");
                 }
 
-                ////////////////////JINU REMOVED FROM HERE //////////////////////
-
-                // put movies into a JSONArray
-                /*JSONArray tmpMovies = null;
-                try {
-                    tmpMovies = resp.getJSONArray("movies");
-                } catch (JSONException e) {
-                    Log.e("getMovie JSON ERROR", "Error when getting movies in Recommendations.");
-                }
-                if (tmpMovies == null) {
-                    Log.e("getMovie Movie Error", "movies JSONArray is null!");
-                }
-                //Log.e("WHEE", Integer.toString(tmpMovies.length()));
-                try {
-                    movieArray.add(new Movie(tmpMovies.getJSONObject(0)));
-                } catch (NullPointerException e) {
-                    Log.e("getMovie Movie Error", "Could not find movie");
-                } catch (JSONException e) {
-                    Log.e("getMovie Movie Error", "Couldn't make Movie");
-                }*/
-                ////////////////////////TO HERE /////////////////////////////////
-
                 // NOTE TO AUSTANG
                 // yeah this is it
                 // this should initialize id, title, description, critic rating, posterURL, Genres
@@ -400,6 +478,8 @@ public class MainActivity extends AppCompatActivity
                 //    release_dates: (theMovie).getFullInfo.getJSONObject("release_dates");
                 //    cast && directors: (theMovie).getFullInfo.getJSONArray("the thing you want");
                 list.add(new Movie(resp));
+
+
                 Log.d("getMovie movie success", "rec movie:" + new Movie(resp));
                 Log.d("getMovie volley success", "rec movie:" + urlRaw);
             }
@@ -413,6 +493,56 @@ public class MainActivity extends AppCompatActivity
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(detailRequest);
+    }
+
+    private void scroller() {
+        final ViewTreeObserver.OnScrollChangedListener downListener = new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                ((ScrollView) findViewById(R.id.main_view2)).fullScroll(View.FOCUS_DOWN);
+            }
+        };
+
+        final ViewTreeObserver.OnScrollChangedListener upListener = new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                ((ScrollView) findViewById(R.id.main_view2)).fullScroll(View.FOCUS_UP);
+            }
+        };
+
+        //the outer scrollView
+        final ScrollView outerScrollView = (ScrollView) findViewById(R.id.main_view2);
+
+        outerScrollView.setOnTouchListener(new View.OnTouchListener() {
+            private ViewTreeObserver observer;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_SCROLL) {
+                    if (event.getAxisValue(MotionEvent.AXIS_VSCROLL) > 0) {
+                        if (observer != null) {
+                            observer.removeOnScrollChangedListener(upListener);
+                            observer.removeOnScrollChangedListener(downListener);
+                            observer = outerScrollView.getViewTreeObserver();
+                            observer.addOnScrollChangedListener(upListener);
+                        } else {
+                            observer = outerScrollView.getViewTreeObserver();
+                            observer.addOnScrollChangedListener(upListener);
+                        }
+                    } else if (event.getAxisValue(MotionEvent.AXIS_VSCROLL) < 0) {
+                        observer.removeOnScrollChangedListener(upListener);
+                        observer.removeOnScrollChangedListener(downListener);
+                        observer = outerScrollView.getViewTreeObserver();
+                        observer.addOnScrollChangedListener(downListener);
+                    } else {
+                        observer = outerScrollView.getViewTreeObserver();
+                        observer.addOnScrollChangedListener(downListener);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 

@@ -58,7 +58,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         //way of returning each title to populate tabs
-        Log.e("GTMovies", "getPageTitle");
+        Log.e("GTMovies", "getPageTitle " + tabTitles);
         return tabTitles[position];
     }
 
