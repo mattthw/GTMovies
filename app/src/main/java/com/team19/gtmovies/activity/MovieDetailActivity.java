@@ -149,6 +149,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                             Log.println(Log.INFO, "GTMovies", "COMMENT: " + comment);
                             //get movie id
                             Integer tempID = gotIntent.getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1);
+                            //Integer tempID = gotIntent.getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1);
                             //save the review
                             try {
                                 IOActions.SaveNewRating(tempID,score,comment);
@@ -168,7 +169,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             ReviewDialogFragment.this.getDialog().cancel();
                         }
-                    });
+                    })
+                    .setTitle("My Review");
             return builder.create();
         }
 
@@ -187,7 +189,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                     Log.println(Log.ERROR, "GTMovies", "Couldint parse selected score as Integer");
                     tempScore = 0;
                 }
-                Log.println(Log.INFO, "GTMovies", "selected: " + tempScore.toString());
+                Log.println(Log.DEBUG, "GTMovies", "selected: " + tempScore.toString());
             }
             @Override
             public void onNothingSelected(AdapterView parent) {

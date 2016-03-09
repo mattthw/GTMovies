@@ -151,12 +151,12 @@ public class MovieListFragment extends Fragment {
             }
             search = false;
         } else if (getArguments() != null) {
-            Log.e("GTMovies: onCreateView", currentTab + "");
+            Log.d("GTMovies: onCreateView", currentTab + "");
             mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(getArguments().getInt(ARG_ITEM_ID)));
             //Log.d("GTMovies", tabMovieList.get(currentTab).toString());
             tabs = false;
         } else if (getArguments() != null) {
-            Log.e("GTMovies: getargs", getArguments().toString());
+            Log.d("GTMovies: getargs", getArguments().toString());
         } else {
             Log.e("GTMovies:", "No bundle.");
         }*/

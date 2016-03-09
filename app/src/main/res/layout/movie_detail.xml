@@ -47,7 +47,7 @@
                     android:layout_gravity="center|right"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
-                    android:text="null" />
+                    android:text="N/A" />
 
             </RelativeLayout>
 
@@ -74,7 +74,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="null"
+                    android:text="N/A"
                     android:id="@+id/userRatingView"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"

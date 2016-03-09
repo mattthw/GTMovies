@@ -37,7 +37,7 @@
     <string name="action_edit_profile">Edit Profile</string>
     <string name="action_user_list">User List</string>
     <string name="title_social">Social</string>
-    <string name="action_friends">Friends</string>
+    <string name="action_users">Users</string>
     <string name="title_account">Account</string>
     <string name="action_settings">Settings</string>
     <string name="action_logout">Logout</string>
@@ -120,6 +120,7 @@
         <item>-1</item>
     </string-array>
 
+
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Example settings for Notifications -->
@@ -142,13 +143,14 @@
     <string name="save_profile">Save Profile</string>
     <string name="user_bio">User Bio:</string>
     <string name="title_test_list">Items</string>
+    <string name="title_admin">Mod Tools</string>
     <string name="title_test_detail">TEST Detail</string>
     <string name="description">Description:</string>
     <string name="rating">Tomato Rating:</string>
     <string name="comments">Comments:</string>
     <string name="user_rating">User Rating:</string>
     <string name="my_review">My Review:</string>
-    <string name="score">score:</string>
+    <string name="score">Score:</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
 

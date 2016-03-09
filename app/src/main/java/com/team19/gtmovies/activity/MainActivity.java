@@ -444,7 +444,7 @@ public class MainActivity extends AppCompatActivity
      * @param movie
      * @param list
      */
-    private void getMovie(Movie movie, final List<Movie> list) {
+    private void getMovie(final Movie movie, final List<Movie> list) {
         Log.d("GTMovies", "getMovie Got to handleIntent");
         if (movie == null) {
             return;
