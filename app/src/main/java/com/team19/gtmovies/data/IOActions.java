@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.exception.DuplicateUserException;
 import com.team19.gtmovies.exception.NullUserException;
 import com.team19.gtmovies.pojo.Movie;

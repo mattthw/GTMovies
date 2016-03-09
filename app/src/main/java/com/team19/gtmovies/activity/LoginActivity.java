@@ -16,8 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.exception.DuplicateUserException;
 import com.team19.gtmovies.exception.IllegalUserException;

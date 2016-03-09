@@ -23,8 +23,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.data.CurrentState;
 
 import java.util.List;
 

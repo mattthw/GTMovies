@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.data;
 
 import com.team19.gtmovies.pojo.User;
 

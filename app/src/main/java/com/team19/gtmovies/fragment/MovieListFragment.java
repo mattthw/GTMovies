@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.team19.gtmovies.R;
-import com.team19.gtmovies.SingletonMagic;
 import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
+import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.pojo.Movie;
 
 import java.util.List;

@@ -31,10 +31,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
-import com.team19.gtmovies.SingletonMagic;
+import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
+import com.team19.gtmovies.data.ReviewController;
+import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.fragment.MovieListFragment;
 import com.team19.gtmovies.pojo.Movie;
 
@@ -44,7 +45,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The Main Activity
@@ -192,7 +192,8 @@ public class MainActivity extends AppCompatActivity
                         scroller();
                         criteriaBar.setVisibility(View.VISIBLE);
                         if (!MovieListFragment.hasYourRecommendationsList()) {
-                            getMoviesFromAPI(SingletonMagic.recommendations, getRecommendations());
+                            getMoviesFromAPI(SingletonMagic.recommendations,
+                                    ReviewController.getRecommendations());
                         } else {
                             movieListFragment = MovieListFragment.newInstance(position);
                             fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
@@ -221,12 +222,14 @@ public class MainActivity extends AppCompatActivity
                         scroller();
                         criteriaBar.setVisibility(View.VISIBLE);
                         if (!MovieListFragment.hasYourRecommendationsList()) {
-                            getMoviesFromAPI(SingletonMagic.recommendations, getRecommendations());
+                            getMoviesFromAPI(SingletonMagic.recommendations,
+                                    ReviewController.getRecommendations());
                         } else {
                             movieListFragment = MovieListFragment.newInstance(position);
                             fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                                     movieListFragment).commit();
                         }
+                        setupMajorButton();
                         break;
                     default:
                         Log.e("GTMovies", "Incorrect int for tab.");
@@ -272,6 +275,20 @@ public class MainActivity extends AppCompatActivity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
     }
 
+    /**
+     * Sets up listener for genre button
+     */
+    public void setupMajorButton() {
+        final View majorButton = findViewById(R.id.main_search_bar);
+        majorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getMoviesFromAPI(SingletonMagic.recommendations,
+                        ReviewController.getRecommendations(ReviewController.BY_MAJOR));
+            }
+        });
+    }
+    
     /**
      * Fills lists of movies for tabs.
      */
@@ -419,24 +436,6 @@ public class MainActivity extends AppCompatActivity
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
-    }
-
-    /**
-     * Retrieves initial recommendations based on highest rating
-     * @return list of Movies
-     */
-    public List getRecommendations() {
-        List<Movie> list = new ArrayList<>();
-        Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
-        Log.d("GTMovies", "we gitin 2 dis met??" + IOActions.getMovies().size());
-        for (Movie movie : movieSet) {
-            Log.d("GTMovies", "any here " + movie.getUserRating());
-            if (movie.getUserRating() >= 0) {
-                list.add(movie);
-            }
-        }
-        Log.d("GTMovies getRec", "rec " + list.toString());
-        return list;
     }
 
     /**
