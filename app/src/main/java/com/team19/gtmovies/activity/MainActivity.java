@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -61,6 +60,7 @@ public class MainActivity extends AppCompatActivity
     protected static View navHeader;
     protected static FragmentManager fragmentManager;
     protected static CriteriaActivity criteriaActivity;
+    private static int currentPage;
 
 
 
@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity
         // Populate lists of new movies and top rentals
         //getMovies();
         getMoviesFromAPI(SingletonMagic.newMovie, null);
+        currentPage = 0;
+        findViewById(R.id.criteria_bar).setVisibility(View.GONE);
         //getMoviesFromAPI(SingletonMagic.topRental, null);
 
         // Change John Smith to username
@@ -207,38 +209,56 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
+                currentPage = position;
                 switch (position) {
                     case MovieListFragment.TOP_RENTALS_TAB:
+                        criteriaBar.setVisibility(View.GONE);
                         Log.d("Main", "onPageSelected case TOP_RENTALS");
 
                         if (!MovieListFragment.hasTopRentalsList()) {
-                            Log.d("Main", "onPageSelected getMovies called");
+                            Log.d("Main", "onPageSelected rent getMovies called");
                             getMoviesFromAPI(SingletonMagic.topRental, null);
-                        } //otherwise fall through
-                        Log.d("Main", "onPageSelected Falling Through");
+                        } else { //otherwise fall through
+                            Log.d("Main", "onPageSelected rent not empty\n"
+                                    + "rent calling updateUI");
+                            updateUI(MovieListFragment.TOP_RENTALS_TAB);
+                        }
+                        /*Log.d("Main", "onPageSelected Falling Through");
+                        movieListFragment = MovieListFragment.newInstance(position);
+                        Log.d("Main", "topRentals " + movieListFragment.toPrettyString(position));
+                        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                                movieListFragment).commit();*/
+                        break;
                     case MovieListFragment.NEW_MOVIES_TAB:
                         Log.d("Main", "onPageSelected case NEW_MOVIES");
                         Log.d("Main", "onPageSelected position: " + position);
+                        criteriaBar.setVisibility(View.GONE);
+                        Log.d("Main", "new calling updateUI");
+                        updateUI(MovieListFragment.NEW_MOVIES_TAB);
 
                         //MovieListFragment has already been displayed. Display again.
-                        MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
-                        Log.d("Main", movieListFragment.toPrettyString(position));
+                        /*movieListFragment = MovieListFragment.newInstance(position);
+                        Log.d("Main", "newMovies " + movieListFragment.toPrettyString(position));
                         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                                movieListFragment).commit();
+                                movieListFragment).commit();*/
                         break;
                     case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
                         Log.d("Main", "onPageSelected case YOUR_RECOMMENDATIONS_TAB");
-
                         scroller();
                         criteriaBar.setVisibility(View.VISIBLE);
                         if (!MovieListFragment.hasYourRecommendationsList()) {
+                            Log.d("Main", "onPageSelected rec getMovies called");
                             getMoviesFromAPI(SingletonMagic.recommendations,
                                     ReviewController.getRecommendations());
                         } else {
-                            movieListFragment = MovieListFragment.newInstance(position);
-                            fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                                    movieListFragment).commit();
+                            Log.d("Main", "onPageSelected rec not empty. pos: " + position
+                                    +"\nRec calling updateUI");
+                            updateUI(position);
                         }
+                        /*movieListFragment = MovieListFragment.newInstance(position);
+                        Log.d("Main", "yourRecs " + movieListFragment.toPrettyString(position));
+                        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                                movieListFragment).commit();*/
                         setupMajorButton();
                         break;
                     default:
@@ -269,6 +289,7 @@ public class MainActivity extends AppCompatActivity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                currentPage = 3;    //TODO: change this so search returns back correctly
                 Log.d("GTMovies", "break here");
                 //Log.d("GTMovies", "query: " + searchView.getQuery().toString());
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
@@ -331,6 +352,7 @@ public class MainActivity extends AppCompatActivity
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
         if (requestType.equals(SingletonMagic.recommendations)) {
+            Log.d("getMoviesFromAPI", "recommendations");
             //The last url request. Used to compare to find last movie in onResponse
             final String lastURL;
             if (movieList != null && movieList.size() > 0) {
@@ -365,10 +387,8 @@ public class MainActivity extends AppCompatActivity
                             if (urlRaw.equals(lastURL)) {
                                 //Now update UI
                                 MovieListFragment.setYourRecommendationsList(movieArray);
-                                MovieListFragment movieListFragment = MovieListFragment.newInstance(
-                                        MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
-                                fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                                        movieListFragment).commit();
+                                Log.d("Main", "getMoviesFromAPI rec calling updateUI");
+                                updateUI(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
                             }
 
                             Log.d("getMovie movie success", "rec movie:" + new Movie(resp));
@@ -414,29 +434,35 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     //Create proper MovieListFragment
-                    MovieListFragment movieListFragment;
+                    int tab;
                     if (requestType.equals(SingletonMagic.newMovie)) {
                         Log.d("JinuMain", "newMovieFragment");
                         MovieListFragment.setNewMoviesList(movieArray);
-                        movieListFragment = MovieListFragment.newInstance(
-                                MovieListFragment.NEW_MOVIES_TAB);
+                        /*movieListFragment = MovieListFragment.newInstance(
+                                MovieListFragment.NEW_MOVIES_TAB);)*/
+                        tab = MovieListFragment.NEW_MOVIES_TAB;
                     } else if (requestType.equals(SingletonMagic.topRental)) {
                         Log.d("JinuMain", "topRentalFragment");
                         MovieListFragment.setTopRentalsList(movieArray);
-                        movieListFragment = MovieListFragment.newInstance(
-                                MovieListFragment.TOP_RENTALS_TAB);
+                        /*movieListFragment = MovieListFragment.newInstance(
+                                MovieListFragment.TOP_RENTALS_TAB);*/
+                        tab = MovieListFragment.TOP_RENTALS_TAB;
                     } else {
                         Log.d("JinuMain", "nullFragment");
-                        movieListFragment = null;
+                        //movieListFragment = null;
+                        tab = -1;
                     }
 
                     Log.e("Austin", "Can not perform this action after onSaveInstanceState");
                     //ERROR: Can not perform this action after onSaveInstanceState
                     //Update UI
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    /*FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.main_frame_layout,
                             movieListFragment);
-                    fragmentTransaction.commit();
+                    fragmentTransaction.commit();*/
+
+                    Log.d("Main", "getMoviesFromAPI tab " + tab + " calling updateUI");
+                    updateUI(tab);
                     // Austin stuff
 //                    fragmentTransaction.commitAllowingStateLoss();
 //                    fragmentManager.executePendingTransactions();
@@ -459,9 +485,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     *
-     * @param movie
-     * @param list
+     * Updates fragment
+     * @param tab index of tab to change to
+     */
+    private void updateUI(int tab) {
+        Log.d("main updateUI", "tab:" + tab + " currentPage:" + currentPage);
+        if (tab == currentPage) {
+            MovieListFragment movieListFragment = MovieListFragment.newInstance(tab);
+            fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                    movieListFragment).commitAllowingStateLoss();
+            Log.d("Main", "update UI" + movieListFragment.toPrettyString(tab));
+        }
+    }
+
+    /**
+     * Obtains movie details from APi
+     * @param movie Movie object containing MovieID to use to find movie
+     * @param list the list to add the movie to
      */
     private void getMovie(final Movie movie, final List<Movie> list) {
         Log.d("GTMovies", "getMovie Got to handleIntent");

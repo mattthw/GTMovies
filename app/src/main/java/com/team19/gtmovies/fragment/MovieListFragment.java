@@ -149,6 +149,7 @@ public class MovieListFragment extends Fragment {
             case 3: return searchFragment;
             default: return null;
         }*/
+        Log.d("MLFrag.newInstance", "page " + page);
         Bundle mBundle = new Bundle();
         mBundle.putInt(ARG_ITEM_ID, page);
         MovieListFragment fragment = new MovieListFragment();
@@ -220,31 +221,43 @@ public class MovieListFragment extends Fragment {
             switch (getArguments().getInt(ARG_ITEM_ID)) {
                 case NEW_MOVIES_TAB:
                     Log.d("JinuMLFrag", "newMoviesList RecyclerViewAdapter");
-                    if (null == newMoviesList || newMoviesList.isEmpty()) {
+                    if (newMoviesList == null || newMoviesList.isEmpty()) {
                         Log.e("MovieListFragment", "newMovieList is null or empty");
+                    } else {
+                        Log.d("MovieListFragment", "newMovieList is ok " + newMoviesList);
                     }
                     mAdapter = new MovieRecyclerViewAdapter(newMoviesList);
+                    Log.d("MLFrag", "newMoviesList " + mAdapter);
                     break;
                 case TOP_RENTALS_TAB:
                     Log.d("JinuMLFrag", "topRentalsList RecyclerViewAdapter");
-                    if (null == newMoviesList || newMoviesList.isEmpty()) {
+                    if (null == topRentalsList || topRentalsList.isEmpty()) {
                         Log.e("MovieListFragment", "topRentalsList is null or empty");
+                    } else {
+                        Log.d("MovieListFragment", "topRentalsList is ok " + topRentalsList);
                     }
                     mAdapter = new MovieRecyclerViewAdapter(topRentalsList);
+                    Log.d("MLFrag", "topRentalsList " + mAdapter);
                     break;
                 case YOUR_RECOMMENDATIONS_TAB:
                     Log.d("JinuMLFrag", "yourRecommendationsList RecyclerViewAdapter");
-                    if (null == newMoviesList || newMoviesList.isEmpty()) {
+                    if (null == yourRecommendationsList || yourRecommendationsList.isEmpty()) {
                         Log.e("MovieListFragment", "yourRecommendationsList is null or empty");
+                    } else {
+                        Log.d("MovieListFragment", "yourRecList is ok " + yourRecommendationsList);
                     }
                     mAdapter = new MovieRecyclerViewAdapter(yourRecommendationsList);
+                    Log.d("MLFrag", "yourRecList " + mAdapter);
                     break;
                 case SEARCH:
                     Log.d("JinuMLFrag", "searchMovieList RecyclerViewAdapter");
-                    if (null == newMoviesList || newMoviesList.isEmpty()) {
+                    if (null == searchMovieList || searchMovieList.isEmpty()) {
                         Log.e("MovieListFragment", "searchMovieList is null or empty");
+                    } else {
+                        Log.d("MovieListFragment", "searchMovieList is ok " + searchMovieList);
                     }
                     mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+                    Log.d("MLFrag", "searchMovieList " + mAdapter);
                     break;
                 default:
                     Log.e("MLFrag", "Incorrect int for fragment list.");
@@ -357,6 +370,11 @@ public class MovieListFragment extends Fragment {
      * @return True if topRentalsList not null, false otherwise
      */
     public static boolean hasTopRentalsList() {
+        if (topRentalsList == null) {
+            Log.d("MLFrag", "Rent null");
+        } else {
+            Log.d("MLFrag", "Rent exists: " + topRentalsList);
+        }
         return topRentalsList != null;
     }
 
@@ -365,6 +383,11 @@ public class MovieListFragment extends Fragment {
      * @return True if yourRecommendationsList not null, false otherwise
      */
     public static boolean hasYourRecommendationsList() {
+        if (yourRecommendationsList == null) {
+            Log.d("MLFrag", "Rec null");
+        } else {
+            Log.d("MLFrag", "Rec exists: " + yourRecommendationsList);
+        }
         return yourRecommendationsList != null;
     }
 
@@ -454,13 +477,6 @@ public class MovieListFragment extends Fragment {
                 return super.toString() + " '" + mMovieTitleView.getText() + "'";
             }
         }
-
-
-
-
-
-
-
 
         /**
          * Public constructor for adapter
