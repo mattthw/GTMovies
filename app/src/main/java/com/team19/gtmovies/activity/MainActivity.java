@@ -288,7 +288,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-    
+
     /**
      * Fills lists of movies for tabs.
      */
