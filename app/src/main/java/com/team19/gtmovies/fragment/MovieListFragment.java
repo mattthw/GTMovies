@@ -4,18 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
+import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.pojo.Movie;
 
@@ -442,6 +446,8 @@ public class MovieListFragment extends Fragment {
     public class MovieRecyclerViewAdapter
             extends RecyclerView.Adapter<MovieRecyclerViewAdapter.MovieViewHolder> {
         private List<Movie> movieList;
+        private View itemView;
+        private int oldPosition = 0;
 
         /**
          * inner class for RecyclerView.ViewHolder
@@ -489,7 +495,7 @@ public class MovieListFragment extends Fragment {
 
         @Override
         public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(
+            itemView = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.movie_list_content, parent, false);
 
             Log.d("MLFrag", "onCreateViewHolder");
@@ -501,6 +507,9 @@ public class MovieListFragment extends Fragment {
             holder.mMovieInfo = movieList.get(position);
 
             Log.d("MLFrag", "onBindViewHolder");
+
+            toggleTopBars(position);
+
             //holder.poster.setImageResource(mMovieInfo.poster);
             holder.mMoviePosterView.setImageUrl(
                     holder.mMovieInfo.getPosterURL(),
@@ -566,6 +575,36 @@ public class MovieListFragment extends Fragment {
                 Log.e("MLFrag", "null movieList given for getItemCount");
                 return -1;
             }
+        }
+
+        /**
+         *
+         * @param position
+         */
+        private void toggleTopBars(int position) {
+            ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.main_view2);
+            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.main_toolbar);
+            ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.view_pager);
+
+            if (CurrentState.getOpenHeight() == 0) {
+                CurrentState.setOpenHeight(viewPager.getHeight());
+                CurrentState.setClosedHeight(viewPager.getHeight() + toolbar.getHeight());
+            }
+
+            //On scroll up/down, shows/hides top bars
+            if (position > oldPosition ) {
+                Log.d("heights", "oldViewPager:" + viewPager.getHeight());
+                viewPager.getLayoutParams().height = CurrentState.getClosedHeight();
+                Log.d("heights", "viewPager:" + viewPager.getHeight() + " toolbar:" + toolbar.getHeight());
+                toolbar.setVisibility(View.GONE);
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            } else {
+                viewPager.getLayoutParams().height = CurrentState.getOpenHeight();
+                toolbar.setVisibility(View.VISIBLE);
+                scrollView.fullScroll(ScrollView.FOCUS_UP);
+            }
+            Log.d("toggleTopBars", "change: " + (oldPosition - position));
+            oldPosition = position;
         }
     }
 

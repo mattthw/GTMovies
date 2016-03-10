@@ -3,6 +3,9 @@ package com.team19.gtmovies.activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -18,11 +21,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -31,9 +33,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.controller.ReviewController;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
-import com.team19.gtmovies.data.ReviewController;
 import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.fragment.MovieListFragment;
 import com.team19.gtmovies.pojo.Movie;
@@ -244,6 +246,7 @@ public class MainActivity extends AppCompatActivity
                         break;
                     case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
                         Log.d("Main", "onPageSelected case YOUR_RECOMMENDATIONS_TAB");
+                        ((ScrollView) findViewById(R.id.main_view2)).fullScroll(View.FOCUS_DOWN);
                         scroller();
                         criteriaBar.setVisibility(View.VISIBLE);
                         if (!MovieListFragment.hasYourRecommendationsList()) {
@@ -312,12 +315,34 @@ public class MainActivity extends AppCompatActivity
      * Sets up listener for genre button
      */
     public void setupMajorButton() {
-        final View majorButton = findViewById(R.id.main_search_bar);
+        boolean selected = false;
+        Log.d("main", "major button");
+        final RelativeLayout majorButton = (RelativeLayout) findViewById(R.id.major_button);
+        final TextView majorText = (TextView) findViewById(R.id.major_text);
+        final GradientDrawable majorBackground = (GradientDrawable) majorButton.getBackground();
         majorButton.setOnClickListener(new View.OnClickListener() {
+            boolean selected = false;
+
             @Override
             public void onClick(View v) {
-                getMoviesFromAPI(SingletonMagic.recommendations,
-                        ReviewController.getRecommendations(ReviewController.BY_MAJOR));
+                Log.e("main", "major button onClick");
+                if (!selected) {
+                    majorButton.setElevation(getResources().getDimension(R.dimen.raised_elevation));
+                    majorBackground.setColorFilter(
+                            ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary),
+                            PorterDuff.Mode.LIGHTEN);
+                    majorText.setTextColor(Color.WHITE);
+                    getMoviesFromAPI(SingletonMagic.recommendations,
+                            ReviewController.getRecommendations(ReviewController.BY_MAJOR));
+                    selected = true;
+                } else {
+                    majorButton.setElevation(getResources().getDimension(R.dimen.flat_elevation));
+                    majorBackground.clearColorFilter();
+                    majorText.setTextColor(ContextCompat.getColor(getApplicationContext(),
+                            R.color.colorPrimary));
+                    getMoviesFromAPI(SingletonMagic.recommendations, ReviewController.getRecommendations());
+                    selected = false;
+                }
             }
         });
     }
@@ -494,7 +519,7 @@ public class MainActivity extends AppCompatActivity
             MovieListFragment movieListFragment = MovieListFragment.newInstance(tab);
             fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                     movieListFragment).commitAllowingStateLoss();
-            fragmentManager.executePendingTransactions();
+            //fragmentManager.executePendingTransactions();
             Log.d("Main", "update UI" + movieListFragment.toPrettyString(tab));
         }
     }
@@ -556,6 +581,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void scroller() {
+        //the outer scrollView
+        /*final ScrollView outerScrollView = (ScrollView) findViewById(R.id.main_view2);
+
+        if (outerScrollView.onStartNestedScroll(findViewById(R.id.main_linear_layout),
+                findViewById(R.id.movie_list_view), View.SCROLL_AXIS_VERTICAL)) {
+            Log.d("main", "onStartNestedScroll true");
+        } else {
+            Log.d("main", "onStartNestedScroll true");
+        }
+
         final ViewTreeObserver.OnScrollChangedListener downListener = new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
@@ -570,14 +605,13 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        //the outer scrollView
-        final ScrollView outerScrollView = (ScrollView) findViewById(R.id.main_view2);
 
-        outerScrollView.setOnTouchListener(new View.OnTouchListener() {
+        findViewById(R.id.main_frame_layout).setOnTouchListener(new View.OnTouchListener() {
             private ViewTreeObserver observer;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                Log.d("main", "scroller ontouch");
                 if (event.getAction() == MotionEvent.ACTION_SCROLL) {
                     if (event.getAxisValue(MotionEvent.AXIS_VSCROLL) > 0) {
                         if (observer != null) {
@@ -602,7 +636,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 return false;
             }
-        });
+        });*/
     }
 
 

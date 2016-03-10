@@ -154,9 +154,13 @@
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
 
+
+    <string name="criteria_major">Major</string>
+    <string name="criteria_genre">Genre</string>
+    <string name="criteria_rating">Rating</string>
     <string-array name="criteria">
-        <item>Major</item>
-        <item>Genre</item>
-        <item>Rating</item>
+        <item>@string/criteria_major</item>
+        <item>@string/criteria_genre</item>
+        <item>@string/criteria_rating</item>
     </string-array>
 </resources>

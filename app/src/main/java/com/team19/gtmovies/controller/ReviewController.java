@@ -1,7 +1,9 @@
-package com.team19.gtmovies.data;
+package com.team19.gtmovies.controller;
 
 import android.util.Log;
 
+import com.team19.gtmovies.data.CurrentState;
+import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.pojo.Movie;
 
 import java.util.ArrayList;

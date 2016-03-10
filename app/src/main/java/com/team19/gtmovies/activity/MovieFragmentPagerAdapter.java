@@ -54,6 +54,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
         Bundle arguments = new Bundle();
         arguments.putInt(ARG_ITEM_ID, position);
         fragment.setArguments(arguments);
+
         return fragment;
     }
 
