@@ -397,7 +397,7 @@ public class MainActivity extends AppCompatActivity
                     String movieID = SingletonMagic.search + "/" + movie.getID();
                     final String urlRaw = String.format(
                             SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
-                    JsonObjectRequest detailRequest = new JsonObjectRequest(Request.Method.GET,
+                    movieRequest = new JsonObjectRequest(Request.Method.GET,
                             urlRaw, null, new Response.Listener<JSONObject>() {
 
                         @Override
@@ -425,8 +425,10 @@ public class MainActivity extends AppCompatActivity
                             Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
                         }
                     });
+                    SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
                 }
             }
+            return;
         } else {
             final String urlRaw = String.format(
                     SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
@@ -580,6 +582,10 @@ public class MainActivity extends AppCompatActivity
         SingletonMagic.getInstance(this).addToRequestQueue(detailRequest);
     }
 
+    //TODO: Consult Austin to erase this code
+    /**
+     * NOT USED!
+     */
     private void scroller() {
         //the outer scrollView
         /*final ScrollView outerScrollView = (ScrollView) findViewById(R.id.main_view2);

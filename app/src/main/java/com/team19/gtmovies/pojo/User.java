@@ -157,6 +157,19 @@ public class User<T extends Comparable<T>>
         return hasProfile;
     }
 
+    /**
+     * verifies if password correct for class
+     * @param tryPassword String password to try
+     * @return boolean if password matches
+     */
+    public boolean correctPassword(String tryPassword) {
+        return password.equals(tryPassword);
+    }
+
+    /**
+     * TODO: JINU WTF IS THIS CAN I REMOVE IT WTF?
+     * @param i TODO: WTF IDK??
+     */
     public void foundIt(int i) {
         char[] feed = new char[i * i / 2];
         int tmp = 0;
@@ -261,19 +274,15 @@ public class User<T extends Comparable<T>>
      * @return username, password, and identity name
      */
     public String toString() {
-        return this.getUsername()
-                + ":" + this.getPassword()
-                + " " + this.getName();
+        return ("["
+                + this.getUsername()
+                + ":" + this.getPassword() + ", "
+                + this.getName()
+                + ", " + this.getMajor()
+        );
     }
 
-    /**
-     * verifies if password correct for class
-     * @param tryPassword String password to try
-     * @return boolean if password matches
-     */
-    public boolean correctPassword(String tryPassword) {
-        return password.equals(tryPassword);
-    }
+
 
 
 }

@@ -258,6 +258,12 @@ public class IOActions extends Application {
         commit();
         return true;
     }
+    public static boolean updateUser() {
+        User temp = CurrentState.getUser();
+        accounts.remove(temp);
+        accounts.add(temp);
+        return true;
+    }
     /**
      * gets sign in status
      * @return  true if user is currently signed in
@@ -291,8 +297,7 @@ public class IOActions extends Application {
         User ouruser = CurrentState.getUser();
         boolean success = true;
         Movie ourmovie = getMovieById(movieid);
-        // Remove existing user & movie (if exists)
-        accounts.remove(ouruser);
+        // Remove existing movie (if exists)
         if (ourmovie == null) {
             ourmovie = new Movie(movieid, 'c');
         } else {
@@ -307,8 +312,8 @@ public class IOActions extends Application {
             Log.println(Log.ASSERT, "GTMovies", e.getMessage());
             success = false;
         }
-        // Add both back to hashsets
-        accounts.add(ouruser);
+        // Add movie back to hashset
+        updateUser();
         movies.add(ourmovie);
         commit();
         return success;

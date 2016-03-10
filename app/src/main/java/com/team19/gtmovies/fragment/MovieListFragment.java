@@ -78,6 +78,12 @@ public class MovieListFragment extends Fragment {
     }*/
 
     //TODO: ERASE THIS FUNCTION AFTER DEBUG
+    /**
+     * Used only for debugging purposes
+     * Returns the name of the said tab and the titles of the Movies associated with the tab
+     * @param position the target position of the tab
+     * @return the title of the tab and the title of the Movies associated with the tab
+     */
     public String toPrettyString(int position) {
         String result = "";
         if (position == NEW_MOVIES_TAB) {
@@ -579,33 +585,39 @@ public class MovieListFragment extends Fragment {
         }
 
         /**
-         *
-         * @param position
+         * Collapses top bars on scroll
+         * @param position new scroll position
          */
         private void toggleTopBars(int position) {
             ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.main_view2);
             Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.main_toolbar);
             ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.view_pager);
 
-            if (CurrentState.getOpenHeight() == 0) {
-                CurrentState.setOpenHeight(viewPager.getHeight());
-                CurrentState.setClosedHeight(viewPager.getHeight() + toolbar.getHeight());
-            }
+            if (toolbar != null) {
+                if (CurrentState.getOpenHeight() == 0) {
+                    CurrentState.setOpenHeight(viewPager.getHeight());
+                    CurrentState.setClosedHeight(viewPager.getHeight() + toolbar.getHeight());
+                }
 
-            //On scroll up/down, shows/hides top bars
-            if (position > oldPosition ) {
-                Log.d("heights", "oldViewPager:" + viewPager.getHeight());
-                viewPager.getLayoutParams().height = CurrentState.getClosedHeight();
-                Log.d("heights", "viewPager:" + viewPager.getHeight() + " toolbar:" + toolbar.getHeight());
-                toolbar.setVisibility(View.GONE);
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-            } else {
-                viewPager.getLayoutParams().height = CurrentState.getOpenHeight();
-                toolbar.setVisibility(View.VISIBLE);
-                scrollView.fullScroll(ScrollView.FOCUS_UP);
+                //On scroll up/down, shows/hides top bars
+                if (position > oldPosition) {
+                    Log.d("heights", "oldViewPager:" + viewPager.getHeight());
+                    viewPager.getLayoutParams().height = CurrentState.getClosedHeight();
+                    Log.d("heights",
+                            "viewPager:"
+                                    + viewPager.getHeight()
+                                    + " toolbar:" + toolbar.getHeight());
+                    toolbar.setVisibility(View.GONE);
+                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                } else {
+                    viewPager.getLayoutParams().height = CurrentState.getOpenHeight();
+                    toolbar.setVisibility(View.VISIBLE);
+                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                }
+                Log.d("toggleTopBars", "change: " + (oldPosition - position));
+                oldPosition = position;
+
             }
-            Log.d("toggleTopBars", "change: " + (oldPosition - position));
-            oldPosition = position;
         }
     }
 

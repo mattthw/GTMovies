@@ -20,26 +20,11 @@ public class ReviewController {
     public static final int BY_RATING = 3;
 
     /**
-     * Obtains default list of recommendations
-     * @return default list of recommendations
-     */
-    public static List getRecommendations() {
-        List<Movie> list = new ArrayList<>();
-        Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
-        Log.d("GTMovies", "we gitin 2 dis met??" + IOActions.getMovies().size());
-        for (Movie movie : movieSet) {
-            Log.d("GTMovies", "any here " + movie.getUserRating());
-            if (movie.getUserRating() >= 0) {
-                list.add(movie);
-            }
-        }
-        Log.d("GTMovies getRec", "rec " + list.toString());
-        return list;
-    }
-
-    /**
      * Obtains list of recommendations by parameter
      * @param code filter for list
+     *             1: MAJOR
+     *             2: GENRE
+     *             3: RATING (default)
      * @return list of movie recommendations
      */
     public static List getRecommendations(int code) {
@@ -47,20 +32,51 @@ public class ReviewController {
         switch (code) {
             case BY_MAJOR:
                 return getRecommendationsByMajor();
+            case BY_GENRE:
+                //fallthrough
+            case BY_RATING:
+                //fallthrough
             default:
-                return null;
+                return getRecommendations();
         }
     }
 
+    /**
+     * Obtains default list of recommendations
+     * (requires user average rating greater than
+     *      specified amount)
+     * @return default list of recommendations
+     */
+    public static List getRecommendations() {
+        List<Movie> list = new ArrayList<>();
+        Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
+        Log.d("GTMovies", "we gitin 2 dis met??" + IOActions.getMovies().size());
+        for (Movie movie : movieSet) {
+            if (movie.getUserRating() >= 0) {
+                Log.v("GTMovies getRec add", "[mode:default] " + movie.getUserRating());
+                list.add(movie);
+            }
+        }
+        Log.i("GTMovies getRec", "rec " + list.toString());
+        return list;
+    }
+
+    /**
+     * Recommends Movies depending on the Movies liked by the User's major
+     * @return List of recommended Movies
+     */
     private static List getRecommendationsByMajor() {
         List<Movie> list = new ArrayList<>();
         Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
         String major = CurrentState.getUser().getMajor();
         for (Movie movie : movieSet) {
-            if (movie.getUserRatingByMajor(major) >= 0) {
+            int score = movie.getUserRatingByMajor(major);
+            if (score >= 0) {
+                Log.v("GTMovies rec", "[mode:major(" + major + ")] " + score);
                 list.add(movie);
             }
         }
+        Log.i("GTMovies getRec", "rec " + list.toString());
         return list;
     }
 }
