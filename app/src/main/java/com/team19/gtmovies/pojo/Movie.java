@@ -163,16 +163,16 @@ public class Movie implements Comparable<Movie>, Serializable {
      * @return rating of movie based on users' reviews
      */
     public int getUserRating() {
-        double runningtotal = 0;
-        int numusers = 0;
+        double total = 0;
+        int userCount = 0;
         for(Review i : myReviews.values()) {
-            runningtotal += i.getScore();
-            numusers++;
+            total += i.getScore();
+            userCount++;
         }
-        if(numusers == 0) { // in case of divide by zero
-            return 0;
+        if(userCount == 0) { // in case of divide by zero
+            return -1;
         } else {
-            return (int)((runningtotal/((double)numusers)) * 20);
+            return (int)((total/((double)userCount)) * 20);
         }
     }
 
@@ -182,18 +182,20 @@ public class Movie implements Comparable<Movie>, Serializable {
      * @return rating by users with specified major
      */
     public int getUserRatingByMajor(String major) {
-        int majorRating = 0;
-        int majorUsers = 0;
+        int total = 0;
+        int userCount = 0;
         for (Review review : myReviews.values()) {
-            if (major.equals(IOActions.getUserByUsername(review.getUsername()).getMajor())) {
-                majorUsers++;
-                majorRating += review.getScore();
+            String otherMajor = IOActions.getUserByUsername(review.getUsername()).getMajor();
+            if (otherMajor != null && major.equals(otherMajor)) {
+                total += review.getScore();
+                userCount++;
             }
         }
-        if (majorUsers != 0) {
-            return majorRating/majorUsers;
+        if (userCount > 0) {
+            return (int)((total/((double)userCount)) * 20);
+        } else {
+            return -1;
         }
-        return 0;
     }
 
     /**
@@ -253,14 +255,25 @@ public class Movie implements Comparable<Movie>, Serializable {
         return fullInfo;
     }
 
+    private boolean isLocal() {
+        if (getTitle() == null || getTitle().equals(""))
+            return true;
+        return false;
+    }
+
     /**
      * toString
      * @return string
      */
     public String toString() {
-        return ("{id:" + getID() + "},"
-                +"{title:" + getTitle() + "},"
-                + "{rating:" + getRating() +"},"
-                + "{description:" + getDescription() + "}");
+        if (!isLocal()) {
+            return ("{id:" + getID() + "},"
+                    +"{title:" + getTitle() + "},"
+                    + "{rating:" + getRating() +"},"
+                    + "{description:" + getDescription() + "}");
+        } else {
+            return ("[local mov] {id:" + getID() + "},"
+                    +"{user rating: " + getUserRating() + "}");
+        }
     }
 }
