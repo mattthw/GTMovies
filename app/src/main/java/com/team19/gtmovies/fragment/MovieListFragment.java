@@ -447,7 +447,7 @@ public class MovieListFragment extends Fragment {
             extends RecyclerView.Adapter<MovieRecyclerViewAdapter.MovieViewHolder> {
         private List<Movie> movieList;
         private View itemView;
-        private int oldPosition = 0;
+        private int oldPosition;
 
         /**
          * inner class for RecyclerView.ViewHolder
@@ -495,6 +495,7 @@ public class MovieListFragment extends Fragment {
 
         @Override
         public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            oldPosition = 0;
             itemView = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.movie_list_content, parent, false);
 
