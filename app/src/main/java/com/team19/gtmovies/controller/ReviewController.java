@@ -57,7 +57,7 @@ public class ReviewController {
                 list.add(movie);
             }
         }
-        Log.d("GTMovies getRec", "rec " + list.toString());
+        Log.i("GTMovies getRec", "rec " + list.toString());
         return list;
     }
 
@@ -70,11 +70,13 @@ public class ReviewController {
         Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
         String major = CurrentState.getUser().getMajor();
         for (Movie movie : movieSet) {
-            if (movie.getUserRatingByMajor(major) >= 0) {
-                Log.v("GTMovies getRec add", "[mode:major] " + movie.getUserRatingByMajor(major));
+            int score = movie.getUserRatingByMajor(major);
+            if (score >= 0) {
+                Log.v("GTMovies rec", "[mode:major(" + major + ")] " + score);
                 list.add(movie);
             }
         }
+        Log.i("GTMovies getRec", "rec " + list.toString());
         return list;
     }
 }

@@ -185,8 +185,12 @@ public class Movie implements Comparable<Movie>, Serializable {
         int total = 0;
         int userCount = 0;
         for (Review review : myReviews.values()) {
-            String otherMajor = IOActions.getUserByUsername(review.getUsername()).getMajor();
+            String curr = review.getUsername();
+            User user = IOActions.getUserByUsername(curr);
+            String otherMajor = IOActions.getUserByUsername(curr).getMajor();
             if (otherMajor != null && major.equals(otherMajor)) {
+                Log.v("GTMovies",
+                        "getRatingByMajor(parm:" + major + ", curr:" + curr + ")");
                 total += review.getScore();
                 userCount++;
             }
@@ -272,8 +276,8 @@ public class Movie implements Comparable<Movie>, Serializable {
                     + "{rating:" + getRating() +"},"
                     + "{description:" + getDescription() + "}");
         } else {
-            return ("[local mov] {id:" + getID() + "},"
-                    +"{user rating: " + getUserRating() + "}");
+            return ("[ID:'" + getID() + "', "
+                    +"USER_RATING:'" + getUserRating() + "']");
         }
     }
 }
