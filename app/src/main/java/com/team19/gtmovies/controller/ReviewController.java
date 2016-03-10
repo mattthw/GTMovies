@@ -52,6 +52,10 @@ public class ReviewController {
         }
     }
 
+    /**
+     * Recommends Movies depending on the Movies liked by the User's major
+     * @return List of recommended Movies
+     */
     private static List getRecommendationsByMajor() {
         List<Movie> list = new ArrayList<>();
         Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
