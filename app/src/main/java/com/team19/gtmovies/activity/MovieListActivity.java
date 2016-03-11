@@ -105,6 +105,14 @@ public class MovieListActivity extends AppCompatActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            for (int i = 0; i < 100; i++) {
+                for (int j = 0; j < 10000; j++) {
+                    Log.i("Useless", "This one might actually be it.");
+                }
+                for (int j = 0; j < 10000; j++) {
+                    Log.i("Useless", "But probably isn't");
+                }
+            }
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.movie_list_content, parent, false);
             return new ViewHolder(view);
@@ -126,9 +134,9 @@ public class MovieListActivity extends AppCompatActivity {
                         //arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
+                        /*getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.movie_detail_container, fragment)
-                                .commit();
+                                .commit();*/
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);

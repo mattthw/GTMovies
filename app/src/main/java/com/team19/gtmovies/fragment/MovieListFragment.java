@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -23,6 +22,7 @@ import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.pojo.Movie;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,10 +51,10 @@ public class MovieListFragment extends Fragment {
     private static boolean tabs = false;
     private boolean search = false;
 
-    /*private static final MovieListFragment tab0 = new MovieListFragment(0);
-    private static final MovieListFragment tab1 = new MovieListFragment(1);
-    private static final MovieListFragment tab2 = new MovieListFragment(2);
-    private static final MovieListFragment searchFragment = new MovieListFragment(3);*/
+    private static MovieListFragment tab0;
+    private static MovieListFragment tab1;
+    private static MovieListFragment tab2;
+    //private static final MovieListFragment searchFragment = new MovieListFragment(3);
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -65,17 +65,6 @@ public class MovieListFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
-
-    /*
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     * @param page number for page
-     */
-    /*private MovieListFragment(int page) { //TODO: The comment above indicates this change will be a problem later
-        Bundle mBundle = new Bundle();
-        mBundle.putInt(ARG_ITEM_ID, page);
-        setArguments(mBundle);
-    }*/
 
     //TODO: ERASE THIS FUNCTION AFTER DEBUG
     /**
@@ -144,6 +133,9 @@ public class MovieListFragment extends Fragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public MovieListFragment() {
+        for (int i = 0; i < 1; i++) {
+            Log.v("useless", "I'm taking a break to think about my life");
+        }
     }
 
     /*
@@ -159,7 +151,7 @@ public class MovieListFragment extends Fragment {
             case 3: return searchFragment;
             default: return null;
         }*/
-        Log.d("MLFrag.newInstance", "page " + page);
+        Log.d("MLFrag.newInstance", "page " + page + "\nstack:\n" + Arrays.toString(Thread.currentThread().getStackTrace()));
         Bundle mBundle = new Bundle();
         mBundle.putInt(ARG_ITEM_ID, page);
         MovieListFragment fragment = new MovieListFragment();
@@ -202,6 +194,14 @@ public class MovieListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < 1; j++) {
+                Log.i("Useless", "Taking a minute to think about what it all means");
+            }
+            for (int j = 0; j < 1; j++) {
+                Log.i("Useless", "Contemplating Life");
+            }
+        }
         View rootView = inflater.inflate(R.layout.movie_list, container, false);
         Log.d("MLFrag", "popping into onCreateView");
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list_view);
@@ -246,7 +246,7 @@ public class MovieListFragment extends Fragment {
                     } else {
                         Log.d("MovieListFragment", "topRentalsList is ok " + topRentalsList);
                     }
-                    mAdapter = new MovieRecyclerViewAdapter(topRentalsList);
+                    mAdapter = new MovieRecyclerViewAdapter(topRentalsList);//TODO: CHANGE BACK
                     Log.d("MLFrag", "topRentalsList " + mAdapter);
                     break;
                 case YOUR_RECOMMENDATIONS_TAB:
@@ -321,6 +321,7 @@ public class MovieListFragment extends Fragment {
      * @return true if successfully set to provided argument false if unable to
      */
     public static boolean setNewMoviesList(List<Movie> list) {
+        Log.d("MLFrag", "getMovie setNewMovies " + list);
         if (list != null) {
             newMoviesList = list;
             return true;
@@ -334,6 +335,7 @@ public class MovieListFragment extends Fragment {
      * @return true if successfully set to provided argument false if unable to
      */
     public static boolean setTopRentalsList(List<Movie> list) {
+        Log.d("MLFrag", "getMovie setTopRentals " + list);
         if (list != null) {
             topRentalsList = list;
             return true;
@@ -347,6 +349,7 @@ public class MovieListFragment extends Fragment {
      * @return true if successfully set to provided argument false if unable to
      */
     public static boolean setYourRecommendationsList(List<Movie> list) {
+        Log.d("MLFrag", "getMovie setYourRecommendations " + list);
         if (list != null) {
             yourRecommendationsList = list;
             return true;
@@ -433,6 +436,25 @@ public class MovieListFragment extends Fragment {
         return mTwoPane;
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + " ARG_ITEM_ID=" + getArguments().getInt(ARG_ITEM_ID)
+                + " newMoviesList=" + hasNewMoviesList()
+                + " topRentalsList=" + hasTopRentalsList()
+                + " youRecommendationsList=" + hasYourRecommendationsList()
+                + "\ndisplay: " + toPrettyString(getArguments().getInt(ARG_ITEM_ID)) + "\n\n";
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -495,8 +517,19 @@ public class MovieListFragment extends Fragment {
          * @param movieInfo list of movies
          */
         public MovieRecyclerViewAdapter(List<Movie> movieInfo) {
+            for (int i = 0; i < 1; i++) {
+                for (int j = 0; j < 1; j++) {
+                    Log.i("Useless", "Don't care what it all means");
+                }
+                for (int j = 0; j < 1; j++) {
+                    Log.i("Useless", "Don't care about life rn.");
+                }
+            }
             movieList = movieInfo;
             Log.d("GTMovie", "create new MovieRecyclerViewAdapter " + movieList);
+            if (movieInfo == null) {
+                Log.e("movieList null", Arrays.toString(Thread.currentThread().getStackTrace()));
+            }
         }
 
         @Override
@@ -579,7 +612,7 @@ public class MovieListFragment extends Fragment {
             if (movieList != null) {
                 return movieList.size();
             } else {
-                Log.e("MLFrag", "null movieList given for getItemCount");
+                Log.e("MLFrag", "null movieList given for getItemCount " + Arrays.toString(Thread.currentThread().getStackTrace()));
                 return -1;
             }
         }
@@ -589,7 +622,14 @@ public class MovieListFragment extends Fragment {
          * @param position new scroll position
          */
         private void toggleTopBars(int position) {
-            ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.main_view2);
+            if (position < 0) {
+                return;
+            }
+
+            Log.d("toggleTopBars", "old:" + oldPosition + " new:" + position);
+            //ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.main_view2);
+            View linearView = getActivity().findViewById(R.id.main_view2);
+            View criteriaBar =  getActivity().findViewById(R.id.criteria_bar);
             Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.main_toolbar);
             ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.view_pager);
 
@@ -600,22 +640,28 @@ public class MovieListFragment extends Fragment {
                 }
 
                 //On scroll up/down, shows/hides top bars
-                if (position > oldPosition) {
+                if (position > oldPosition + 3) {
+                    //scroll down, close top bars
                     Log.d("heights", "oldViewPager:" + viewPager.getHeight());
                     viewPager.getLayoutParams().height = CurrentState.getClosedHeight();
-                    Log.d("heights",
-                            "viewPager:"
-                                    + viewPager.getHeight()
-                                    + " toolbar:" + toolbar.getHeight());
+                    Log.d("heights", "viewPager:" + viewPager.getHeight()
+                            + " toolbar:" + toolbar.getHeight());
                     toolbar.setVisibility(View.GONE);
-                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                } else {
+                    criteriaBar.setVisibility(View.GONE);
+                    oldPosition = position;
+                    //scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                } else if (position < oldPosition - 3) {
+                    //scroll up, open top bars
                     viewPager.getLayoutParams().height = CurrentState.getOpenHeight();
                     toolbar.setVisibility(View.VISIBLE);
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    if (movieList == yourRecommendationsList) {
+                        criteriaBar.setVisibility(View.VISIBLE);
+                        viewPager.getLayoutParams().height = CurrentState.getOpenHeight() - R.dimen.text_margin;
+                    }
+                    oldPosition = position;
+                    //scrollView.fullScroll(ScrollView.FOCUS_UP);
                 }
                 Log.d("toggleTopBars", "change: " + (oldPosition - position));
-                oldPosition = position;
 
             }
         }

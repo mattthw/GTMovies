@@ -71,6 +71,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             //add info about movie from tomato API to fragment args
             arguments.putString(MovieDetailFragment.ARG_ITEM_TITLE,
                     getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_TITLE));
+            Log.d("MovieDetailActivity", "putInt=" + getIntent().getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1));
             arguments.putInt(MovieDetailFragment.ARG_ITEM_ID,
                     getIntent().getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1));
             arguments.putString(MovieDetailFragment.ARG_ITEM_DESC,
@@ -79,9 +80,9 @@ public class MovieDetailActivity extends AppCompatActivity {
                     getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_RATE));
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
+            /*getSupportFragmentManager().beginTransaction()
                     .add(R.id.movie_detail_container, fragment)
-                    .commit();
+                    .commit();*/
         }
 
         fm = getSupportFragmentManager();
@@ -129,7 +130,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             //setup Spinner for user rating
             View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_review, null);
             scoreSpin = (Spinner)view.findViewById(R.id.spinnerScore);
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.scores, android.R.layout.simple_spinner_item);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.scores, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             scoreSpin.setAdapter(adapter);
             addListenerOnSpinnerItemSelection();

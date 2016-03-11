@@ -27,7 +27,7 @@ public class ReviewController {
      *             3: RATING (default)
      * @return list of movie recommendations
      */
-    public static List getRecommendations(int code) {
+    public static List<Movie> getRecommendations(int code) {
         //TODO: implement using switch
         switch (code) {
             case BY_MAJOR:
@@ -47,14 +47,16 @@ public class ReviewController {
      *      specified amount)
      * @return default list of recommendations
      */
-    public static List getRecommendations() {
+    public static List<Movie> getRecommendations() {
         List<Movie> list = new ArrayList<>();
         Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
         Log.d("GTMovies", "we gitin 2 dis met??" + IOActions.getMovies().size());
-        for (Movie movie : movieSet) {
-            if (movie.getUserRating() >= 0) {
-                Log.v("GTMovies getRec add", "[mode:default] " + movie.getUserRating());
-                list.add(movie);
+        if (movieSet != null) {
+            for (Movie movie : movieSet) {
+                if (movie.getUserRating() >= 0) {
+                    Log.v("GTMovies getRec add", "[mode:default] " + movie.getUserRating());
+                    list.add(movie);
+                }
             }
         }
         Log.i("GTMovies getRec", "rec " + list.toString());

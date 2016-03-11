@@ -11,6 +11,8 @@
     <string name="welcome_login">Login</string>
     <string name="welcome_register">Register</string>
 
+    <string name="splash_title">GTMovies</string>
+
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
@@ -163,4 +165,8 @@
         <item>@string/criteria_genre</item>
         <item>@string/criteria_rating</item>
     </string-array>
+
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

@@ -10,7 +10,7 @@
     tools:showIn="@layout/app_bar_main"
     android:clipToPadding="false">
 
-    <ScrollView
+    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/main_view2"
@@ -40,7 +40,7 @@
                     android:layout_height="38dp"
                     android:orientation="horizontal"
                     android:id="@+id/criteria_bar"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="9dp"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="center"
                     android:animateLayoutChanges="true"
@@ -51,8 +51,8 @@
                         android:orientation="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="32dp"
-                        android:layout_marginStart="19dp"
-                        android:layout_marginEnd="19dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
                         android:layout_marginBottom="4dp"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
@@ -75,8 +75,8 @@
                         android:orientation="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="32dp"
-                        android:layout_marginStart="19dp"
-                        android:layout_marginEnd="19dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
                         android:layout_marginBottom="4dp"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
@@ -99,8 +99,8 @@
                         android:orientation="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="32dp"
-                        android:layout_marginStart="19dp"
-                        android:layout_marginEnd="19dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
                         android:layout_marginBottom="4dp"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
@@ -124,7 +124,7 @@
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="512dp">
+                android:layout_height="511dp">
                 <FrameLayout
                     android:id="@+id/main_frame_layout"
                     android:layout_width="match_parent"
@@ -132,7 +132,7 @@
             </android.support.v4.view.ViewPager>
         </LinearLayout>
 
-    </ScrollView>
+    </LinearLayout>
 </RelativeLayout>
 
 
