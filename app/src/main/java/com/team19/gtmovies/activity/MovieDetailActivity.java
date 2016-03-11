@@ -24,6 +24,8 @@ import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.fragment.MovieDetailFragment;
 
+import java.util.Arrays;
+
 /**
  * An activity representing a single Movie detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
@@ -54,6 +56,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         gotIntent = getIntent();
         rootView = findViewById(R.id.movie_detail_container);
+        Log.d("MovieDetailActivity", "onCreate " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
@@ -80,9 +83,9 @@ public class MovieDetailActivity extends AppCompatActivity {
                     getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_RATE));
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
-            /*getSupportFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.movie_detail_container, fragment)
-                    .commit();*/
+                    .commit();
         }
 
         fm = getSupportFragmentManager();

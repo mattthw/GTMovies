@@ -582,6 +582,11 @@ public class MovieListFragment extends Fragment {
                                     holder.mMovieInfo.getDescription());
                             intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
                                     holder.mMovieInfo.getRating() + "%");
+                            Log.d("Placing", holder.mMovieInfo + " "
+                                    + holder.mMovieInfo.getTitle() + " "
+                                    + holder.mMovieInfo.getID() + " "
+                                    + holder.mMovieInfo.getDescription() + " "
+                                    + holder.mMovieInfo.getRating());
 
                             context.startActivity(intent);
                         }

@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity
 
 
     public MainActivity() {
-        //super();
+        super();
+
     }
 
     @Override
@@ -119,14 +120,14 @@ public class MainActivity extends AppCompatActivity
         //getMoviesFromAPI(SingletonMagic.newMovie, null);
 
 
-//        for (int i = 0; i < 10; i++) {
-//            for (int j = 0; j < 10000; j++) {
-//                Log.i("Useless", "Well, this is a thing...A thing that doesn't work");
-//            }
-//            for (int j = 0; j < 10000; j++) {
-//                Log.i("Useless", "Write your own code. I QUITTTTT!!!");
-//            }
-//        }
+        /*for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < 100; j++) {
+                Log.i("Useless", "Well, this is a thing...A thing that doesn't work");
+            }
+            for (int j = 0; j < 100; j++) {
+                Log.i("Useless", "Write your own code. I QUITTTTT!!!");
+            }
+        }*/
 
 
         //getMoviesFromAPI(SingletonMagic.topRental, null);
@@ -275,11 +276,11 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                /*currentPage = position;
+                currentPage = position;
                 switch (position) {
                     case MovieListFragment.TOP_RENTALS_TAB:
                         criteriaBar.setVisibility(View.GONE);
-                        Log.d("Main", "onPageSelected case TOP_RENTALS");
+                        /*Log.d("Main", "onPageSelected case TOP_RENTALS");
 
                         if (!MovieListFragment.hasTopRentalsList()) {
                             Log.d("Main", "onPageSelected rent getMovies called");
@@ -288,21 +289,21 @@ public class MainActivity extends AppCompatActivity
                             Log.d("Main", "onPageSelected rent not empty\n"
                                     + "rent calling updateUI");
                             updateUI(MovieListFragment.TOP_RENTALS_TAB);
-                        }
+                        }*/
                         break;
                     case MovieListFragment.NEW_MOVIES_TAB:
+                        /*criteriaBar.setVisibility(View.GONE);
                         Log.d("Main", "onPageSelected case NEW_MOVIES");
                         Log.d("Main", "onPageSelected position: " + position);
-                        criteriaBar.setVisibility(View.GONE);
-                        Log.d("Main", "new calling updateUI");
+                        Log.d("Main", "new calling updateUI");*/
                         updateUI(MovieListFragment.NEW_MOVIES_TAB);
                         break;
                     case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                        Log.d("Main", "onPageSelected case YOUR_RECOMMENDATIONS_TAB");
+                        criteriaBar.setVisibility(View.VISIBLE);
+                        //Log.d("Main", "onPageSelected case YOUR_RECOMMENDATIONS_TAB");
                         //((ScrollView) findViewById(R.id.main_view2)).fullScroll(View.FOCUS_DOWN);
                         //scroller();
-                        criteriaBar.setVisibility(View.VISIBLE);
-                        if (!MovieListFragment.hasYourRecommendationsList()) {
+                        /*if (!MovieListFragment.hasYourRecommendationsList()) {
                             Log.d("Main", "onPageSelected rec getMovies called");
                             getMoviesFromAPI(SingletonMagic.recommendations,
                                     ReviewController.getRecommendations());
@@ -310,7 +311,7 @@ public class MainActivity extends AppCompatActivity
                             Log.d("Main", "onPageSelected rec not empty. pos: " + position
                                     +"\nRec calling updateUI");
                             updateUI(position);
-                        }
+                        }*/
                         setupMajorButton();
                         break;
                     default:
@@ -318,7 +319,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 if (findViewById(R.id.main_toolbar).getVisibility() == View.INVISIBLE) {
                     //findViewById(R.id.main_toolbar).setVisibility(View.VISIBLE);
-                }*/
+                }
 
                 //new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
                 //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
@@ -885,6 +886,10 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public static void setIOA(IOActions actions) {
+        ioa = actions;
     }
 
 

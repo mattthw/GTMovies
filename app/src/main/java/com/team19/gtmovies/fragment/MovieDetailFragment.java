@@ -17,6 +17,8 @@ import com.team19.gtmovies.activity.MovieListActivity;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.pojo.Movie;
 
+import java.util.Arrays;
+
 /**
  * A fragment representing a single Movie detail screen.
  * This fragment is either contained in a {@link MovieListActivity}
@@ -61,6 +63,8 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.e("MovieDetailFragment", "onCreate " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
         if (getArguments().containsKey(ARG_ITEM_TITLE)) {
             // Load the dummy content specified by the fragment
