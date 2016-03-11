@@ -22,7 +22,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity
         setupSearch();
 
         // Change John Smith to username
-        ((TextView) navHeader.findViewById(R.id.headerName)).setText(CurrentState.getUser().getName());
+        //((TextView) navHeader.findViewById(R.id.headerName)).setText(CurrentState.getUser().getName()); //TODO: sorry Jinu null execption
 
         // Place view
         MovieListFragment.setTabs();
@@ -231,7 +233,8 @@ public class MainActivity extends AppCompatActivity
         movieFragmentPagerAdapter = new MovieFragmentPagerAdapter(getSupportFragmentManager(),
                 MainActivity.this);
         ((ViewPager) findViewById(R.id.view_pager)).setAdapter(movieFragmentPagerAdapter);
-        ((ViewPager) findViewById(R.id.view_pager)).addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        ((ViewPager) findViewById(R.id.view_pager)).addOnPageChangeListener(
+                new ViewPager.OnPageChangeListener() {
             LinearLayout criteriaBar = (LinearLayout) findViewById(R.id.criteria_bar);
             //Sliding animations to use for the additional criteria bar in recommendations
             /*Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -297,10 +300,15 @@ public class MainActivity extends AppCompatActivity
                     case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
                         criteriaBar.setVisibility(View.VISIBLE);
                         List<Movie> newRecommendations = ReviewController.getRecommendations();
-                        /*if (!newRecommendations.equals(recommendations) && findViewById(R.id.major_button).) {
+                        Log.e("recommendations", "New:" + newRecommendations + "\nOld:"
+                                +recommendations
+                                + "\nelevation=" + findViewById(R.id.major_button).getElevation());
+                        if (!newRecommendations.equals(recommendations)
+                                && findViewById(R.id.major_button).getElevation()
+                                == getResources().getDimension(R.dimen.flat_elevation)); {
                             recommendations = newRecommendations;
                             new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
-                        }*/
+                        }
                         //Log.d("Main", "onPageSelected case YOUR_RECOMMENDATIONS_TAB");
                         //((ScrollView) findViewById(R.id.main_view2)).fullScroll(View.FOCUS_DOWN);
                         //scroller();
@@ -391,17 +399,18 @@ public class MainActivity extends AppCompatActivity
                             ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary),
                             PorterDuff.Mode.LIGHTEN);
                     majorText.setTextColor(Color.WHITE);
-                    getMoviesFromAPI(SingletonMagic.recommendations,
-                            ReviewController.getRecommendations(ReviewController.BY_MAJOR));
+                    recommendations = ReviewController.getRecommendations(
+                            ReviewController.BY_MAJOR);
                     selected = true;
                 } else {
                     majorButton.setElevation(getResources().getDimension(R.dimen.flat_elevation));
                     majorBackground.clearColorFilter();
                     majorText.setTextColor(ContextCompat.getColor(getApplicationContext(),
                             R.color.colorPrimary));
-                    getMoviesFromAPI(SingletonMagic.recommendations, ReviewController.getRecommendations());
+                    recommendations = ReviewController.getRecommendations();
                     selected = false;
                 }
+                new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
             }
         });
     }
@@ -562,12 +571,6 @@ public class MainActivity extends AppCompatActivity
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
-        for (int i = 0; i < 1; i++) {
-            Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
-        }
-        for (int i = 0; i < 1; i++) {
-            Log.i("Useless", "Do Androids Dream of Electric Sheep?");
-        }
     }
 
     /**
@@ -636,26 +639,37 @@ public class MainActivity extends AppCompatActivity
                     break;
                 default:
             }
+            for (int i = 0; i < 10000; i++) {
+                Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
+            }
+            for (int i = 0; i < 10000; i++) {
+                Log.i("Useless", "Do Androids Dream of Electric Sheep?");
+            }
             return params[0];
         }
 
         @Override
         protected void onPostExecute(Integer integer) {
             //MovieListFragment movieListFragment = MovieListFragment.newInstance(integer);
+            //((FrameLayout) findViewById(R.id.main_frame_layout)).removeAllViews();
+            //((FrameLayout) findViewById(R.id.main_frame_layout)).addView(findViewById());
+            Log.e("FrameLayout", ((FrameLayout) findViewById(R.id.main_frame_layout)).getViewTreeObserver().toString());
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
-                    MovieListFragment.newInstance(integer)).commit();
+                    MovieListFragment.newInstance(integer)).commitAllowingStateLoss();
             //transaction.remove(movieListFragment);
             //getSupportFragmentManager().executePendingTransactions();
-            //((ViewPager) findViewById(R.id.view_pager)).getAdapter().startUpdate(
-            //        (ViewGroup) findViewById(R.id.main_frame_layout));
-            //movieFragmentPagerAdapter.saveState();
-            /*findViewById(R.id.movie_detail_container).invalidate();
+            ((ViewPager) findViewById(R.id.view_pager)).getAdapter().startUpdate(
+                    (ViewGroup) findViewById(R.id.main_frame_layout));
+            movieFragmentPagerAdapter.saveState();
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
+                    MovieListFragment.newInstance(integer)).commitAllowingStateLoss();
+            findViewById(R.id.movie_detail_container).invalidate();
             findViewById(R.id.movie_list_view).invalidate();
             findViewById(R.id.movie_list).invalidate();
             findViewById(R.id.view_pager).invalidate();
             findViewById(R.id.main_linear_layout).invalidate();
             findViewById(R.id.main_view2).invalidate();
-            findViewById(R.id.content_main).invalidate();*/
+            findViewById(R.id.content_main).invalidate();
         }
     }
 
