@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     protected static CriteriaActivity criteriaActivity;
     private static int currentPage;
     private static int firstTimes = 0;
+    private List<Movie> recommendations;
 
 
     public MainActivity() {
@@ -295,6 +296,11 @@ public class MainActivity extends AppCompatActivity
                         break;
                     case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
                         criteriaBar.setVisibility(View.VISIBLE);
+                        List<Movie> newRecommendations = ReviewController.getRecommendations();
+                        /*if (!newRecommendations.equals(recommendations) && findViewById(R.id.major_button).) {
+                            recommendations = newRecommendations;
+                            new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
+                        }*/
                         //Log.d("Main", "onPageSelected case YOUR_RECOMMENDATIONS_TAB");
                         //((ScrollView) findViewById(R.id.main_view2)).fullScroll(View.FOCUS_DOWN);
                         //scroller();
@@ -624,11 +630,9 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected Integer doInBackground(Integer... params) {
             switch (params[0]) {
-                case MovieListFragment.TOP_RENTALS_TAB:
-                    //getMoviesFromAPI(SingletonMagic.recommendations,
-                    //        ReviewController.getRecommendations());
-                    getMoviesFromAPI(SingletonMagic.newMovie, null);
-                    getMoviesFromAPI(SingletonMagic.topRental, null);
+                case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
+                    getMoviesFromAPI(SingletonMagic.recommendations,
+                            recommendations);
                     break;
                 default:
             }
@@ -638,8 +642,8 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Integer integer) {
             //MovieListFragment movieListFragment = MovieListFragment.newInstance(integer);
-            //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
-            //        MovieListFragment.newInstance(integer)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
+                    MovieListFragment.newInstance(integer)).commit();
             //transaction.remove(movieListFragment);
             //getSupportFragmentManager().executePendingTransactions();
             //((ViewPager) findViewById(R.id.view_pager)).getAdapter().startUpdate(
