@@ -131,13 +131,15 @@ public class MovieListActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
+                        Log.e("TWO PANE", "2PANE");
                         //arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
-                        /*getSupportFragmentManager().beginTransaction()
+                        getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.movie_detail_container, fragment)
-                                .commit();*/
+                                .commit();
                     } else {
+                        Log.e("ONE PANE", "1PANE");
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
                         //intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
