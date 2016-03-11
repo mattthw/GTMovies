@@ -86,12 +86,7 @@ public class MainActivity extends AppCompatActivity
 
         //startActivity(new Intent(this, MovieListActivity.class));
 
-        //LOGIN THINGS
-        if (!IOActions.userSignedIn()) {
-            Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
-            startActivity(new Intent(this, LoginActivity.class));
-            //TODO: onActivityResult which checks if user did login successfully
-        }
+
 
         // Layout toolbar
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -892,7 +887,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_logout) {
             IOActions.logoutUser();
-            Intent intent = getIntent();
+            Intent intent = new Intent(this, SplashScreenActivity.class);
             finish();
             startActivity(intent);
         }
