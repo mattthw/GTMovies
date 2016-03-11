@@ -107,7 +107,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         try {
-            new IOActions(this);
+            MainActivity.setIOA(new IOActions(this));
         } catch (Exception e) {
             Log.e("GTMovies", e.getMessage());
         }
@@ -284,6 +284,14 @@ public class SplashScreenActivity extends AppCompatActivity {
                             ReviewController.getRecommendations());
                     getMoviesFromAPI(SingletonMagic.newMovie, null);
                     getMoviesFromAPI(SingletonMagic.topRental, null);
+                    for (int i = 0; i < 10; i++) {
+                        for (int j = 0; j < 1000; j++) {
+                            Log.i("Useless", "Well, this is a thing...A thing that doesn't work");
+                        }
+                        for (int j = 0; j < 1000; j++) {
+                            Log.i("Useless", "Write your own code. I QUITTTTT!!!");
+                        }
+                    }
                     break;
                 default:
             }

@@ -40,10 +40,10 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
         this.context = context;
 
         for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < 1000; j++) {
+            for (int j = 0; j < 1; j++) {
                 Log.i("Useless", "What Does it all mean?");
             }
-            for (int j = 0; j < 1000; j++) {
+            for (int j = 0; j < 1; j++) {
                 Log.i("Useless", "The game of life");
             }
         }

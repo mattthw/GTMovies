@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity
 
 
     public MainActivity() {
-        //super();
+        super();
+
     }
 
     @Override
@@ -83,16 +84,11 @@ public class MainActivity extends AppCompatActivity
         //startActivity(new Intent(this, MovieListActivity.class));
 
         //LOGIN THINGS
-        /*try {
-            ioa = new IOActions(this);
-        } catch (Exception e) {
-            Log.e("GTMovies", e.getMessage());
-        }
         if (!IOActions.userSignedIn()) {
             Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
             startActivity(new Intent(this, LoginActivity.class));
             //TODO: onActivityResult which checks if user did login successfully
-        }*/
+        }
 
         // Layout toolbar
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -119,14 +115,14 @@ public class MainActivity extends AppCompatActivity
         //getMoviesFromAPI(SingletonMagic.newMovie, null);
 
 
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10000; j++) {
+        /*for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < 100; j++) {
                 Log.i("Useless", "Well, this is a thing...A thing that doesn't work");
             }
-            for (int j = 0; j < 10000; j++) {
+            for (int j = 0; j < 100; j++) {
                 Log.i("Useless", "Write your own code. I QUITTTTT!!!");
             }
-        }
+        }*/
 
 
         //getMoviesFromAPI(SingletonMagic.topRental, null);
@@ -885,6 +881,10 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public static void setIOA(IOActions actions) {
+        ioa = actions;
     }
 
 
