@@ -113,11 +113,13 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
         if (!IOActions.userSignedIn()) {
             Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
-            startActivity(new Intent(this, LoginActivity.class));
+            startActivityForResult(new Intent(this, LoginActivity.class), 1);
             //TODO: onActivityResult which checks if user did login successfully
+        } else {
+            new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
         }
 
-        new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
+
         /*mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
@@ -136,6 +138,12 @@ public class SplashScreenActivity extends AppCompatActivity {
         // while interacting with the UI.*/
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
+        if (data != null && !data.getBooleanExtra("done", true)) {
+        }
+    }
 
     /**
      * Obtains the movies from the API

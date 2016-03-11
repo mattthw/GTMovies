@@ -119,14 +119,14 @@ public class MainActivity extends AppCompatActivity
         //getMoviesFromAPI(SingletonMagic.newMovie, null);
 
 
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10000; j++) {
-                Log.i("Useless", "Well, this is a thing...A thing that doesn't work");
-            }
-            for (int j = 0; j < 10000; j++) {
-                Log.i("Useless", "Write your own code. I QUITTTTT!!!");
-            }
-        }
+//        for (int i = 0; i < 10; i++) {
+//            for (int j = 0; j < 10000; j++) {
+//                Log.i("Useless", "Well, this is a thing...A thing that doesn't work");
+//            }
+//            for (int j = 0; j < 10000; j++) {
+//                Log.i("Useless", "Write your own code. I QUITTTTT!!!");
+//            }
+//        }
 
 
         //getMoviesFromAPI(SingletonMagic.topRental, null);
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity
         setupSearch();
 
         // Change John Smith to username
-        ((TextView) navHeader.findViewById(R.id.headerName)).setText(CurrentState.getUser().getName());
+        //((TextView) navHeader.findViewById(R.id.headerName)).setText(CurrentState.getUser().getName());
 
         // Place view
         MovieListFragment.setTabs();
@@ -878,7 +878,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_logout) {
             IOActions.logoutUser();
-            Intent intent = getIntent();
+            Intent intent = new Intent(this, SplashScreenActivity.class);
             finish();
             startActivity(intent);
         }

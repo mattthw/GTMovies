@@ -269,7 +269,9 @@ public class IOActions extends Application {
      * @return  true if user is currently signed in
      */
     public static boolean userSignedIn() {
-        return !(CurrentState.getUser() == null || CurrentState.getUser().getUsername().equals("null"));
+        return !(CurrentState.getUser() == null
+                || CurrentState.getUser().getUsername().equals("null")
+                || CurrentState.getUser().getUsername().equals("logged_out"));
     }
     /**
      * if user exists return User object

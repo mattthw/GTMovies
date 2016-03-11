@@ -35,14 +35,17 @@
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".activity.SplashScreenActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value=".activity.SplashScreenActivity" />
         </activity>
         <!-- CHILD OF LOGIN ACTIVITY -->
-        <activity android:name=".activity.WelcomeActivity" />
+        <activity
+            android:name=".activity.WelcomeActivity"
+            android:parentActivityName=".activity.LoginActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"

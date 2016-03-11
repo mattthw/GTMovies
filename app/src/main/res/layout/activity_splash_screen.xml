@@ -19,7 +19,7 @@
         style="@style/Base.TextAppearance.AppCompat.Subhead"
         android:textColor="#FFFFFF"
         android:textAlignment="center"
-        android:textSize="75sp"
+        android:textSize="50sp"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
         android:paddingTop="150dp"

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -25,6 +26,8 @@ import com.team19.gtmovies.exception.NullUserException;
 import com.team19.gtmovies.pojo.User;
 
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 //import com.team19.gtmovies.JinuTestActivity;
 
@@ -120,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         // client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        setResult(1, new Intent().putExtra("done", true));
     }
 
 
@@ -354,9 +358,18 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             if (success) {
-                Snackbar.make(MainActivity.rootView,
+                Snackbar.make(findViewById(R.id.login_root),
                         "'" + CurrentState.getUser().getUsername()
                                 + "' signed in." , Snackbar.LENGTH_LONG).show();
+                // We are done. Go back to MainActivity, after a set delay.
+                TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        NavUtils.navigateUpFromSameTask(LoginActivity.this);
+                    }
+                };
+                Timer t = new Timer();
+                t.schedule(task, 1000);
                 finish();
             } else {
                 Snackbar.make(MainActivity.rootView,
