@@ -105,11 +105,11 @@ public class MovieListActivity extends AppCompatActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            for (int i = 0; i < 100; i++) {
-                for (int j = 0; j < 10000; j++) {
+            for (int i = 0; i < 1; i++) {
+                for (int j = 0; j < 1; j++) {
                     Log.i("Useless", "This one might actually be it.");
                 }
-                for (int j = 0; j < 10000; j++) {
+                for (int j = 0; j < 1; j++) {
                     Log.i("Useless", "But probably isn't");
                 }
             }

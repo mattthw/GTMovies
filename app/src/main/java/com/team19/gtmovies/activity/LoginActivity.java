@@ -68,6 +68,16 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (IOActions.userSignedIn()) {
+            Log.d("IOActions", "not considered logged in");
+            ((TextView) MainActivity.navHeader.findViewById(R.id.headerName))
+                    .setText(CurrentState.getUser().getName());
+            ((TextView) MainActivity.navHeader.findViewById(R.id.headerUsername))
+                    .setText(CurrentState.getUser().getUsername());
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_login);
         //load login info
         startActivityForResult(new Intent(this, WelcomeActivity.class), 1);
@@ -296,10 +306,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
 
         //update header
-        ((TextView) MainActivity.navHeader.findViewById(R.id.headerName))
-                .setText(CurrentState.getUser().getName());
-        ((TextView) MainActivity.navHeader.findViewById(R.id.headerUsername))
-                .setText(CurrentState.getUser().getUsername());
 
 //        runOnUiThread(new Runnable() {
 //            @Override

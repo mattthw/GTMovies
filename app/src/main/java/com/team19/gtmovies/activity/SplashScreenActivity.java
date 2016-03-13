@@ -25,6 +25,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -50,6 +52,14 @@ public class SplashScreenActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private View mContentView;
+
+    public static final String SPLASH_SCREEN_VISITED = "Splash Screen";
+
+    private boolean finishedNewMovies = false;
+    private boolean finishedTopRentals = false;
+    private boolean finishedYourRecommendations = false;
+
+
     /*private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -111,13 +121,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("GTMovies", e.getMessage());
         }
-        if (!IOActions.userSignedIn()) {
-            Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
-            startActivityForResult(new Intent(this, LoginActivity.class), 1);
-            //TODO: onActivityResult which checks if user did login successfully
-        } else {
-            new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
-        }
+        new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
 
 
         /*mVisible = true;
@@ -138,12 +142,12 @@ public class SplashScreenActivity extends AppCompatActivity {
         // while interacting with the UI.*/
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
         if (data != null && !data.getBooleanExtra("done", true)) {
         }
-    }
+    }*/
 
     /**
      * Obtains the movies from the API
@@ -152,65 +156,71 @@ public class SplashScreenActivity extends AppCompatActivity {
      */
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
-        final List<Movie> movieArray = new ArrayList<>();
         Log.d("getMoviesFromAPI", "request" + requestType);
 
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
         if (requestType.equals(SingletonMagic.recommendations)) {
             Log.d("getMoviesFromAPI", "recommendations");
-            //The last url request. Used to compare to find last movie in onResponse
-            final String lastURL;
-            if (movieList != null && movieList.size() > 0) {
-                Movie movie = movieList.get(movieList.size() - 1);
-                String movieID = SingletonMagic.search + "/" + movie.getID();
-                lastURL = String.format(SingletonMagic.baseURL,
-                        movieID, "", SingletonMagic.profKey);
-            } else {
+            if (movieList == null || movieList.size() <= 0) {
                 return;
             }
 
+            Log.d("finished", "number of recs=" + movieList.size());
+
+            final Map<Integer, Movie> movieMap = new ConcurrentHashMap<>();
+
             //Run for each of the recommended movies
-            if (movieList != null) {
-                for (Movie movie : movieList) {
+            for (final Movie movie : movieList) {
 
-                    //create the request
-                    String movieID = SingletonMagic.search + "/" + movie.getID();
-                    final String urlRaw = String.format(
-                            SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
-                    movieRequest = new JsonObjectRequest(Request.Method.GET,
-                            urlRaw, null, new Response.Listener<JSONObject>() {
+                //create the request
+                String movieID = SingletonMagic.search + "/" + movie.getID();
+                final String urlRaw = String.format(
+                        SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
+                movieRequest = new JsonObjectRequest(Request.Method.GET,
+                        urlRaw, null, new Response.Listener<JSONObject>() {
 
-                        @Override
-                        public void onResponse(JSONObject resp) {
-                            if (resp == null) {
-                                Log.e("JSONRequest ERROR", "getMovie Null Response Received");
-                            }
-
-                            movieArray.add(new Movie(resp));
-
-                            //Check if last
-                            if (urlRaw.equals(lastURL)) {
-                                //Now update UI
-                                MovieListFragment.setYourRecommendationsList(movieArray);
-                            }
-
-                            Log.d("getMovie movie success", "rec movie:" + new Movie(resp));
-                            Log.d("getMovie volley success", "rec movie:" + urlRaw);
+                    @Override
+                    public void onResponse(JSONObject resp) {
+                        if (resp == null) {
+                            Log.e("JSONRequest ERROR", "getMovie Null Response Received");
                         }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
+
+                        Movie mMovie = new Movie(resp);
+                        movieMap.put(mMovie.getID(), mMovie);
+
+                        Log.d("finished", "movieMap=" + movieMap.size());
+
+                        //Check if last
+                        if (movieMap.size() >= movieList.size() - 2) {
+                            //Now update UI
+                            List<Movie> movieArray = new ArrayList<>();
+                            movieArray.addAll(movieMap.values());
+                            MovieListFragment.setYourRecommendationsList(movieArray);
+                            setFinishedYourRecommendations();
+                            Log.d("finished", "recs");
+                            if (finishedNewMovies && finishedTopRentals) {
+                                Log.d("finished", "recs completely");
+                                finished();
+                            }
                         }
-                    });
-                    SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
-                }
+                        Log.d("finished", "one movie");
+
+                        Log.d("getMovie movie success", "rec movie:" + new Movie(resp));
+                        Log.d("getMovie volley success", "rec movie:" + urlRaw);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
+                    }
+                });
+                SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
             }
-            return;
         } else {
             final String urlRaw = String.format(
                     SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
+            final List<Movie> movieArray = new ArrayList<>();
 
             movieRequest = new JsonObjectRequest
                     (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
@@ -233,6 +243,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             }
                             for (int i = 0; i < tmpMovies.length(); i++) {
                                 try {
+
                                     movieArray.add(new Movie(tmpMovies.getJSONObject(i)));
                                 } catch (JSONException e) {
                                     Log.e("Movie Error", "Couldn't make Movie" + i + "in Main");
@@ -243,14 +254,24 @@ public class SplashScreenActivity extends AppCompatActivity {
                             String tab;
                             if (requestType.equals(SingletonMagic.newMovie)) {
                                 Log.d("JinuMain", "newMovieFragment");
-
                                 MovieListFragment.setNewMoviesList(movieArray);
-
                                 tab = "newMovies";
+                                setFinishedNewMovies();
+                                Log.d("finished", "new");
+                                if (finishedTopRentals && finishedYourRecommendations) {
+                                    Log.d("finished", "new completely");
+                                    finished();
+                                }
                             } else if (requestType.equals(SingletonMagic.topRental)) {
                                 Log.d("JinuMain", "topRentalFragment");
                                 MovieListFragment.setTopRentalsList(movieArray);
                                 tab = "topRentals";
+                                setFinishedTopRentals();
+                                Log.d("finished", "rentals");
+                                if (finishedNewMovies && finishedYourRecommendations) {
+                                    Log.d("finished", "rent completely");
+                                    finished();
+                                }
                             } else {
                                 Log.d("JinuMain", "nullFragment");
                                 tab = "nullFragment";
@@ -268,11 +289,12 @@ public class SplashScreenActivity extends AppCompatActivity {
                             Log.e("VOLLEY FAIL", "Couldn't getJSON");
                         }
                     });
+            // Access the RequestQueue through singleton class.
+            // Add Requests to RequestQueue
+            SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
         }
 
-        // Access the RequestQueue through singleton class.
-        // Add Requests to RequestQueue
-        SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
+
         for (int i = 0; i < 1; i++) {
             Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
         }
@@ -281,18 +303,31 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
+    private void setFinishedNewMovies() {
+        finishedNewMovies = true;
+    }
+
+    private void setFinishedTopRentals() {
+        finishedTopRentals = true;
+    }
+
+    private void setFinishedYourRecommendations() {
+        finishedYourRecommendations = true;
+    }
+
+
+    protected class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
         private List<Movie> movieList;
 
         @Override
         protected Integer doInBackground(Integer... params) {
             switch (params[0]) {
                 case MovieListFragment.TOP_RENTALS_TAB:
-                    getMoviesFromAPI(SingletonMagic.recommendations,
-                            ReviewController.getRecommendations());
                     getMoviesFromAPI(SingletonMagic.newMovie, null);
                     getMoviesFromAPI(SingletonMagic.topRental, null);
-                    for (int i = 0; i < 10; i++) {
+                    getMoviesFromAPI(SingletonMagic.recommendations,
+                            ReviewController.getRecommendations());
+                    /*for (int i = 0; i < 10; i++) {
                         for (int j = 0; j < 1000; j++) {
                             Log.i("Useless", "Well, this is a thing...A thing that doesn't work");
                         }
@@ -300,6 +335,14 @@ public class SplashScreenActivity extends AppCompatActivity {
                             Log.i("Useless", "Write your own code. I QUITTTTT!!!");
                         }
                     }
+                    while (!MovieListFragment.isFilled()) {
+                        for (int j = 0; j < 10; j++) {
+                            Log.i("Useless", "Well, this is a thing...A thing that doesn't work MAINMAINMAINMAIN");
+                        }
+                        for (int j = 0; j < 10; j++) {
+                            Log.i("Useless", "Write your own code. I QUITTTTT!!!MAINMAINMAINMAINMAINMAINMAIN");
+                        }
+                    }*/
                     break;
                 default:
             }
@@ -308,14 +351,20 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            finished();
+            //while (!finishedNewMovies && !finishedTopRentals && !finishedTopRentals) ;
+            //finished();
         }
     }
+
+
 
     /**
      * What to do after UI updated
      */
     private void finished() {
+        //TODO: onActivityResult which checks if user did login successfully
+        Intent mainIntent = new Intent (this, MainActivity.class);
+        mainIntent.putExtra(SPLASH_SCREEN_VISITED, true);
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }

@@ -51,9 +51,9 @@ public class MovieListFragment extends Fragment {
     private static boolean tabs = false;
     private boolean search = false;
 
-    private static MovieListFragment tab0;
-    private static MovieListFragment tab1;
-    private static MovieListFragment tab2;
+    private static MovieRecyclerViewAdapter newMoviesAdapter;
+    private static MovieRecyclerViewAdapter topRentalsAdapter;
+    private static MovieRecyclerViewAdapter yourRecommendationsAdapter;
     //private static final MovieListFragment searchFragment = new MovieListFragment(3);
 
     private RecyclerView mRecyclerView;
@@ -236,7 +236,8 @@ public class MovieListFragment extends Fragment {
                     } else {
                         Log.d("MovieListFragment", "newMovieList is ok " + newMoviesList);
                     }
-                    mAdapter = new MovieRecyclerViewAdapter(newMoviesList);
+                    newMoviesAdapter = new MovieRecyclerViewAdapter(newMoviesList);
+                    mAdapter = newMoviesAdapter;
                     Log.d("MLFrag", "newMoviesList " + mAdapter);
                     break;
                 case TOP_RENTALS_TAB:
@@ -246,7 +247,8 @@ public class MovieListFragment extends Fragment {
                     } else {
                         Log.d("MovieListFragment", "topRentalsList is ok " + topRentalsList);
                     }
-                    mAdapter = new MovieRecyclerViewAdapter(topRentalsList);//TODO: CHANGE BACK
+                    topRentalsAdapter = new MovieRecyclerViewAdapter(topRentalsList);
+                    mAdapter = topRentalsAdapter;
                     Log.d("MLFrag", "topRentalsList " + mAdapter);
                     break;
                 case YOUR_RECOMMENDATIONS_TAB:
@@ -256,7 +258,8 @@ public class MovieListFragment extends Fragment {
                     } else {
                         Log.d("MovieListFragment", "yourRecList is ok " + yourRecommendationsList);
                     }
-                    mAdapter = new MovieRecyclerViewAdapter(yourRecommendationsList);
+                    yourRecommendationsAdapter = new MovieRecyclerViewAdapter(yourRecommendationsList);
+                    mAdapter = yourRecommendationsAdapter;
                     Log.d("MLFrag", "yourRecList " + mAdapter);
                     break;
                 case SEARCH:
@@ -445,6 +448,48 @@ public class MovieListFragment extends Fragment {
                 + "\ndisplay: " + toPrettyString(getArguments().getInt(ARG_ITEM_ID)) + "\n\n";
     }
 
+    /**
+     * Updates array in ArrayList
+     * @param page page to change
+     */
+    public static void updateAdapter(int page) {
+        switch (page) {
+            case NEW_MOVIES_TAB:
+                if (newMoviesAdapter != null)
+                    newMoviesAdapter.swapList(newMoviesList);
+                break;
+            case TOP_RENTALS_TAB:
+                if (topRentalsAdapter != null)
+                    topRentalsAdapter.swapList(topRentalsList);
+                break;
+            case YOUR_RECOMMENDATIONS_TAB:
+                if (yourRecommendationsAdapter != null)
+                    yourRecommendationsAdapter.swapList(yourRecommendationsList);
+                break;
+            default:
+                Log.e("MovieListFragment", "invalid page for updateAdapter");
+        }
+    }
+
+    /**
+     * Determins of all of the arrays have been populated or not.
+     * @return true if all arrays not null, false otherwise
+     */
+    public static boolean isFilled() {
+        return (newMoviesList != null)
+                && (topRentalsList != null)
+                && (yourRecommendationsList != null);
+    }
+
+    /**
+     * getter for search movie list
+     *
+     * @return List of movies in current search movie list
+     */
+    public static List getSearchMovieList() {
+        return searchMovieList;
+    }
+
 
 
 
@@ -622,6 +667,22 @@ public class MovieListFragment extends Fragment {
             }
         }
 
+
+        /**
+         * Swaps current adapter list
+         * @param list new list to change to
+         * @return true if changed, false if no action
+         */
+        public boolean swapList(List<Movie> list) {
+            if (movieList != null) {
+                movieList.clear();
+                movieList.addAll(list);
+                notifyDataSetChanged();
+                return true;
+            }
+            return false;
+        }
+
         /**
          * Collapses top bars on scroll
          * @param position new scroll position
@@ -670,15 +731,6 @@ public class MovieListFragment extends Fragment {
 
             }
         }
-    }
-
-    /**
-     * getter for search movie list
-     * 
-     * @return List of movies in current search movie list
-     */
-    public static List getSearchMovieList() {
-        return searchMovieList;
     }
 }
 

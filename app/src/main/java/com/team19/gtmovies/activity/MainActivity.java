@@ -22,9 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,7 +44,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Main Activity
@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity
     protected static MovieFragmentPagerAdapter movieFragmentPagerAdapter;
     protected static CriteriaActivity criteriaActivity;
     private static int currentPage;
-    private static int firstTimes = 0;
     private List<Movie> recommendations;
+    private boolean generalRecommendations = true;
 
 
     public MainActivity() {
@@ -75,23 +75,27 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.w("MAINACTIVITY", "ONCREATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null ) {
+            startActivity(new Intent(this, SplashScreenActivity.class));
+            finish();
+        }
+
+        Log.w("MAINACTIVITY", "ONCREATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+
+        startActivity(new Intent(this, LoginActivity.class));
+
         setContentView(R.layout.activity_main);
         rootView = findViewById(R.id.main_view);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(),
                 R.color.colorPrimaryDark));
 
-
         //startActivity(new Intent(this, MovieListActivity.class));
 
         //LOGIN THINGS
-        if (!IOActions.userSignedIn()) {
-            Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
-            startActivity(new Intent(this, LoginActivity.class));
-            //TODO: onActivityResult which checks if user did login successfully
-        }
+        Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
 
         // Layout toolbar
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -118,14 +122,7 @@ public class MainActivity extends AppCompatActivity
         //getMoviesFromAPI(SingletonMagic.newMovie, null);
 
 
-        /*for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < 100; j++) {
-                Log.i("Useless", "Well, this is a thing...A thing that doesn't work");
-            }
-            for (int j = 0; j < 100; j++) {
-                Log.i("Useless", "Write your own code. I QUITTTTT!!!");
-            }
-        }*/
+
 
 
         //getMoviesFromAPI(SingletonMagic.topRental, null);
@@ -142,6 +139,9 @@ public class MainActivity extends AppCompatActivity
         MovieListFragment.setTabs();
         /*fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();*/
+        MovieListFragment.updateAdapter(MovieListFragment.NEW_MOVIES_TAB);
+        MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
+        MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
     }
 
     /*@Override
@@ -277,6 +277,12 @@ public class MainActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 currentPage = position;
                 switch (position) {
+                    case MovieListFragment.NEW_MOVIES_TAB:
+                        /*criteriaBar.setVisibility(View.GONE);
+                        Log.d("Main", "onPageSelected case NEW_MOVIES");
+                        Log.d("Main", "onPageSelected position: " + position);
+                        Log.d("Main", "new calling updateUI");*/
+                        break;
                     case MovieListFragment.TOP_RENTALS_TAB:
                         criteriaBar.setVisibility(View.GONE);
                         /*Log.d("Main", "onPageSelected case TOP_RENTALS");
@@ -287,15 +293,7 @@ public class MainActivity extends AppCompatActivity
                         } else { //otherwise fall through
                             Log.d("Main", "onPageSelected rent not empty\n"
                                     + "rent calling updateUI");
-                            updateUI(MovieListFragment.TOP_RENTALS_TAB);
                         }*/
-                        break;
-                    case MovieListFragment.NEW_MOVIES_TAB:
-                        /*criteriaBar.setVisibility(View.GONE);
-                        Log.d("Main", "onPageSelected case NEW_MOVIES");
-                        Log.d("Main", "onPageSelected position: " + position);
-                        Log.d("Main", "new calling updateUI");*/
-                        updateUI(MovieListFragment.NEW_MOVIES_TAB);
                         break;
                     case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
                         criteriaBar.setVisibility(View.VISIBLE);
@@ -303,12 +301,12 @@ public class MainActivity extends AppCompatActivity
                         Log.e("recommendations", "New:" + newRecommendations + "\nOld:"
                                 +recommendations
                                 + "\nelevation=" + findViewById(R.id.major_button).getElevation());
-                        if (!newRecommendations.equals(recommendations)
+                        /*if (!newRecommendations.equals(recommendations)
                                 && findViewById(R.id.major_button).getElevation()
                                 == getResources().getDimension(R.dimen.flat_elevation)); {
                             recommendations = newRecommendations;
                             new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
-                        }
+                        }*/
                         //Log.d("Main", "onPageSelected case YOUR_RECOMMENDATIONS_TAB");
                         //((ScrollView) findViewById(R.id.main_view2)).fullScroll(View.FOCUS_DOWN);
                         //scroller();
@@ -319,7 +317,6 @@ public class MainActivity extends AppCompatActivity
                         } else {
                             Log.d("Main", "onPageSelected rec not empty. pos: " + position
                                     +"\nRec calling updateUI");
-                            updateUI(position);
                         }*/
                         setupMajorButton();
                         break;
@@ -342,7 +339,6 @@ public class MainActivity extends AppCompatActivity
                 //fragmentManager.executePendingTransactions();
                 Log.d("JinuMain", "executePendingTransactions called onPageScrollStateChan");
                 //MovieListFragment.setTabPosition(state);
-                updateUI(state);
             }
         });
 
@@ -440,65 +436,59 @@ public class MainActivity extends AppCompatActivity
      */
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
-        final List<Movie> movieArray = new ArrayList<>();
         Log.d("getMoviesFromAPI", "request" + requestType);
 
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
         if (requestType.equals(SingletonMagic.recommendations)) {
             Log.d("getMoviesFromAPI", "recommendations");
-            //The last url request. Used to compare to find last movie in onResponse
-            final String lastURL;
-            if (movieList != null && movieList.size() > 0) {
-                Movie movie = movieList.get(movieList.size() - 1);
-                String movieID = SingletonMagic.search + "/" + movie.getID();
-                lastURL = String.format(SingletonMagic.baseURL,
-                        movieID, "", SingletonMagic.profKey);
-            } else {
+            if (movieList == null || movieList.size() <= 0) {
                 return;
             }
 
+            final Map<Integer, Movie> movieMap = new HashMap<>();
+
             //Run for each of the recommended movies
-            if (movieList != null) {
-                for (Movie movie : movieList) {
+            for (final Movie movie : movieList) {
 
-                    //create the request
-                    String movieID = SingletonMagic.search + "/" + movie.getID();
-                    final String urlRaw = String.format(
-                            SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
-                    movieRequest = new JsonObjectRequest(Request.Method.GET,
-                            urlRaw, null, new Response.Listener<JSONObject>() {
+                //create the request
+                String movieID = SingletonMagic.search + "/" + movie.getID();
+                final String urlRaw = String.format(
+                        SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
+                movieRequest = new JsonObjectRequest(Request.Method.GET,
+                        urlRaw, null, new Response.Listener<JSONObject>() {
 
-                        @Override
-                        public void onResponse(JSONObject resp) {
-                            if (resp == null) {
-                                Log.e("JSONRequest ERROR", "getMovie Null Response Received");
-                            }
-
-                            movieArray.add(new Movie(resp));
-
-                            //Check if last
-                            if (urlRaw.equals(lastURL)) {
-                                //Now update UI
-                                MovieListFragment.setYourRecommendationsList(movieArray);
-                                Log.d("Main", "getMoviesFromAPI rec calling updateUI");
-                                updateUI(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
-                            }
-
-                            Log.d("getMovie movie success", "rec movie:" + new Movie(resp));
-                            Log.d("getMovie volley success", "rec movie:" + urlRaw);
+                    @Override
+                    public void onResponse(JSONObject resp) {
+                        if (resp == null) {
+                            Log.e("JSONRequest ERROR", "getMovie Null Response Received");
                         }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
+
+                        Movie mMovie = new Movie(resp);
+                        movieMap.put(mMovie.getID(), mMovie);
+
+                        //Check if last
+                        if (movieMap.size() >= movieList.size() - 3) {
+                            //Now update UI
+                            List<Movie> movieArray = new ArrayList<>();
+                            movieArray.addAll(movieMap.values());
+                            MovieListFragment.setYourRecommendationsList(movieArray);
+                            updateUI(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
                         }
-                    });
-                    SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
-                }
+
+                        Log.d("getMovie movie success", "rec movie:" + new Movie(resp));
+                        Log.d("getMovie volley success", "rec movie:" + urlRaw);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
+                    }
+                });
+                SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
             }
-            return;
         } else {
+            final List<Movie> movieArray = new ArrayList<>();
             final String urlRaw = String.format(
                     SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
 
@@ -535,18 +525,18 @@ public class MainActivity extends AppCompatActivity
                                 Log.d("JinuMain", "newMovieFragment");
 
                                 MovieListFragment.setNewMoviesList(movieArray);
+                                updateUI(MovieListFragment.NEW_MOVIES_TAB);
                                 //MovieListFragment.setTopRentalsList(movieArray);        //TODO:Remove
                         /*movieListFragment = MovieListFragment.newInstance(
                                 MovieListFragment.NEW_MOVIES_TAB);)*/
-                                updateUI(MovieListFragment.NEW_MOVIES_TAB);
 
                                 tab = "newMovies";
                             } else if (requestType.equals(SingletonMagic.topRental)) {
                                 Log.d("JinuMain", "topRentalFragment");
                                 MovieListFragment.setTopRentalsList(movieArray);
+                                updateUI(MovieListFragment.TOP_RENTALS_TAB);
                         /*movieListFragment = MovieListFragment.newInstance(
                                 MovieListFragment.TOP_RENTALS_TAB);*/
-                                updateUI(MovieListFragment.TOP_RENTALS_TAB);
                                 tab = "topRentals";
                             } else {
                                 Log.d("JinuMain", "nullFragment");
@@ -571,34 +561,6 @@ public class MainActivity extends AppCompatActivity
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
-    }
-
-    /**
-     * Updates fragment
-     * @param tab index of tab to change to
-     */
-    private void updateUI(int tab) {
-        Log.d("main updateUI", "tab:" + tab + " currentPage:" + currentPage);
-        //new UpdateUITask().execute(tab);
-        /*if (tab == currentPage) {
-            MovieListFragment movieListFragment = MovieListFragment.newInstance(tab);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main_frame_layout, movieListFragment).commitAllowingStateLoss();
-            transaction.remove(movieListFragment);
-            getSupportFragmentManager().executePendingTransactions();
-            ((ViewPager) findViewById(R.id.view_pager)).getAdapter().startUpdate(
-                    (ViewGroup) findViewById(R.id.main_frame_layout));
-            movieFragmentPagerAdapter.saveState();
-            findViewById(R.id.movie_detail_container).invalidate();
-            findViewById(R.id.movie_list_view).invalidate();
-            findViewById(R.id.movie_list).invalidate();
-            findViewById(R.id.view_pager).invalidate();
-            findViewById(R.id.main_linear_layout).invalidate();
-            findViewById(R.id.main_view2).invalidate();
-            findViewById(R.id.content_main).invalidate();
-            Log.d("JINU", "getMovie Jinu want to know if they're are fragments\n" + getSupportFragmentManager().getFragments());
-            Log.d("Main", "update UI" + MovieListFragment.newInstance(currentPage).toPrettyString(tab));
-        }*/
     }
 
 
@@ -639,10 +601,10 @@ public class MainActivity extends AppCompatActivity
                     break;
                 default:
             }
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 1; i++) {
                 Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
             }
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 1; i++) {
                 Log.i("Useless", "Do Androids Dream of Electric Sheep?");
             }
             return params[0];
@@ -650,27 +612,38 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Integer integer) {
-            //MovieListFragment movieListFragment = MovieListFragment.newInstance(integer);
-            //((FrameLayout) findViewById(R.id.main_frame_layout)).removeAllViews();
-            //((FrameLayout) findViewById(R.id.main_frame_layout)).addView(findViewById());
-            Log.e("FrameLayout", ((FrameLayout) findViewById(R.id.main_frame_layout)).getViewTreeObserver().toString());
+        }
+    }
+
+
+    /**
+     * Updates user interface
+     * @param page which tab to update
+     */
+    public void updateUI(int page) {
+        Log.e("GTMovies", "updateUI");
+        //MovieListFragment movieListFragment = MovieListFragment.newInstance(integer);
+        //((FrameLayout) findViewById(R.id.main_frame_layout)).removeAllViews();
+        //((FrameLayout) findViewById(R.id.main_frame_layout)).addView(findViewById());
+        MovieListFragment.updateAdapter(page);
+
+            /*Log.e("FrameLayout", ((FrameLayout) findViewById(R.id.main_frame_layout)).getViewTreeObserver().toString());
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
                     MovieListFragment.newInstance(integer)).commitAllowingStateLoss();
             //transaction.remove(movieListFragment);
-            //getSupportFragmentManager().executePendingTransactions();
+            getSupportFragmentManager().executePendingTransactions();
             ((ViewPager) findViewById(R.id.view_pager)).getAdapter().startUpdate(
                     (ViewGroup) findViewById(R.id.main_frame_layout));
             movieFragmentPagerAdapter.saveState();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
-                    MovieListFragment.newInstance(integer)).commitAllowingStateLoss();
-            findViewById(R.id.movie_detail_container).invalidate();
-            findViewById(R.id.movie_list_view).invalidate();
-            findViewById(R.id.movie_list).invalidate();
-            findViewById(R.id.view_pager).invalidate();
-            findViewById(R.id.main_linear_layout).invalidate();
-            findViewById(R.id.main_view2).invalidate();
-            findViewById(R.id.content_main).invalidate();
-        }
+                    MovieListFragment.newInstance(integer)).commitAllowingStateLoss();*/
+        findViewById(R.id.movie_detail_container).invalidate();
+        findViewById(R.id.movie_list_view).invalidate();
+        findViewById(R.id.movie_list).invalidate();
+        findViewById(R.id.view_pager).invalidate();
+        findViewById(R.id.main_linear_layout).invalidate();
+        findViewById(R.id.main_view2).invalidate();
+        findViewById(R.id.content_main).invalidate();
     }
 
 
