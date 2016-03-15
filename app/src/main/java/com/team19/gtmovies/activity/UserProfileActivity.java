@@ -3,6 +3,7 @@ package com.team19.gtmovies.activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
@@ -47,6 +48,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private EditText eName;
     private EditText ePassword;
     private EditText eBio;
+    public static final int HEADER_NAME_UPDATED = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,7 +216,8 @@ public class UserProfileActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                if (!eName.getText().toString().equals(CurrentState.getUser().getName()))
+                    setResult(HEADER_NAME_UPDATED);
                 return true;
         }
         return super.onOptionsItemSelected(item);

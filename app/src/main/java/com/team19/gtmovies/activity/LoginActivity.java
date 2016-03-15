@@ -70,10 +70,11 @@ public class LoginActivity extends AppCompatActivity {
 
         if (IOActions.userSignedIn()) {
             Log.d("IOActions", "not considered logged in");
-            ((TextView) MainActivity.navHeader.findViewById(R.id.headerName))
-                    .setText(CurrentState.getUser().getName());
-            ((TextView) MainActivity.navHeader.findViewById(R.id.headerUsername))
-                    .setText(CurrentState.getUser().getUsername());
+//            ((TextView) MainActivity.navHeader.findViewById(R.id.headerName))
+//                    .setText(CurrentState.getUser().getName());
+//            ((TextView) MainActivity.navHeader.findViewById(R.id.headerUsername))
+//                    .setText(CurrentState.getUser().getUsername());
+//            MainActivity.navHeader.invalidate();
             finish();
             return;
         }
@@ -313,7 +314,6 @@ public class LoginActivity extends AppCompatActivity {
 //
 //            }
 //        });
-        //MainActivity.navigationView.addHeaderView(MainActivity.nav_header);
     }
 
 

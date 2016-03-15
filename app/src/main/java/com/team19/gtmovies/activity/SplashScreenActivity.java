@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -58,6 +61,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private boolean finishedNewMovies = false;
     private boolean finishedTopRentals = false;
     private boolean finishedYourRecommendations = false;
+    private View rootView;
 
 
     /*private final Runnable mHidePart2Runnable = new Runnable() {
@@ -115,6 +119,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        rootView = findViewById(R.id.splash_view);
 
         try {
             MainActivity.setIOA(new IOActions(this));
@@ -157,15 +162,22 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
         Log.d("getMoviesFromAPI", "request" + requestType);
-
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                finished();
+                // If you want to call Activity then call from here for 5 seconds it automatically call and your image disappear....
+            }
+        }, 5000);
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
         if (requestType.equals(SingletonMagic.recommendations)) {
             Log.d("getMoviesFromAPI", "recommendations");
-            if (movieList == null || movieList.size() <= 0) {
+            if (movieList == null || movieList.size() <= 0 || !IOActions.userSignedIn()) {
                 return;
             }
-
+            Snackbar.make(rootView, "Getting recommendations...", Snackbar.LENGTH_SHORT).show();
             Log.d("finished", "number of recs=" + movieList.size());
 
             final Map<Integer, Movie> movieMap = new ConcurrentHashMap<>();
@@ -235,6 +247,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             JSONArray tmpMovies = null;
                             try {
                                 tmpMovies = resp.getJSONArray("movies");
+                                Snackbar.make(rootView, "Getting movies...", Snackbar.LENGTH_SHORT).show();
                             } catch (JSONException e) {
                                 Log.e("JSON ERROR", "Error when getting movies in Main.");
                             }

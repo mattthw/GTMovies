@@ -111,8 +111,13 @@ public class MainActivity extends AppCompatActivity
         // Layout navigation
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navHeader = LayoutInflater.from(this).inflate(R.layout.nav_header_main, null);
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View header=navigationView.getHeaderView(0);
+/*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
+        TextView name = (TextView)header.findViewById(R.id.headerName);
+        name.setText(CurrentState.getUser().getName());
         // Populate lists of new movies and top rentals
         //getMovies();
         //new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
@@ -236,7 +241,7 @@ public class MainActivity extends AppCompatActivity
         ((ViewPager) findViewById(R.id.view_pager)).addOnPageChangeListener(
                 new ViewPager.OnPageChangeListener() {
             LinearLayout criteriaBar = (LinearLayout) findViewById(R.id.criteria_bar);
-            //Sliding animations to use for the additional criteria bar in recommendations
+            //Sliding animations to use for the additional criteria bar in endations
             /*Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_down);
             Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -647,16 +652,21 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-
-
-
-
-
-
-
-
-
+    /**
+     * do things depending on results from activities called.
+     * @param requestCode what we are checking
+     * @param resultCode value returned for what being checked
+     * @param data idk
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == UserProfileActivity.HEADER_NAME_UPDATED) {
+            Log.println(Log.ASSERT, "GTMovies", "header name updated.");
+            //update header
+            ((TextView) findViewById(R.id.headerName))
+                    .setText(CurrentState.getUser().getName());
+        }
+    }
 
 
 
@@ -856,11 +866,10 @@ public class MainActivity extends AppCompatActivity
         Log.d("GTMovies", "Item selected");
         int id = item.getItemId();
         // Change John Smith to username
-        ((TextView) findViewById(R.id.headerName)).setText(CurrentState.getUser().getName());
 
         if (id == R.id.nav_manage_profile) {
             Intent intent = new Intent(this, UserProfileActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, UserProfileActivity.HEADER_NAME_UPDATED);
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_logout) {
