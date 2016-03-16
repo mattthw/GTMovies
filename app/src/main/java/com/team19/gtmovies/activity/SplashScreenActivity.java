@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -53,7 +54,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
 
-    public static final String SPLASH_SCREEN_VISITED = "Splash Screen";
+    public static boolean splashScreenVisited = false;
+    public static String SPLASH_SCREEN_VISITED = "Screen Visited";
 
     private boolean finishedNewMovies = false;
     private boolean finishedTopRentals = false;
@@ -115,7 +117,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-
+        splashScreenVisited = true;
         try {
             MainActivity.setIOA(new IOActions(this));
         } catch (Exception e) {
@@ -157,7 +159,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
         Log.d("getMoviesFromAPI", "request" + requestType);
-
+        Timer t = new Timer();
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
         if (requestType.equals(SingletonMagic.recommendations)) {
@@ -177,7 +179,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 String movieID = SingletonMagic.search + "/" + movie.getID();
                 final String urlRaw = String.format(
                         SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
-                movieRequest = new JsonObjectRequest(Request.Method.GET,
+                JsonObjectRequest recoRequest = new JsonObjectRequest(Request.Method.GET,
                         urlRaw, null, new Response.Listener<JSONObject>() {
 
                     @Override
@@ -192,7 +194,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                         Log.d("finished", "movieMap=" + movieMap.size());
 
                         //Check if last
-                        if (movieMap.size() >= movieList.size() - 2) {
+                        if (movieMap.size() >= movieList.size() - movieList.size()) {
                             //Now update UI
                             List<Movie> movieArray = new ArrayList<>();
                             movieArray.addAll(movieMap.values());
@@ -215,7 +217,16 @@ public class SplashScreenActivity extends AppCompatActivity {
                         Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
                     }
                 });
-                SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
+                Log.d("Volley Timer", "Creating TimerTask");
+                /*TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {*/
+                        SingletonMagic.getInstance(getBaseContext()).addToRequestQueue(recoRequest);
+                /*    }
+                };*/
+                Log.d("Volley Timer", "Task Created");
+                //t.schedule(task, 201);
+                Log.d("Volley Timer", "Scheduled");
             }
         } else {
             final String urlRaw = String.format(
@@ -258,7 +269,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                                 tab = "newMovies";
                                 setFinishedNewMovies();
                                 Log.d("finished", "new");
-                                if (finishedTopRentals && finishedYourRecommendations) {
+                                if (finishedTopRentals || finishedYourRecommendations) {
                                     Log.d("finished", "new completely");
                                     finished();
                                 }
@@ -268,7 +279,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                                 tab = "topRentals";
                                 setFinishedTopRentals();
                                 Log.d("finished", "rentals");
-                                if (finishedNewMovies && finishedYourRecommendations) {
+                                if (finishedNewMovies || finishedYourRecommendations) {
                                     Log.d("finished", "rent completely");
                                     finished();
                                 }
@@ -363,9 +374,9 @@ public class SplashScreenActivity extends AppCompatActivity {
      */
     private void finished() {
         //TODO: onActivityResult which checks if user did login successfully
-        Intent mainIntent = new Intent (this, MainActivity.class);
-        mainIntent.putExtra(SPLASH_SCREEN_VISITED, true);
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(SPLASH_SCREEN_VISITED, true);
+        startActivity(intent);
         finish();
     }
 

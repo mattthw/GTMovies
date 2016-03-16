@@ -67,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (IOActions.userSignedIn()) {
             Log.d("IOActions", "not considered logged in");
             ((TextView) MainActivity.navHeader.findViewById(R.id.headerName))

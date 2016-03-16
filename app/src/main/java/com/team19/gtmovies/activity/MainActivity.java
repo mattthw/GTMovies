@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity
     private List<Movie> recommendations;
     private boolean generalRecommendations = true;
 
-
     public MainActivity() {
         super();
 
@@ -76,10 +75,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null ) {
-            startActivity(new Intent(this, SplashScreenActivity.class));
+        if (ioa == null) {
+            this.startActivity(new Intent(MainActivity.this, SplashScreenActivity.class));
             finish();
+            return;
         }
 
         Log.w("MAINACTIVITY", "ONCREATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");

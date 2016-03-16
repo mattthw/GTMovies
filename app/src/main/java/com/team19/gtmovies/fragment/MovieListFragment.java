@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +17,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
+import com.team19.gtmovies.activity.MyLayoutManager;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.pojo.Movie;
@@ -57,7 +57,7 @@ public class MovieListFragment extends Fragment {
     //private static final MovieListFragment searchFragment = new MovieListFragment(3);
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private MovieRecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     /**
@@ -196,10 +196,10 @@ public class MovieListFragment extends Fragment {
                              Bundle savedInstanceState) {
         for (int i = 0; i < 1; i++) {
             for (int j = 0; j < 1; j++) {
-                Log.i("Useless", "Taking a minute to think about what it all means");
+                Log.v("Useless", "Taking a minute to think about what it all means");
             }
             for (int j = 0; j < 1; j++) {
-                Log.i("Useless", "Contemplating Life");
+                Log.v("Useless", "Contemplating Life");
             }
         }
         View rootView = inflater.inflate(R.layout.movie_list, container, false);
@@ -209,7 +209,44 @@ public class MovieListFragment extends Fragment {
             Log.e("GTMovies", "Well there's your problem");
         }
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            boolean scrolled;
+            int oldy = -1;
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == 0 && !scrolled && oldy < 0 && mAdapter.movieList != null) {
+                    mAdapter.toggleTopBars(-1);
+                    if (getActivity().findViewById(R.id.main_toolbar).getVisibility()
+                            == View.VISIBLE) {
+                        //Todo: Jinu, this would be where we would refresh the page
+                        Log.d("Scroll", "refresh page");
+                    }
+                }
+                if (newState == 2 && mAdapter.movieList != null) {
+                    mAdapter.toggleTopBars(oldy);
+                    Log.d("Toggle", "2scroll oldy=" + oldy);
+
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.d("OnScrollState", "newState=" + newState);
+                scrolled = false;
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.d("OnScroll", "let me know dx=" + dx + " dy=" + dy);
+                scrolled = true;
+                if (dy != 0) {
+                    oldy = dy;
+                }
+            }
+        });
+
+
+
+        mLayoutManager = new MyLayoutManager(getActivity());
 
         /*
         if (search) {
@@ -413,7 +450,6 @@ public class MovieListFragment extends Fragment {
      */
     public static void setTabPosition(int position) {
         currentTab = position;
-        Log.e("MLFrag: setTab", position + " : " + (position % 3));
     }
 
 
@@ -564,10 +600,10 @@ public class MovieListFragment extends Fragment {
         public MovieRecyclerViewAdapter(List<Movie> movieInfo) {
             for (int i = 0; i < 1; i++) {
                 for (int j = 0; j < 1; j++) {
-                    Log.i("Useless", "Don't care what it all means");
+                    Log.v("Useless", "Don't care what it all means");
                 }
                 for (int j = 0; j < 1; j++) {
-                    Log.i("Useless", "Don't care about life rn.");
+                    Log.v("Useless", "Don't care about life rn.");
                 }
             }
             movieList = movieInfo;
@@ -592,8 +628,6 @@ public class MovieListFragment extends Fragment {
             holder.mMovieInfo = movieList.get(position);
 
             Log.d("MLFrag", "onBindViewHolder");
-
-            toggleTopBars(position);
 
             //holder.poster.setImageResource(mMovieInfo.poster);
             holder.mMoviePosterView.setImageUrl(
@@ -688,10 +722,6 @@ public class MovieListFragment extends Fragment {
          * @param position new scroll position
          */
         private void toggleTopBars(int position) {
-            if (position < 0) {
-                return;
-            }
-
             Log.d("toggleTopBars", "old:" + oldPosition + " new:" + position);
             //ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.main_view2);
             View linearView = getActivity().findViewById(R.id.main_view2);
@@ -706,7 +736,7 @@ public class MovieListFragment extends Fragment {
                 }
 
                 //On scroll up/down, shows/hides top bars
-                if (position > oldPosition + 3) {
+                if (position > 0) {
                     //scroll down, close top bars
                     Log.d("heights", "oldViewPager:" + viewPager.getHeight());
                     viewPager.getLayoutParams().height = CurrentState.getClosedHeight();
@@ -716,7 +746,7 @@ public class MovieListFragment extends Fragment {
                     criteriaBar.setVisibility(View.GONE);
                     oldPosition = position;
                     //scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                } else if (position < oldPosition - 3) {
+                } else if (position < 0) {
                     //scroll up, open top bars
                     viewPager.getLayoutParams().height = CurrentState.getOpenHeight();
                     toolbar.setVisibility(View.VISIBLE);

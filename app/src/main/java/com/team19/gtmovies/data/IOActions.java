@@ -38,7 +38,7 @@ public class IOActions extends Application {
     private static final String AFILE = "ACCOUNTS.txt";
     private static final String UFILE = "USER.txt";
     private static final String MFILE = "MOVIES.txt";
-    private static Set<User> accounts;
+    private static Set<User> accounts = null;
     private static Set<Movie> movies;
 
     /**
