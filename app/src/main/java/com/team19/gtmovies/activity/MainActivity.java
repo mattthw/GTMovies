@@ -19,7 +19,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -233,7 +232,7 @@ public class MainActivity extends AppCompatActivity
      * Sets up the TabView
      */
     public void setupTabs() {
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         movieFragmentPagerAdapter = new MovieFragmentPagerAdapter(getSupportFragmentManager(),
                 MainActivity.this);
         ((ViewPager) findViewById(R.id.view_pager)).setAdapter(movieFragmentPagerAdapter);
@@ -280,69 +279,41 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPageSelected(int position) {
                 currentPage = position;
+                ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+
+                //set new height options
+                if (CurrentState.getOpenHeight() == 0) {
+                    CurrentState.setOpenHeight(viewPager.getHeight());
+                    CurrentState.setClosedHeight(viewPager.getHeight() + toolbar.getHeight());
+                }
+
                 switch (position) {
                     case MovieListFragment.NEW_MOVIES_TAB:
-                        /*criteriaBar.setVisibility(View.GONE);
-                        Log.d("Main", "onPageSelected case NEW_MOVIES");
-                        Log.d("Main", "onPageSelected position: " + position);
-                        Log.d("Main", "new calling updateUI");*/
+                        criteriaBar.setVisibility(View.GONE);
                         break;
                     case MovieListFragment.TOP_RENTALS_TAB:
                         criteriaBar.setVisibility(View.GONE);
-                        /*Log.d("Main", "onPageSelected case TOP_RENTALS");
-
-                        if (!MovieListFragment.hasTopRentalsList()) {
-                            Log.d("Main", "onPageSelected rent getMovies called");
-                            getMoviesFromAPI(SingletonMagic.topRental, null);
-                        } else { //otherwise fall through
-                            Log.d("Main", "onPageSelected rent not empty\n"
-                                    + "rent calling updateUI");
-                        }*/
                         break;
                     case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
                         criteriaBar.setVisibility(View.VISIBLE);
+                        //viewPager.getLayoutParams().height = CurrentState.getOpenHeight()
+                        //        - R.dimen.text_margin;
                         List<Movie> newRecommendations = ReviewController.getRecommendations();
                         Log.e("recommendations", "New:" + newRecommendations + "\nOld:"
                                 +recommendations
                                 + "\nelevation=" + findViewById(R.id.major_button).getElevation());
-                        /*if (!newRecommendations.equals(recommendations)
-                                && findViewById(R.id.major_button).getElevation()
-                                == getResources().getDimension(R.dimen.flat_elevation)); {
-                            recommendations = newRecommendations;
-                            new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
-                        }*/
-                        //Log.d("Main", "onPageSelected case YOUR_RECOMMENDATIONS_TAB");
-                        //((ScrollView) findViewById(R.id.main_view2)).fullScroll(View.FOCUS_DOWN);
-                        //scroller();
-                        /*if (!MovieListFragment.hasYourRecommendationsList()) {
-                            Log.d("Main", "onPageSelected rec getMovies called");
-                            getMoviesFromAPI(SingletonMagic.recommendations,
-                                    ReviewController.getRecommendations());
-                        } else {
-                            Log.d("Main", "onPageSelected rec not empty. pos: " + position
-                                    +"\nRec calling updateUI");
-                        }*/
                         setupMajorButton();
                         break;
                     default:
                         Log.e("GTMovies", "Incorrect int for tab.");
                 }
                 if (findViewById(R.id.main_toolbar).getVisibility() == View.INVISIBLE) {
-                    //findViewById(R.id.main_toolbar).setVisibility(View.VISIBLE);
                 }
-
-                //new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
-                //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
-                //        MovieListFragment.newInstance(position)).commit();
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                //don't know what to do here
                 Log.d("GTMovies", "Tabs this one called. State: " + state);
-                //fragmentManager.executePendingTransactions();
-                Log.d("JinuMain", "executePendingTransactions called onPageScrollStateChan");
-                //MovieListFragment.setTabPosition(state);
             }
         });
 

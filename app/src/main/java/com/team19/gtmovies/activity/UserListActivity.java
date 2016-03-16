@@ -1,23 +1,20 @@
 package com.team19.gtmovies.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
-import com.team19.gtmovies.pojo.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class UserListActivity extends AppCompatActivity {

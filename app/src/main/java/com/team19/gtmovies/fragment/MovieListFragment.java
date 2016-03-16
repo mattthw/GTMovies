@@ -215,18 +215,22 @@ public class MovieListFragment extends Fragment {
             int oldy = -1;
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == 0 && !scrolled && oldy < 0 && mAdapter.movieList != null) {
-                    mAdapter.toggleTopBars(-1);
+                if (newState == 0 && !scrolled && oldy < 0 && mAdapter.movieList != null
+                        && mAdapter.movieList.size() > 4
+                        && getArguments().getInt(ARG_ITEM_ID) != YOUR_RECOMMENDATIONS_TAB) {
                     if (getActivity().findViewById(R.id.main_toolbar).getVisibility()
                             == View.VISIBLE) {
                         //Todo: Jinu, this would be where we would refresh the page
                         Log.d("Scroll", "refresh page");
+                    } else {
+                        mAdapter.toggleTopBars(-1);
                     }
                 }
-                if (newState == 2 && mAdapter.movieList != null) {
+                if (newState == 2 && mAdapter.movieList != null
+                        && mAdapter.movieList.size() > 4
+                        && getArguments().getInt(ARG_ITEM_ID) != YOUR_RECOMMENDATIONS_TAB) {
                     mAdapter.toggleTopBars(oldy);
                     Log.d("Toggle", "2scroll oldy=" + oldy);
-
                 }
                 super.onScrollStateChanged(recyclerView, newState);
                 Log.d("OnScrollState", "newState=" + newState);
@@ -730,11 +734,6 @@ public class MovieListFragment extends Fragment {
             ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.view_pager);
 
             if (toolbar != null) {
-                if (CurrentState.getOpenHeight() == 0) {
-                    CurrentState.setOpenHeight(viewPager.getHeight());
-                    CurrentState.setClosedHeight(viewPager.getHeight() + toolbar.getHeight());
-                }
-
                 //On scroll up/down, shows/hides top bars
                 if (position > 0) {
                     //scroll down, close top bars
