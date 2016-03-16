@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,7 +18,6 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
-import com.team19.gtmovies.activity.MyLayoutManager;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.pojo.Movie;
@@ -246,7 +246,7 @@ public class MovieListFragment extends Fragment {
 
 
 
-        mLayoutManager = new MyLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(getActivity());
 
         /*
         if (search) {
