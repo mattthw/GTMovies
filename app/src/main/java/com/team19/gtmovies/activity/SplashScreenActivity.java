@@ -164,14 +164,14 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
         Log.d("getMoviesFromAPI", "request" + requestType);
-        Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                finished();
-                // If you want to call Activity then call from here for 5 seconds it automatically call and your image disappear....
-            }
-        }, 5000);
+//        Timer t = new Timer();
+//        t.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                finished();
+//                // If you want to call Activity then call from here for 5 seconds it automatically call and your image disappear....
+//            }
+//        }, 5000);
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
         if (requestType.equals(SingletonMagic.recommendations)) {
@@ -386,7 +386,6 @@ public class SplashScreenActivity extends AppCompatActivity {
      * What to do after UI updated
      */
     private void finished() {
-        //TODO: onActivityResult which checks if user did login successfully
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(SPLASH_SCREEN_VISITED, true);
         startActivity(intent);

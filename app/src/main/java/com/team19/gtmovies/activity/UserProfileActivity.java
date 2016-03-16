@@ -199,7 +199,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         if (!eName.getText().toString().equals(CurrentState.getUser().getName())) {
-            setResult(HEADER_NAME_UPDATED);
+            setResult(1);
         }
         // We are done. Go back to previous activity, after a set delay.
         TimerTask task = new TimerTask() {

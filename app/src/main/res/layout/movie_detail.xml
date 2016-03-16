@@ -133,16 +133,19 @@
                 android:text="@string/comments"
                 android:id="@+id/textView2"
                 android:paddingLeft="5dp"
-                android:padding="5dp" />
+                android:padding="5dp"
+                android:layout_marginLeft="3dp" />
 
             <ListView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/listView"
+                android:layout_height="wrap_content"
+                android:id="@+id/commentListView"
                 android:layout_below="@+id/textView2"
                 android:layout_marginTop="5dp"
                 android:layout_alignParentStart="false"
-                android:backgroundTint="@color/cardview_light_background" />
+                android:backgroundTint="@color/cardview_dark_background"
+                android:backgroundTintMode="src_over"
+                android:headerDividersEnabled="false" />
 
         </RelativeLayout>
 

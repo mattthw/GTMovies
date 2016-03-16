@@ -79,13 +79,14 @@ public class User<T extends Comparable<T>>
      * @param rev the review object to add
      */
     public void addReview(Review rev) {
-        if(myReviews.containsKey(rev.getMovieID())) {
-            throw new IllegalArgumentException(username + " has already reviewed movieID " +
-                                               rev.getMovieID());
-        } else {
-            myReviews.put(rev.getMovieID(), rev);
-        }
+        myReviews.put(rev.getMovieID(), rev);
+//        if(myReviews.containsKey(rev.getMovieID())) {
+//            throw new IllegalArgumentException(username + " has already reviewed movieID " +
+//                                               rev.getMovieID());
+//        } else {
+//        }
     }
+
 
     /**
      * Remove a review from this user's hashmap
@@ -114,6 +115,13 @@ public class User<T extends Comparable<T>>
         }
     }
 
+    /**
+     * get map of all reviews for user
+     * @return hashmap of reviews
+     */
+    public HashMap<Integer, Review> getReviews() {
+        return (HashMap)myReviews;
+    }
     /**
      * getter for username
      * @return username

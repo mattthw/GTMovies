@@ -86,12 +86,12 @@ public class Movie implements Comparable<Movie>, Serializable {
      * @param rev the review object
      */
     public void addReview(Review rev) {
-        if(myReviews.containsKey(rev.getUsername())) {
-            throw new IllegalArgumentException(rev.getUsername() + " has already reviewed movieID " +
-                    id);
-        } else {
-            myReviews.put(rev.getUsername(), rev);
-        }
+        myReviews.put(rev.getUsername(), rev);
+//        if(myReviews.containsKey(rev.getUsername())) {
+//            throw new IllegalArgumentException(rev.getUsername() + " has already reviewed movieID " +
+//                    id);
+//        } else {
+//        }
     }
 
     /**
@@ -121,6 +121,13 @@ public class Movie implements Comparable<Movie>, Serializable {
         }
     }
 
+    /**
+     * get map of all reviews for movie
+     * @return hashmap of reviews
+     */
+    public HashMap<Integer, Review> getReviews() {
+        return (HashMap)myReviews;
+    }
     @Override
     public int compareTo(Movie other) {
         return this.id - other.getID();

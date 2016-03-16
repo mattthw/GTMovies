@@ -149,7 +149,7 @@
     <string name="title_test_detail">TEST Detail</string>
     <string name="description">Description:</string>
     <string name="rating">Tomato Rating:</string>
-    <string name="comments">Comments:</string>
+    <string name="comments">Reviews:</string>
     <string name="user_rating">User Rating:</string>
     <string name="my_review">My Review:</string>
     <string name="score">Score:</string>

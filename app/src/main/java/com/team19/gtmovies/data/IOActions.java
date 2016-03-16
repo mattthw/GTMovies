@@ -252,7 +252,7 @@ public class IOActions extends Application {
             CurrentState.setUser(temp);
             Log.println(Log.ASSERT, "GTMovies",
                     "'" + temp.getUsername() + "' signed in.");
-            commit();
+//            commit();
             return true;
         } else {
             Log.println(Log.ASSERT, "GTMovies",

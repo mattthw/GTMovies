@@ -23,6 +23,7 @@ public class UserListActivity extends AppCompatActivity {
     private ArrayAdapter<String> listAdapter ;
     private Intent userIntent = null;
 
+    //TODO: JAVADOCS!!!!!!!
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

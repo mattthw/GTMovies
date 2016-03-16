@@ -55,13 +55,13 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     protected static IOActions ioa;
-    protected static View rootView;
+    protected static View mainRootView;
     protected static NavigationView navigationView;
     protected static Toolbar toolbar;
     protected static DrawerLayout drawer;
-    protected static View navHeader;
     protected static MovieFragmentPagerAdapter movieFragmentPagerAdapter;
     protected static CriteriaActivity criteriaActivity;
+
     private static int currentPage;
     private List<Movie> recommendations;
     private boolean generalRecommendations = true;
@@ -75,22 +75,18 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (ioa == null) {
-            this.startActivity(new Intent(MainActivity.this, SplashScreenActivity.class));
+            startActivity(new Intent(this, SplashScreenActivity.class));
             finish();
             return;
         }
 
         Log.w("MAINACTIVITY", "ONCREATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
 
-        startActivity(new Intent(this, LoginActivity.class));
-
         setContentView(R.layout.activity_main);
-        rootView = findViewById(R.id.main_view);
+        mainRootView = findViewById(R.id.main_view);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(),
                 R.color.colorPrimaryDark));
-
-        //startActivity(new Intent(this, MovieListActivity.class));
 
         //LOGIN THINGS
         Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
@@ -113,9 +109,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View header=navigationView.getHeaderView(0);
-/*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
         TextView name = (TextView)header.findViewById(R.id.headerName);
         name.setText(CurrentState.getUser().getName());
+
+        //result updates header. dont fuck it up.
+        // BACK to activity_main if the user did indeed log in.
+        //has to be done after view stuff setup or else will act on null views
+        startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.LOGIN_FINISHED);
+
+
         // Populate lists of new movies and top rentals
         //getMovies();
         //new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
@@ -125,18 +127,12 @@ public class MainActivity extends AppCompatActivity
         //getMoviesFromAPI(SingletonMagic.newMovie, null);
 
 
-
-
-
         //getMoviesFromAPI(SingletonMagic.topRental, null);
         // Setup tabs and search
         //fragmentManager = getSupportFragmentManager();
         //criteriaActivity = (CriteriaActivity) findViewById(R.id.criteria_bar);
         setupTabs();
         setupSearch();
-
-        // Change John Smith to username
-        //((TextView) navHeader.findViewById(R.id.headerName)).setText(CurrentState.getUser().getName()); //TODO: sorry Jinu null execption
 
         // Place view
         MovieListFragment.setTabs();
@@ -146,47 +142,6 @@ public class MainActivity extends AppCompatActivity
         MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
         MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
     }
-
-    /*@Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-
-
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < 10000; j++) {
-                Log.i("Useless", "I'm just going to go with the flow and hope it all works out");
-            }
-            for (int j = 0; j < 10000; j++) {
-                Log.i("Useless", "I hope that one day...never mind I have no hopes");
-            }
-        }
-
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < 1000; j++) {
-                Log.i("Useless", "This is where android is SUPPOSE to create a view");
-            }
-            for (int j = 0; j < 1000; j++) {
-                Log.i("Useless", "But of course, that would be TOOOO easy for android.");
-            }
-        }
-
-
-
-        if (firstTimes < 3) {
-            //new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
-            for (int i = 0; i < 1; i++) {
-                for (int j = 0; j < 10000; j++) {
-                    Log.i("Useless", "WHY ISN'T THIS PROJECT OVER WITH");
-                }
-                for (int j = 0; j < 10000; j++) {
-                    Log.i("Useless", "I WANNA GO HOME " + firstTimes);
-                }
-            }
-        }
-        firstTimes++;
-        return super.onCreateView(name, context, attrs);
-    }*/
-
-
 
     /*@Override
     protected void onStart() {
@@ -205,27 +160,49 @@ public class MainActivity extends AppCompatActivity
     }*/
 
 
-    /**
-     * set users info to nav header
-     */
-/*    public void updateNavHeader() {
-        Handler tvh = new Handler();
-        Runnable updatetvh = new Runnable() {
-            @Override
-            public void run() {
-                ((TextView) MainActivity.nav_header.findViewById(R.id.headerName))
-                        .setText(IOActions.currentUser.getName());
-                ((TextView) MainActivity.nav_header.findViewById(R.id.headerUsername))
-                        .setText(IOActions.currentUser.getUsername());
-                navigationView.addHeaderView(nav_header);
-            }
-        };
-        tvh.post(updatetvh);
-    }*/
-
     @Override
     protected void onSaveInstanceState(Bundle bundle) {
         //nothing
+    }
+
+
+    /**
+     * do things depending on results from activities called.
+     * @param requestCode what we are checking
+     * @param resultCode value returned for what being checked
+     * @param data idk
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == UserProfileActivity.HEADER_NAME_UPDATED) {
+            updateNavName();
+        }
+        if (requestCode == LoginActivity.LOGIN_FINISHED) {
+            updateNavName();
+            MovieListFragment.updateAdapter(MovieListFragment.NEW_MOVIES_TAB);
+            MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
+            MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
+            mainRootView.invalidate();
+        }
+    }
+
+    /**
+     * update header name
+     */
+    public void updateNavName() {
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View header=navigationView.getHeaderView(0);
+        TextView name = (TextView)header.findViewById(R.id.headerName);
+        if (name != null) {
+            name.setText(CurrentState.getUser().getName());
+            Log.println(Log.ASSERT, "GTMovies", "header name updated to: " + name);
+        } else {
+            Log.println(Log.ERROR,"GTMovies", "header view null, couldn't update.");
+        }
     }
 
     /**
@@ -621,22 +598,6 @@ public class MainActivity extends AppCompatActivity
         findViewById(R.id.content_main).invalidate();
     }
 
-
-    /**
-     * do things depending on results from activities called.
-     * @param requestCode what we are checking
-     * @param resultCode value returned for what being checked
-     * @param data idk
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == UserProfileActivity.HEADER_NAME_UPDATED) {
-            Log.println(Log.ASSERT, "GTMovies", "header name updated.");
-            //update header
-            ((TextView) findViewById(R.id.headerName))
-                    .setText(CurrentState.getUser().getName());
-        }
-    }
 
 
 

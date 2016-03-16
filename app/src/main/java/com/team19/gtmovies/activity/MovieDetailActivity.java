@@ -18,12 +18,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.fragment.MovieDetailFragment;
+import com.team19.gtmovies.pojo.Review;
 
+import java.io.ObjectInputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -42,6 +48,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static String comment = "null";
     private static Intent gotIntent;
     private static View rootView;
+
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -99,6 +107,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * inner anonymous class to create review dialog fragment
