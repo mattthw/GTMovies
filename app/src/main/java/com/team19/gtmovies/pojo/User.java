@@ -29,7 +29,7 @@ public class User<T extends Comparable<T>>
 
            default: 1/active
      */
-    private int permission;
+    private int permission = 0;
     private String iceCream = "";
     private Map<Integer, Review> myReviews;
     private boolean hasProfile;
@@ -149,6 +149,22 @@ public class User<T extends Comparable<T>>
     public String getMajor() {
         return major;
     }
+
+    /**
+     * returns the user's rank tpo callee
+     * @return rank
+     *
+     *  PERMISSION:
+     *  2: admin
+     *  1: active
+     *  0: locked
+     * -1: banned
+     *
+     *  default: 1/active
+     */
+    public int getPermission() {
+        return permission;
+    }
     /**
      * does user have a profile
      * @return boolean hasProfile
@@ -218,6 +234,14 @@ public class User<T extends Comparable<T>>
      */
     public void setBio(String b) {
         bio = b;
+    }
+
+    /**
+     * set rank
+     * @param p int code for permission
+     */
+    public void setPermission(int p) {
+        permission = p;
     }
 
     /**

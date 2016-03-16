@@ -46,7 +46,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView3"
+                    android:id="@+id/unameView"
                     android:ems="13"
                     android:singleLine="true"
                     android:textSize="15sp"
@@ -73,7 +73,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView4"
+                    android:id="@+id/rankView"
                     android:ems="13"
                     android:singleLine="true"
                     android:textSize="15sp"
@@ -185,14 +185,28 @@
         </LinearLayout>
     </FrameLayout>
 
-    <Button
-        android:text="@string/save_profile"
-        android:id="@+id/buttonUserProfileSubmit"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/frameLayout2" />
+        android:layout_alignEnd="@+id/frameLayout2">
+
+        <Button
+            android:text="@string/change_rank"
+            android:id="@+id/buttonRank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="changeRank"
+            android:visibility="gone" />
+
+        <Button
+            android:text="@string/save_profile"
+            android:id="@+id/buttonUserProfileSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 
 
 </RelativeLayout>

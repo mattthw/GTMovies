@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
@@ -65,11 +66,26 @@ public class UserProfileActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
             receiveName = null;
+            this.setTitle("Edit Profile");
         } else {
             receiveName = extras.getString("UNAME");
             cu = IOActions.getUserByUsername(receiveName);
+            if (CurrentState.getUser().getPermission() == 2) {
+                findViewById(R.id.buttonRank).setVisibility(View.VISIBLE);
+                this.setTitle("View Profile (as admin)");
+            } else {
+                //disable editing for regular users
+                this.setTitle("View Profile");
+                findViewById(R.id.buttonUserProfileSubmit).setVisibility(View.GONE);
+                eMajor.setEnabled(false);
+                eName.setEnabled(false);
+                eBio.setEnabled(false);
+            }
         }
 
+        ((TextView)findViewById(R.id.unameView))
+                .setText(cu.getUsername());
+        updateRank();
         // Grab the user's pre-existing information
         eName.setText(cu.getName());
         eBio.setText(cu.getBio());
@@ -110,6 +126,41 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * sets the rank XML view to current rank of user
+     */
+    private void updateRank() {
+        String hisRank = null;
+        int perm = cu.getPermission();
+        if (perm == 2) {
+            hisRank = "admin";
+        } else if (perm == 1) {
+            hisRank = "active";
+        }else if (perm == 0) {
+            hisRank = "locked";
+        } else if (perm == -1) {
+            hisRank = "banned";
+        }
+        ((TextView)findViewById(R.id.rankView)).setText(hisRank);
+    }
+
+    /**
+     * changes rank to next possible rank
+     * incremented by integers. if rank=2 (admin)
+     * then set to -1 (banned)
+     * @param view view
+     */
+    public void changeRank(View view) {
+        int perm = cu.getPermission();
+        if (perm == 2) {
+            cu.setPermission(-1);
+        } else {
+            perm += 1;
+            cu.setPermission(perm);
+        }
+        updateRank();
+        Toast.makeText(UserProfileActivity.this, "RANK CHANGED", Toast.LENGTH_SHORT).show();
+    }
 
     /**
      * Saves user profile
