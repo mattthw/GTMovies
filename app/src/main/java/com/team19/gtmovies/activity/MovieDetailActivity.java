@@ -18,11 +18,19 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.fragment.MovieDetailFragment;
+import com.team19.gtmovies.pojo.Review;
+
+import java.io.ObjectInputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * An activity representing a single Movie detail screen. This
@@ -41,6 +49,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static Intent gotIntent;
     private static View rootView;
 
+
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +64,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         gotIntent = getIntent();
         rootView = findViewById(R.id.movie_detail_container);
+        Log.d("MovieDetailActivity", "onCreate " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
@@ -71,6 +82,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             //add info about movie from tomato API to fragment args
             arguments.putString(MovieDetailFragment.ARG_ITEM_TITLE,
                     getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_TITLE));
+            Log.d("MovieDetailActivity", "putInt=" + getIntent().getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1));
             arguments.putInt(MovieDetailFragment.ARG_ITEM_ID,
                     getIntent().getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1));
             arguments.putString(MovieDetailFragment.ARG_ITEM_DESC,
@@ -95,6 +107,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * inner anonymous class to create review dialog fragment
@@ -129,7 +142,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             //setup Spinner for user rating
             View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_review, null);
             scoreSpin = (Spinner)view.findViewById(R.id.spinnerScore);
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.scores, android.R.layout.simple_spinner_item);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.scores, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             scoreSpin.setAdapter(adapter);
             addListenerOnSpinnerItemSelection();
@@ -149,6 +163,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                             Log.println(Log.INFO, "GTMovies", "COMMENT: " + comment);
                             //get movie id
                             Integer tempID = gotIntent.getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1);
+                            //Integer tempID = gotIntent.getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1);
                             //save the review
                             try {
                                 IOActions.SaveNewRating(tempID,score,comment);
@@ -157,7 +172,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                                 Snackbar.make(rootView, "Movie already reviewed.", Snackbar.LENGTH_SHORT).show();
                             }
                             Log.println(Log.DEBUG, "GTMovies", "Movies: " + IOActions.getMovies());
-                            MovieDetailFragment frag = (MovieDetailFragment)getFragmentManager()
+                            MovieDetailFragment frag = (MovieDetailFragment) getFragmentManager()
                                     .findFragmentById(R.id.movie_detail_container);
                             frag.updateFrag();
 
@@ -168,7 +183,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             ReviewDialogFragment.this.getDialog().cancel();
                         }
-                    });
+                    })
+                    .setTitle("My Review");
             return builder.create();
         }
 
@@ -187,7 +203,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                     Log.println(Log.ERROR, "GTMovies", "Couldint parse selected score as Integer");
                     tempScore = 0;
                 }
-                Log.println(Log.INFO, "GTMovies", "selected: " + tempScore.toString());
+                Log.println(Log.DEBUG, "GTMovies", "selected: " + tempScore.toString());
             }
             @Override
             public void onNothingSelected(AdapterView parent) {

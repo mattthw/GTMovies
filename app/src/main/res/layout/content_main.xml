@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activity.MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:showIn="@layout/app_bar_main"
+    android:clipToPadding="false">
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,18 +16,121 @@
         android:id="@+id/main_view2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
+        android:orientation="vertical"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+        <LinearLayout
+            android:id="@+id/main_linear_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
-            <FrameLayout
-                android:id="@+id/main_frame_layout"
+            android:orientation="vertical"
+            android:clipToPadding="false">
+            <ScrollView
+                android:id="@+id/main_view2_inner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </android.support.v4.view.ViewPager>
+                android:layout_height="wrap_content"
+                android:clipToPadding="false">
+                <!--<com.team19.gtmovies.activity.CriteriaActivity
+                    android:id="@+id/criteria_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>-->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:orientation="horizontal"
+                    android:id="@+id/criteria_bar"
+                    android:layout_marginTop="9dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_gravity="center"
+                    android:animateLayoutChanges="true"
+                    android:clipToPadding="false">
+                    <RelativeLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/major_button"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:background="@drawable/chip_shape"
+                        android:backgroundTint="@android:color/white">
+
+                        <TextView
+                            android:id="@+id/major_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:layout_centerInParent="true"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="14sp"
+                            android:text="@string/criteria_major"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/genre_button"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:background="@drawable/chip_shape"
+                        android:backgroundTint="@android:color/white">
+
+                        <TextView
+                            android:id="@+id/genre_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:layout_centerInParent="true"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="14sp"
+                            android:text="@string/criteria_genre"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/rating_button"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:background="@drawable/chip_shape"
+                        android:backgroundTint="@android:color/white">
+
+                        <TextView
+                            android:id="@+id/rating_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:layout_centerInParent="true"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="14sp"
+                            android:text="@string/criteria_rating"/>
+                    </RelativeLayout>
+                </LinearLayout>
+            </ScrollView>
+
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="511dp">
+                <FrameLayout
+                    android:id="@+id/main_frame_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"/>
+            </android.support.v4.view.ViewPager>
+        </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>

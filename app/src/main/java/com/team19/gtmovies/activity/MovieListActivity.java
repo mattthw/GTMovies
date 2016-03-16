@@ -105,6 +105,14 @@ public class MovieListActivity extends AppCompatActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            for (int i = 0; i < 1; i++) {
+                for (int j = 0; j < 1; j++) {
+                    Log.i("Useless", "This one might actually be it.");
+                }
+                for (int j = 0; j < 1; j++) {
+                    Log.i("Useless", "But probably isn't");
+                }
+            }
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.movie_list_content, parent, false);
             return new ViewHolder(view);
@@ -123,6 +131,7 @@ public class MovieListActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
+                        Log.e("TWO PANE", "2PANE");
                         //arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
@@ -130,6 +139,7 @@ public class MovieListActivity extends AppCompatActivity {
                                 .replace(R.id.movie_detail_container, fragment)
                                 .commit();
                     } else {
+                        Log.e("ONE PANE", "1PANE");
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
                         //intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);

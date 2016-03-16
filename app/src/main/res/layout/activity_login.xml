@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/login_root"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context=".activity.LoginActivity"
@@ -43,7 +44,7 @@
             android:padding="10dp"
             android:minWidth="300dp">
 
-            <android.support.design.widget.TextInputLayout
+            <FrameLayout
                 android:id="@+id/nameLayout"
                 android:visibility="gone"
                 android:layout_width="match_parent"
@@ -70,9 +71,9 @@
                     <!--android:singleLine="true"-->
                     <!--android:title="@string/pref_title_display_name" />-->
 
-            </android.support.design.widget.TextInputLayout>
+            </FrameLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -88,9 +89,9 @@
                     android:background="@android:drawable/editbox_background"
                     android:nestedScrollingEnabled="false" />
 
-            </android.support.design.widget.TextInputLayout>
+            </FrameLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <FrameLayout
                 android:id="@+id/pwRegister"
                 android:visibility="gone"
                 android:layout_width="match_parent"
@@ -109,9 +110,9 @@
                     android:singleLine="true"
                     android:background="@android:drawable/editbox_background" />
 
-            </android.support.design.widget.TextInputLayout>
+            </FrameLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp">
@@ -130,20 +131,20 @@
                     android:lines="1"
                     android:background="@android:drawable/editbox_background" />
 
-            </android.support.design.widget.TextInputLayout>
+            </FrameLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:paddingTop="35dp">
+                android:paddingTop="15dp">
 
                 <Button
                     android:visibility="gone"
                     android:id="@+id/cancel_button"
                     style="?android:textAppearanceSmall"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="cancel"
                     android:text="@string/action_cancel"

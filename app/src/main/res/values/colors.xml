@@ -2,7 +2,11 @@
 <resources>
     <color name="colorPrimary">#FF697095</color>
     <color name="colorPrimaryDark">#4f5679</color>
+    <color name="colorPrimaryVeryDark">#3c425d</color>
     <color name="colorAccent">#fdb813</color>
     <color name="cardview_dark_background">#f8f8f8</color>
-</resources>
-<!--color-->
+    <color name="LTGray">#cccccc</color>
+    <color name="Gray">#888888</color>
+
+    <color name="black_overlay">#66000000</color>
+</resources><!--color-->

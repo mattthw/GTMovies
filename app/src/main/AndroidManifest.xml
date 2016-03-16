@@ -13,29 +13,39 @@
 
         <!-- MAIN ACTIVITY -->
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.SplashScreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_main"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="@string/title_activity_main"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <!-- CHILD SETTINGS ACTIVITY -->
         <!-- CHILD LOGIN ACTIVITY -->
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".activity.SplashScreenActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value=".activity.SplashScreenActivity" />
         </activity>
         <!-- CHILD OF LOGIN ACTIVITY -->
-        <activity android:name=".activity.WelcomeActivity" />
+        <activity
+            android:name=".activity.WelcomeActivity"
+            android:parentActivityName=".activity.LoginActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -48,10 +58,8 @@
         <activity
             android:name=".activity.UserProfileActivity"
             android:label="User Profile"
-            android:parentActivityName=".activity.MainActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait">
-
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -61,8 +69,8 @@
             android:name=".activity.MovieListActivity"
             android:label="@string/title_movie_list"
             android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
@@ -72,7 +80,8 @@
             android:label="@string/title_movie_detail"
             android:parentActivityName=".activity.MovieListActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--android:screenOrientation="portrait"-->
+
+            <!-- android:screenOrientation="portrait" -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MovieListActivity" />
@@ -83,8 +92,20 @@
             android:launchMode="singleTop"
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait">
-            <!--<meta-data android:name="android.app.default_searchable"
-                android:value=".activity.MainActivity" />-->
+
+            <!--
+                <meta-data android:name="android.app.default_searchable"
+                android:value=".activity.MainActivity" />
+            -->
+        </activity>
+        <activity
+            android:name=".activity.UserListActivity"
+            android:label="Registered Users:"
+            android:parentActivityName=".activity.MainActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
         </activity>
     </application>
 
