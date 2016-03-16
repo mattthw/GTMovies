@@ -16,7 +16,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 //import com.team19.gtmovies.pojo.User;
@@ -178,10 +180,21 @@ public class IOActions extends Application {
 
     /**
      * gets accounts
-     * @return HashSet of accounts
+     * @return list of accounts
      */
     public static Set<User> getAccounts() {
         return accounts;
+    }
+    /**
+     * gets accounts
+     * @return list of accounts
+     */
+    public static ArrayList<String> getUsernames() {
+        ArrayList<String> temp = new ArrayList<>(accounts.size());
+        for (User u : accounts) {
+            temp.add(u.getUsername());
+        }
+        return temp;
     }
     /**
      * gets movies

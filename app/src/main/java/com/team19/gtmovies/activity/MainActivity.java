@@ -870,6 +870,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_manage_profile) {
             Intent intent = new Intent(this, UserProfileActivity.class);
             startActivityForResult(intent, UserProfileActivity.HEADER_NAME_UPDATED);
+        } else if (id == R.id.nav_friends) {
+            startActivity(new Intent(this, UserListActivity.class));
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_logout) {

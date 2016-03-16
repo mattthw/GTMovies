@@ -143,7 +143,7 @@
     <string name="major_prof_edit">Major:</string>
     <string name="edit_your_profile_here">Edit your profile here:</string>
     <string name="save_profile">Save Profile</string>
-    <string name="user_bio">User Bio:</string>
+    <string name="user_bio">Bio:</string>
     <string name="title_test_list">Items</string>
     <string name="title_admin">Mod Tools</string>
     <string name="title_test_detail">TEST Detail</string>
@@ -169,4 +169,6 @@
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="rank">Rank:</string>
+    <string name="uname">Username:</string>
 </resources>

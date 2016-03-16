@@ -11,113 +11,188 @@
     tools:context=".activity.UserProfileActivity"
     android:id="@+id/userProfileRootView">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/edit_your_profile_here"
-        android:id="@+id/textViewUserProfileTitle"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="true"
-        android:orientation="vertical"
-        android:measureWithLargestChild="true"
-        android:layout_alignParentStart="true"
-        android:paddingTop="20dp"
-        android:id="@+id/linearLayout">
+        android:background="@drawable/big_card"
+        android:id="@+id/frameLayout3"
+        android:layout_margin="3dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="20dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/name_prof_edit"
-                android:id="@+id/textViewUserProfileName"
-                style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
-                android:paddingTop="10dp" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/editTextUserProfileName"
-                android:ems="13"
-                android:layout_gravity="center_vertical"
-                android:inputType="textPersonName"
-                android:singleLine="true" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingTop="20dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/major_prof_edit"
-                android:id="@+id/textViewUserProfileMajor"
-                style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title" />
-
-            <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinnerProfileMajor"
-                android:entries="@array/profMajors" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="20dp"
-            android:paddingBottom="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/user_bio"
-                android:id="@+id/textViewUserProfileBio"
-                style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title" />
-
-        </LinearLayout>
-
-        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:id="@+id/editTextUserProfileBio"
-            android:lines="5"
-            android:nestedScrollingEnabled="false"
-            android:textAlignment="textStart"
-            android:textStyle="normal"
-            android:enabled="true"
-            android:password="false"
-            android:editable="true"
-            android:background="@drawable/rounded_edittext"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:baselineAligned="false"
+            android:orientation="vertical"
+            android:measureWithLargestChild="false"
+            android:paddingTop="20dp"
+            android:id="@+id/linearLayout3"
+            android:padding="10dp" >
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:text="@string/uname"
+                    android:paddingTop="10dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/Gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView3"
+                    android:ems="13"
+                    android:singleLine="true"
+                    android:textSize="15sp"
+                    android:textColor="@color/Gray"
+                    android:text="@android:string/unknownName"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:text="@string/rank"
+                    android:paddingTop="10dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/Gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView4"
+                    android:ems="13"
+                    android:singleLine="true"
+                    android:textSize="15sp"
+                    android:textColor="@color/Gray"
+                    android:text="@android:string/unknownName"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/big_card"
+        android:id="@+id/frameLayout2"
+        android:layout_below="@+id/frameLayout3"
+        android:layout_margin="3dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="vertical"
+            android:measureWithLargestChild="false"
+            android:paddingTop="20dp"
+            android:id="@+id/linearLayout"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/name_prof_edit"
+                    android:id="@+id/textViewUserProfileName"
+                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:paddingTop="10dp"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextUserProfileName"
+                    android:ems="13"
+                    android:layout_gravity="center_vertical"
+                    android:inputType="textPersonName"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/major_prof_edit"
+                    android:id="@+id/textViewUserProfileMajor"
+                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:textSize="18sp" />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerProfileMajor"
+                    android:entries="@array/profMajors" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_bio"
+                    android:id="@+id/textViewUserProfileBio"
+                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:id="@+id/editTextUserProfileBio"
+                android:lines="5"
+                android:nestedScrollingEnabled="false"
+                android:textAlignment="textStart"
+                android:textStyle="normal"
+                android:enabled="true"
+                android:password="false"
+                android:editable="true"
+                android:background="@drawable/rounded_edittext"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
+
+        </LinearLayout>
+    </FrameLayout>
 
     <Button
         android:text="@string/save_profile"
         android:id="@+id/buttonUserProfileSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/linearLayout" />
+        android:layout_alignEnd="@+id/frameLayout2" />
 
 
 </RelativeLayout>
