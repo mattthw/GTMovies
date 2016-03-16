@@ -2,7 +2,9 @@ package com.team19.gtmovies.activity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
@@ -18,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
@@ -37,37 +40,55 @@ import java.util.TimerTask;
  */
 public class UserProfileActivity extends AppCompatActivity {
     protected View rootView;
-    private static UserProfileActivity upa = null;
-    final User cu = CurrentState.getUser();
-    final IOActions ioa = MainActivity.ioa;
+    private static UserProfileActivity userProfInstance = null;
+    private User cu = CurrentState.getUser();
 
-    private EditText eUsername;
     private Spinner eMajor;
     private String selectedMajor = "";
     private EditText eName;
-    private EditText ePassword;
     private EditText eBio;
+    private String receiveName;
+    public static final int HEADER_NAME_UPDATED = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         rootView = findViewById(R.id.userProfileRootView);
-        upa = this;
-        //setup up button on action bar
+        userProfInstance = this;
         setupActionBar();
-
-        //eUsername = (EditText)findViewById(R.id.editTextUserProfileUsername);
+        //locate views
         eMajor = (Spinner)findViewById(R.id.spinnerProfileMajor);
         eName = (EditText)findViewById(R.id.editTextUserProfileName);
-        //ePassword = (EditText)findViewById(R.id.editTextUserProfilePassword);
         eBio = (EditText)findViewById(R.id.editTextUserProfileBio);
+
+        //get user if called from mod's user list
+        Bundle extras = getIntent().getExtras();
+        if(extras == null) {
+            receiveName = null;
+            this.setTitle("Edit Profile");
+        } else {
+            receiveName = extras.getString("UNAME");
+            cu = IOActions.getUserByUsername(receiveName);
+            if (CurrentState.getUser().getPermission() == 2) {
+                findViewById(R.id.buttonRank).setVisibility(View.VISIBLE);
+                this.setTitle("View Profile (as admin)");
+            } else {
+                //disable editing for regular users
+                this.setTitle("View Profile");
+                findViewById(R.id.buttonUserProfileSubmit).setVisibility(View.GONE);
+                eMajor.setEnabled(false);
+                eName.setEnabled(false);
+                eBio.setEnabled(false);
+            }
+        }
+
+        ((TextView)findViewById(R.id.unameView))
+                .setText(cu.getUsername());
+        updateRank();
         // Grab the user's pre-existing information
-        //eUsername.setText(cu.getUsername());
         eName.setText(cu.getName());
-        //ePassword.setText();
         eBio.setText(cu.getBio());
-        //spinner
         selectedMajor = cu.getMajor();
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.profMajors, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -80,18 +101,15 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // If the user doesn't already have a profile, make sure to let them know.
         if(!cu.getHasProfile()) {
-            CharSequence text = ((TextView)findViewById(R.id.textViewUserProfileTitle)).getText();
+            //CharSequence text = ((TextView)findViewById(R.id.textViewUserProfileTitle)).getText();
             CreateProfileDialogFragment alert = new CreateProfileDialogFragment();
             alert.setCancelable(false);
             alert.show(getSupportFragmentManager(), "");
-
         }
         // What to do if the save button is clicked
         findViewById(R.id.buttonUserProfileSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (verifyProfile())
-//                    saveProfile();
                 saveProfile();
             }
         });
@@ -109,49 +127,39 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * Ensure all fields meet registration requirements
-     * @return true if acceptable
+     * sets the rank XML view to current rank of user
      */
-    private boolean verifyProfile() {
-        boolean cancel = false;
-        View focusView = null;
+    private void updateRank() {
+        String hisRank = null;
+        int perm = cu.getPermission();
+        if (perm == 2) {
+            hisRank = "admin";
+        } else if (perm == 1) {
+            hisRank = "active";
+        }else if (perm == 0) {
+            hisRank = "locked";
+        } else if (perm == -1) {
+            hisRank = "banned";
+        }
+        ((TextView)findViewById(R.id.rankView)).setText(hisRank);
+    }
 
-        //ALWAYS CHECK THESE FIELDS
-        if (TextUtils.isEmpty(eUsername.getText().toString())) {
-            //username empty
-            eUsername.setError(getString(R.string.error_field_required));
-            focusView = eUsername;
-            cancel = true;
-        } else if (IOActions.getUserByUsername(eUsername.getText().toString()) != null
-                && !(eUsername.getText().toString()
-                    .equals(CurrentState.getUser().getUsername()))) {
-            //username already exists
-            eUsername.setError("Username already exists");
-            focusView = eUsername;
-            cancel = true;
-        } else if (TextUtils.isEmpty(ePassword.getText().toString())) {
-            //password empty
-            ePassword.setError(getString(R.string.error_field_required));
-            focusView = ePassword;
-            cancel = true;
-        } else if (eUsername.getText().toString().length() <= 3) {
-            //username length
-            eUsername.setError(getString(R.string.error_invalid_email));
-            focusView = eUsername;
-            cancel = true;
-        } else if (ePassword.getText().toString().length() <= 3) {
-            //password length
-            ePassword.setError(getString(R.string.error_invalid_password));
-            focusView = ePassword;
-            cancel = true;
-        }
-        if (cancel) {
-            //cancel and focus on bad field
-            focusView.requestFocus();
-            return false;
+    /**
+     * changes rank to next possible rank
+     * incremented by integers. if rank=2 (admin)
+     * then set to -1 (banned)
+     * @param view view
+     */
+    public void changeRank(View view) {
+        int perm = cu.getPermission();
+        if (perm == 2) {
+            cu.setPermission(-1);
         } else {
-            return true;
+            perm += 1;
+            cu.setPermission(perm);
         }
+        updateRank();
+        Toast.makeText(UserProfileActivity.this, "RANK CHANGED", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -167,8 +175,6 @@ public class UserProfileActivity extends AppCompatActivity {
         // Save everything to the currentuser object
         cu.setName(eName.getText().toString());
         cu.setMajor(selectedMajor);
-        //cu.setUsername(eUsername.getText().toString());
-        //cu.setPassword(ePassword.getText().toString());
         cu.setBio(eBio.getText().toString());
         cu.setHasProfile(true); // They saved their new info, so profile is made automatically for them.
 
@@ -188,8 +194,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Disable text fields and make snackbar for visual confirmation
         eName.setEnabled(false);
-//        eUsername.setEnabled(false);
-//        ePassword.setEnabled(false);
         eBio.setEnabled(false);
         eMajor.setEnabled(false);
         if(!hasprofileback) {
@@ -198,11 +202,14 @@ public class UserProfileActivity extends AppCompatActivity {
             Snackbar.make(rootView, "Profile has been updated!", Snackbar.LENGTH_SHORT).show();
         }
 
-        // We are done. Go back to MainActivity, after a set delay.
+        if (!eName.getText().toString().equals(CurrentState.getUser().getName())) {
+            setResult(HEADER_NAME_UPDATED);
+        }
+        // We are done. Go back to previous activity, after a set delay.
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                NavUtils.navigateUpFromSameTask(UserProfileActivity.this);
+                finish();
             }
         };
         Timer t = new Timer();
@@ -214,7 +221,7 @@ public class UserProfileActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -233,7 +240,7 @@ public class UserProfileActivity extends AppCompatActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("You do not have a profile.")
+            builder.setMessage(userProfInstance.cu.getUsername() + " does not have a profile.")
                     .setPositiveButton("Create profile", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // allow edit.
@@ -241,7 +248,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            upa.finish();
+                            userProfInstance.finish();
                         }
                     });
             // Create the AlertDialog object and return it
@@ -262,9 +269,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private class MajorSpinnerListener implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView parent, View view, int pos, long id) {
-//            Toast.makeText(parent.getContext(), "Selected Country : " + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_SHORT).show();
             selectedMajor = parent.getItemAtPosition(pos).toString();
-//            Log.println(Log.INFO, "GTMovies", "selected: " + parent.getItemAtPosition(pos).toString());
         }
         @Override
         public void onNothingSelected(AdapterView parent) {

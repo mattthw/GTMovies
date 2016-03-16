@@ -25,6 +25,7 @@ import com.team19.gtmovies.exception.IllegalUserException;
 import com.team19.gtmovies.exception.NullUserException;
 import com.team19.gtmovies.pojo.User;
 
+import java.util.HashMap;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -53,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private String password = null;
     private String passwordCheck = null;
     private String name = null;
+    private HashMap<String, Integer> attempts = new HashMap<>();
     //app user status
     public static final String USER_STATUS = "USER";
     //app users storage
@@ -69,10 +71,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (IOActions.userSignedIn()) {
             Log.d("IOActions", "not considered logged in");
-            ((TextView) MainActivity.navHeader.findViewById(R.id.headerName))
-                    .setText(CurrentState.getUser().getName());
-            ((TextView) MainActivity.navHeader.findViewById(R.id.headerUsername))
-                    .setText(CurrentState.getUser().getUsername());
             finish();
             return;
         }
@@ -127,11 +125,6 @@ public class LoginActivity extends AppCompatActivity {
                 onRegisterPressed();
             }
         });
-        //mLoginFormView = findViewById(R.id.login_form);
-        //mProgressView = findViewById(R.id.login_progress);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        // client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
         setResult(1, new Intent().putExtra("done", true));
     }
 
@@ -184,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
+     * If there are form errors (invalid username, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
@@ -312,7 +305,6 @@ public class LoginActivity extends AppCompatActivity {
 //
 //            }
 //        });
-        //MainActivity.navigationView.addHeaderView(MainActivity.nav_header);
     }
 
 

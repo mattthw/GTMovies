@@ -7,8 +7,7 @@
         android:title="@string/action_edit_profile" />
 
     <item
-        android:title="@string/title_admin"
-        android:visibility="gone">
+        android:title="@string/title_admin">
         <menu>
             <item
                 android:id="@+id/nav_friends"
