@@ -214,8 +214,8 @@ public class IOActions extends Application {
             throw new DuplicateUserException();
         } else {
             accounts.add(user);
-            Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
             commit();
+            Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
         }
     }
     /**
@@ -252,7 +252,7 @@ public class IOActions extends Application {
             CurrentState.setUser(temp);
             Log.println(Log.ASSERT, "GTMovies",
                     "'" + temp.getUsername() + "' signed in.");
-//            commit();
+            commit();
             return true;
         } else {
             Log.println(Log.ASSERT, "GTMovies",

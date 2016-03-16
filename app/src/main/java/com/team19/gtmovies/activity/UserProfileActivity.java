@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
+import com.team19.gtmovies.exception.NullUserException;
 import com.team19.gtmovies.pojo.User;
 
 import java.io.FileNotFoundException;
@@ -45,6 +46,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private EditText eBio;
     private String receiveName;
     public static final int HEADER_NAME_UPDATED = 4;
+    public static final int PROFILE_VIEWED = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +68,18 @@ public class UserProfileActivity extends AppCompatActivity {
         } else {
             receiveName = extras.getString("UNAME");
             cu = IOActions.getUserByUsername(receiveName);
+            findViewById(R.id.reviewsModule).setVisibility(View.VISIBLE);
             if (CurrentState.getUser().getPermission() == 2) {
                 findViewById(R.id.buttonRank).setVisibility(View.VISIBLE);
+                findViewById(R.id.buttonDelete).setVisibility(View.VISIBLE);
                 this.setTitle("View Profile (as admin)");
             } else {
                 //disable editing for regular users
                 this.setTitle("View Profile");
-                findViewById(R.id.buttonUserProfileSubmit).setVisibility(View.GONE);
+                findViewById(R.id.buttonBarView).setVisibility(View.GONE);
                 eMajor.setEnabled(false);
-                eName.setEnabled(false);
-                eBio.setEnabled(false);
+                eName.setFocusable(false);
+                eBio.setFocusable(false);
             }
         }
 
@@ -131,7 +135,7 @@ public class UserProfileActivity extends AppCompatActivity {
         if (perm == 2) {
             hisRank = "admin";
         } else if (perm == 1) {
-            hisRank = "active";
+            hisRank = "user";
         }else if (perm == 0) {
             hisRank = "locked";
         } else if (perm == -1) {
@@ -156,6 +160,13 @@ public class UserProfileActivity extends AppCompatActivity {
         }
         updateRank();
         Toast.makeText(UserProfileActivity.this, "RANK CHANGED", Toast.LENGTH_SHORT).show();
+    }
+    public void changeDelete(View view) {
+        try {
+            IOActions.deleteUser(IOActions.getUserByUsername(cu.getUsername()));
+        } catch (NullUserException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

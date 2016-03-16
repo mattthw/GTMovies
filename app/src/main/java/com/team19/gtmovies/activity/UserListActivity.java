@@ -9,12 +9,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
+import com.team19.gtmovies.fragment.MovieListFragment;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class UserListActivity extends AppCompatActivity {
@@ -39,7 +43,22 @@ public class UserListActivity extends AppCompatActivity {
         // Find the ListView resource.
         mainListView = (ListView) findViewById( R.id.userListView );
         ArrayList<String> usernameList = IOActions.getUsernames();
+        Collections.sort(usernameList);
         usernameList.remove(CurrentState.getUser().getUsername());
+        String hisRank = "";
+        for (int i = 0; i < usernameList.size(); i++) {
+            int perm = IOActions.getUserByUsername(usernameList.get(i)).getPermission();
+            if (perm == 2) {
+                hisRank = "[A]";
+            } else if (perm == 1) {
+                hisRank = "[U]";
+            }else if (perm == 0) {
+                hisRank = "[L]";
+            } else if (perm == -1) {
+                hisRank = "[B]";
+            }
+            usernameList.set(i, hisRank + "   " + usernameList.get(i));
+        }
         // Create ArrayAdapter using the usernames list.
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernameList);
         // Set the ArrayAdapter as the ListView's adapter.
@@ -50,9 +69,13 @@ public class UserListActivity extends AppCompatActivity {
 
                 Object o = mainListView.getItemAtPosition(position);
                 String name=(String)o;//As you are using Default String Adapter
+                name = name.substring(name.lastIndexOf(" ") + 1);
                 userIntent.putExtra("UNAME", name);
-                startActivity(userIntent);
-//                Toast.makeText(getBaseContext(),name + " selected", Toast.LENGTH_SHORT).show();
+                if (IOActions.getUserByUsername(name) != null) {
+                    startActivityForResult(userIntent, UserProfileActivity.PROFILE_VIEWED);
+                } else {
+                    Toast.makeText(getBaseContext(),name + " does not exist!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -65,6 +88,19 @@ public class UserListActivity extends AppCompatActivity {
         if (actionBar != null) {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    /**
+     * do things depending on results from activities called.
+     * @param requestCode what we are checking
+     * @param resultCode value returned for what being checked
+     * @param data idk
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == UserProfileActivity.PROFILE_VIEWED) {
+            populateList();
         }
     }
 

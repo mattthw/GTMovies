@@ -3,194 +3,255 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:fillViewport="true"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activity.UserProfileActivity"
     android:id="@+id/userProfileRootView">
 
-    <FrameLayout
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/big_card"
-        android:id="@+id/frameLayout3"
-        android:layout_margin="3dp">
+        android:id="@+id/scrollView"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginBottom="12dp">
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="vertical"
-            android:measureWithLargestChild="false"
-            android:paddingTop="20dp"
-            android:id="@+id/linearLayout3"
-            android:padding="10dp" >
+            android:layout_margin="6dp">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:background="@drawable/big_card"
+                android:id="@+id/frameLayout3"
+                android:layout_margin="3dp"
+                android:backgroundTint="@color/cardview_light_background">
 
-                <TextView
-                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                    android:text="@string/uname"
-                    android:paddingTop="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/Gray" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/unameView"
-                    android:ems="13"
-                    android:singleLine="true"
-                    android:textSize="15sp"
-                    android:textColor="@color/Gray"
-                    android:text="@android:string/unknownName"
-                    android:layout_marginLeft="10dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                    android:text="@string/rank"
-                    android:paddingTop="10dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/Gray" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rankView"
-                    android:ems="13"
-                    android:singleLine="true"
-                    android:textSize="15sp"
-                    android:textColor="@color/Gray"
-                    android:text="@android:string/unknownName"
-                    android:layout_marginLeft="10dp" />
-            </LinearLayout>
-
-        </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/big_card"
-        android:id="@+id/frameLayout2"
-        android:layout_below="@+id/frameLayout3"
-        android:layout_margin="3dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="vertical"
-            android:measureWithLargestChild="false"
-            android:paddingTop="20dp"
-            android:id="@+id/linearLayout"
-            android:padding="10dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/name_prof_edit"
-                    android:id="@+id/textViewUserProfileName"
-                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
-                    android:paddingTop="10dp"
-                    android:textSize="18sp" />
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editTextUserProfileName"
-                    android:ems="13"
-                    android:layout_gravity="center_vertical"
-                    android:inputType="textPersonName"
-                    android:singleLine="true" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:orientation="horizontal">
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/major_prof_edit"
-                    android:id="@+id/textViewUserProfileMajor"
-                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
-                    android:textSize="18sp" />
+                    android:baselineAligned="false"
+                    android:orientation="vertical"
+                    android:measureWithLargestChild="false"
+                    android:paddingTop="20dp"
+                    android:id="@+id/linearLayout3"
+                    android:padding="10dp" >
 
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinnerProfileMajor"
-                    android:entries="@array/profMajors" />
-            </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
 
-            <LinearLayout
+                        <TextView
+                            style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                            android:text="@string/uname"
+                            android:paddingTop="10dp"
+                            android:textSize="15sp"
+                            android:textColor="@color/Gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/unameView"
+                            android:ems="13"
+                            android:singleLine="true"
+                            android:textSize="15sp"
+                            android:textColor="@color/Gray"
+                            android:text="@android:string/unknownName"
+                            android:layout_marginLeft="10dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                            android:text="@string/rank"
+                            android:paddingTop="10dp"
+                            android:textSize="15sp"
+                            android:textColor="@color/Gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rankView"
+                            android:ems="13"
+                            android:singleLine="true"
+                            android:textSize="15sp"
+                            android:textColor="@color/Gray"
+                            android:text="@android:string/unknownName"
+                            android:layout_marginLeft="10dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </FrameLayout>
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:orientation="horizontal">
+                android:background="@drawable/big_card"
+                android:id="@+id/frameLayout2"
+                android:layout_margin="3dp"
+                android:backgroundTint="@color/cardview_light_background">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="vertical"
+                    android:measureWithLargestChild="false"
+                    android:paddingTop="20dp"
+                    android:id="@+id/linearLayout"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/name_prof_edit"
+                            android:id="@+id/textViewUserProfileName"
+                            android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                            android:textAlignment="center"
+                            android:layout_gravity="center" />
+
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/editTextUserProfileName"
+                            android:ems="13"
+                            android:layout_gravity="center_vertical"
+                            android:inputType="textPersonName"
+                            android:singleLine="true"
+                            android:layout_marginLeft="6dp"
+                            android:background="@android:drawable/editbox_background_normal"
+                            android:backgroundTint="@color/cardview_dark_background" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/major_prof_edit"
+                            android:id="@+id/textViewUserProfileMajor"
+                            android:layout_gravity="center"
+                            android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+
+                        <Spinner
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/spinnerProfileMajor"
+                            android:entries="@array/profMajors"
+                            android:layout_marginLeft="6dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/user_bio"
+                            android:id="@+id/textViewUserProfileBio"
+                            android:layout_gravity="center"
+                            android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+
+                    </LinearLayout>
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:id="@+id/editTextUserProfileBio"
+                        android:lines="5"
+                        android:nestedScrollingEnabled="false"
+                        android:textAlignment="textStart"
+                        android:textStyle="normal"
+                        android:enabled="true"
+                        android:password="false"
+                        android:editable="true"
+                        android:background="@drawable/big_card"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:backgroundTintMode="src_over"
+                        android:backgroundTint="@color/cardview_dark_background" />
+
+                </LinearLayout>
+            </FrameLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/big_card"
+                android:clickable="false"
+                android:layout_marginTop="10dp"
+                android:layout_margin="3dp"
+                android:backgroundTint="@color/cardview_light_background"
+                android:visibility="gone"
+                android:id="@+id/reviewsModule">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/user_bio"
-                    android:id="@+id/textViewUserProfileBio"
-                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
-                    android:textSize="18sp" />
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:text="@string/comments"
+                    android:id="@+id/textView3"
+                    android:paddingLeft="5dp"
+                    android:padding="5dp"
+                    android:layout_marginLeft="3dp" />
 
-            </LinearLayout>
+                <ListView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/listView"
+                    android:layout_below="@+id/textView3"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignParentStart="false"
+                    android:backgroundTint="@color/cardview_dark_background"
+                    android:backgroundTintMode="src_over"
+                    android:headerDividersEnabled="false" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:id="@+id/editTextUserProfileBio"
-                android:lines="5"
-                android:nestedScrollingEnabled="false"
-                android:textAlignment="textStart"
-                android:textStyle="normal"
-                android:enabled="true"
-                android:password="false"
-                android:editable="true"
-                android:background="@drawable/rounded_edittext"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp" />
+            </RelativeLayout>
 
         </LinearLayout>
-    </FrameLayout>
+    </ScrollView>
 
     <RelativeLayout
+        android:id="@+id/buttonBarView"
         android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@android:drawable/dialog_holo_light_frame"
+        android:backgroundTintMode="src_over"
+        android:backgroundTint="@color/cardview_shadow_end_color"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/frameLayout2">
+        android:layout_alignParentEnd="true">
 
         <Button
             android:text="@string/change_rank"
@@ -198,6 +259,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="changeRank"
+            style="@android:style/Widget.Material.Light.Button.Borderless"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:visibility="gone" />
+
+        <Button
+            style="@android:style/Widget.Material.Light.Button.Borderless"
+            android:text="@string/delete_user"
+            android:id="@+id/buttonDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="changeDelete"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:visibility="gone" />
 
         <Button
@@ -205,7 +282,9 @@
             android:id="@+id/buttonUserProfileSubmit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            style="@android:style/Widget.Material.Light.Button.Borderless"
+            android:textColor="@color/colorPrimaryDark" />
     </RelativeLayout>
 
 
