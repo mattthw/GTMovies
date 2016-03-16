@@ -9,11 +9,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,10 +27,12 @@ import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.exception.NullUserException;
+import com.team19.gtmovies.pojo.Review;
 import com.team19.gtmovies.pojo.User;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,6 +52,8 @@ public class UserProfileActivity extends AppCompatActivity {
     private EditText eName;
     private EditText eBio;
     private String receiveName;
+    private ListView mainListView ;
+    private ArrayAdapter<String> listAdapter ;
     public static final int HEADER_NAME_UPDATED = 4;
     public static final int PROFILE_VIEWED = 5;
 
@@ -71,7 +80,7 @@ public class UserProfileActivity extends AppCompatActivity {
             findViewById(R.id.reviewsModule).setVisibility(View.VISIBLE);
             if (CurrentState.getUser().getPermission() == 2) {
                 findViewById(R.id.buttonRank).setVisibility(View.VISIBLE);
-                findViewById(R.id.buttonDelete).setVisibility(View.VISIBLE);
+                //findViewById(R.id.buttonDelete).setVisibility(View.VISIBLE);
                 this.setTitle("View Profile (as admin)");
             } else {
                 //disable editing for regular users
@@ -113,6 +122,8 @@ public class UserProfileActivity extends AppCompatActivity {
                 saveProfile();
             }
         });
+        mainListView = (ListView) rootView.findViewById(R.id.commentListView);
+        populateList();
     }
 
     /**
@@ -161,12 +172,62 @@ public class UserProfileActivity extends AppCompatActivity {
         updateRank();
         Toast.makeText(UserProfileActivity.this, "RANK CHANGED", Toast.LENGTH_SHORT).show();
     }
-    public void changeDelete(View view) {
+    public void changeDelete() {
         try {
             IOActions.deleteUser(IOActions.getUserByUsername(cu.getUsername()));
         } catch (NullUserException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void populateList() {
+        // Find the ListView resource.
+//        mainListView = (ListView) getActivity().findViewById( R.id.commentListView );
+        Object[] reviewList = cu.getReviews().values().toArray();
+        ArrayList<String> commentList = new ArrayList<>(reviewList.length);
+        for (Object o : reviewList) {
+            String s = ((Review)o).getComment();
+            int mID = ((Review)o).getMovieID();
+            if (s.length() > 3) {
+                commentList.add("Movie " + mID + ": " + s);
+            }
+        }
+        Log.println(Log.ASSERT, "GTMovies", commentList.toString());
+        // Create ArrayAdapter using the comments list.
+        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, commentList);
+        // Set the ArrayAdapter as the ListView's adapter.
+        mainListView.setAdapter( listAdapter );
+        setListViewHeightBasedOnChildren(mainListView);
+    }
+
+    /**
+     * public code used to update listView height after dynamically adding items to it.
+     * source: http://stackoverflow.com/questions/29512281
+     * /how-to-make-listviews-height-to-grow-after-adding-items-to-it
+     * @param listView list in question
+     */
+    private void setListViewHeightBasedOnChildren(ListView listView) {
+        Log.e("Listview Size ", "" + listView.getCount());
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+
     }
 
     /**
@@ -223,16 +284,16 @@ public class UserProfileActivity extends AppCompatActivity {
         t.schedule(task, 1000);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            // Respond to the action bar's Up/Home button
+//            case android.R.id.home:
+//                finish();
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     /** inner class for alert that user doesn't currently have a profile.
      * (asks if they want to create one)
@@ -283,6 +344,30 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        if (CurrentState.getUser().getPermission() == 2 && receiveName != null) {
+            //show overflow menu
+            inflater.inflate(R.menu.profile, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                changeDelete();
+                return true;
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 
 }

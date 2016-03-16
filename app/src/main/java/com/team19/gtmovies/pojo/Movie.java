@@ -192,7 +192,9 @@ public class Movie implements Comparable<Movie>, Serializable {
         for (Review review : myReviews.values()) {
             String curr = review.getUsername();
             User user = IOActions.getUserByUsername(curr);
-            String otherMajor = IOActions.getUserByUsername(curr).getMajor();
+            String otherMajor = null;
+            if (user != null)
+                otherMajor= IOActions.getUserByUsername(curr).getMajor();
             if (otherMajor != null && major.equals(otherMajor)) {
                 Log.v("GTMovies",
                         "getRatingByMajor(parm:" + major + ", curr:" + curr + ")");

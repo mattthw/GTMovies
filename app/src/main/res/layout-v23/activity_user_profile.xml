@@ -11,19 +11,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/scrollView"
+        android:layout_marginRight="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_above="@+id/buttonBarView"
         android:layout_alignParentTop="true"
-        android:scrollIndicators="bottom"
-        android:layout_alignParentBottom="true"
-        android:measureAllChildren="true">
+        android:layout_marginBottom="-10dp"
+        android:scrollIndicators="bottom">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            android:paddingBottom="70dp"
-            android:paddingLeft="3dp"
-            android:paddingRight="3dp">
+            android:layout_margin="6dp">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -190,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="textMultiLine"
                         android:id="@+id/editTextUserProfileBio"
-                        android:lines="3"
+                        android:lines="5"
                         android:nestedScrollingEnabled="false"
                         android:textAlignment="textStart"
                         android:textStyle="normal"
@@ -249,6 +248,7 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@android:drawable/dialog_holo_light_frame"
         android:backgroundTintMode="src_over"
         android:backgroundTint="@color/cardview_shadow_end_color"
         android:layout_marginLeft="3dp"
@@ -263,6 +263,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="changeRank"
+            style="@android:style/Widget.Material.Light.Button.Borderless"
             android:textColor="@color/colorPrimaryDark"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
@@ -270,6 +271,7 @@
             android:maxLines="1" />
 
         <Button
+            style="@android:style/Widget.Material.Light.Button.Borderless"
             android:text="@string/delete_user"
             android:id="@+id/buttonDelete"
             android:layout_width="wrap_content"
@@ -287,6 +289,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            style="@android:style/Widget.Material.Light.Button.Borderless"
             android:textColor="@color/colorPrimaryDark"
             android:maxLines="1" />
     </LinearLayout>

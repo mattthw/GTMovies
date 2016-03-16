@@ -8,32 +8,26 @@
     tools:context=".activity.LoginActivity"
     android:theme="@style/AppTheme"
     android:weightSum="1"
-    android:background="?attr/colorPrimary"
-    android:padding="30dp">
+    android:background="@color/colorPrimary"
+    android:padding="30dp"
+    android:backgroundTintMode="src_over"
+    android:alpha="1">
 
     <!-- Login progress -->
-
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"
-        android:layout_alignParentTop="true" />
 
     <LinearLayout
         android:id="@+id/login_form"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_edittext"
+        android:background="@drawable/big_card"
         android:orientation="horizontal"
-        android:backgroundTint="#969aae"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:layout_marginBottom="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/cardview_dark_background">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -42,7 +36,8 @@
             android:orientation="vertical"
             android:measureWithLargestChild="false"
             android:padding="10dp"
-            android:minWidth="300dp">
+            android:minWidth="300dp"
+            android:layout_marginTop="5dp">
 
             <FrameLayout
                 android:id="@+id/nameLayout"
@@ -58,8 +53,8 @@
                     android:inputType="textCapWords"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:foregroundTint="#0c1020"
-                    android:foregroundTintMode="src_atop"
+                    android:foregroundTint="@color/colorAccent"
+                    android:foregroundTintMode="src_over"
                     android:background="@android:drawable/editbox_background" />
                 <!--<EditTextPreference-->
                     <!--android:capitalize="words"-->
@@ -87,7 +82,9 @@
                     android:singleLine="true"
                     android:lines="1"
                     android:background="@android:drawable/editbox_background"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:foregroundTint="@color/colorAccent"
+                    android:foregroundTintMode="src_over" />
 
             </FrameLayout>
 
@@ -108,7 +105,9 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:background="@android:drawable/editbox_background" />
+                    android:background="@android:drawable/editbox_background"
+                    android:foregroundTint="@color/colorAccent"
+                    android:foregroundTintMode="src_over" />
 
             </FrameLayout>
 
@@ -129,7 +128,9 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:lines="1"
-                    android:background="@android:drawable/editbox_background" />
+                    android:background="@android:drawable/editbox_background"
+                    android:foregroundTint="@color/colorAccent"
+                    android:foregroundTintMode="src_over" />
 
             </FrameLayout>
 
@@ -143,36 +144,53 @@
                 <Button
                     android:visibility="gone"
                     android:id="@+id/cancel_button"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="cancel"
                     android:text="@string/action_cancel"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    style="@android:style/Widget.Material.Light.Button.Borderless.Small"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textColor="@color/colorAccent" />
 
                 <Button
                     android:visibility="visible"
                     android:id="@+id/register_button"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/action_register"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    style="@android:style/Widget.Material.Light.Button.Borderless.Small"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textColor="@color/colorAccent" />
 
                 <Button
                     android:visibility="visible"
                     android:id="@+id/email_sign_in_button"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/action_sign_in"
                     android:textStyle="bold"
-                    android:layout_gravity="right" />
+                    android:layout_gravity="right"
+                    style="@android:style/Widget.Material.Light.Button.Borderless.Small"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textColor="@color/colorAccent" />
 
             </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:background="@drawable/georgia_tech_874_black"
+        android:scaleType="fitXY"
+        android:elevation="-1dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="41dp" />
 
 
 </RelativeLayout>
