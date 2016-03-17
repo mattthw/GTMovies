@@ -225,12 +225,27 @@ public class MovieListFragment extends Fragment {
                     } else {
                         mAdapter.toggleTopBars(-1);
                     }
-                }
+                } /*else if (newState == 0
+                        && (getArguments().getInt(ARG_ITEM_ID) == YOUR_RECOMMENDATIONS_TAB
+                        || mAdapter.getMovieList() == yourRecommendationsList)) {
+                    Log.d("RecScroll", "called");
+                    if (getActivity() != null && getActivity().findViewById(R.id.main_toolbar) != null) {
+                        Log.d("RecScroll", "not null");
+                        if (getActivity().findViewById(R.id.main_toolbar).getVisibility() == View.GONE) {
+                            Log.d("RecScroll", "viewgone");
+                            getActivity().findViewById(R.id.view_pager).getLayoutParams().height
+                                    = CurrentState.getOpenHeight() - R.dimen.text_margin;
+                        } else {
+                            Log.d("RecScroll", "view visible");
+                            //getActivity().findViewById(R.id.view_pager).getLayoutParams().height
+                            //        = CurrentState.getClosedHeight() - R.dimen.text_margin;
+                        }
+                    }*/
                 if (newState == 2 && mAdapter.movieList != null
                         && mAdapter.movieList.size() > 4
                         && getArguments().getInt(ARG_ITEM_ID) != YOUR_RECOMMENDATIONS_TAB) {
-                    mAdapter.toggleTopBars(oldy);
-                    Log.d("Toggle", "2scroll oldy=" + oldy);
+                        mAdapter.toggleTopBars(oldy);
+                        Log.d("Toggle", "2scroll oldy=" + oldy);
                 }
                 super.onScrollStateChanged(recyclerView, newState);
                 Log.d("OnScrollState", "newState=" + newState);
@@ -759,6 +774,10 @@ public class MovieListFragment extends Fragment {
                 Log.d("toggleTopBars", "change: " + (oldPosition - position));
 
             }
+        }
+
+        public List getMovieList() {
+            return movieList;
         }
     }
 }

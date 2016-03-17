@@ -30,6 +30,7 @@ import java.util.Set;
  * @version 2.0
  */
 public class IOActions extends Application {
+    private static IOActions ioa = null;
     private static FileInputStream fileIn;
     private static FileOutputStream fileOut;
     private static ObjectInputStream objectIn;
@@ -47,13 +48,16 @@ public class IOActions extends Application {
      * @param c context passed by calling class
      */
     public IOActions(Context c)  {
-        ioaContext = c;
-        onStart();
-        if (userSignedIn()) {
-            Log.println(Log.ASSERT, "GTMovies", CurrentState.getUser().getUsername() + " signed in.");
-        } else {
-            CurrentState.setUser(new User());
+        if (ioa == null) {
+            ioaContext = c;
+            onStart();
+            if (userSignedIn()) {
+                Log.println(Log.ASSERT, "GTMovies", CurrentState.getUser().getUsername() + " signed in.");
+            } else {
+                CurrentState.setUser(new User());
 //            Log.println(Log.ASSERT, "GTMovies", "no user signed in.");
+            }
+            ioa = this;
         }
     }
 
@@ -378,6 +382,14 @@ public class IOActions extends Application {
             Log.println(Log.INFO, "GTMovies", "Movie '" + movid + "' deleted.");
             commit();
         }
+    }
+
+    /**
+     * Getter for ioa actions
+     * @return
+     */
+    public static IOActions getIOActionsInstance() {
+        return ioa;
     }
 
 }

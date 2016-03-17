@@ -54,7 +54,7 @@ import java.util.Map;
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    protected static IOActions ioa;
+    //protected static IOActions ioa;
     protected static View mainRootView;
     protected static NavigationView navigationView;
     protected static Toolbar toolbar;
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (ioa == null) {
+        if (IOActions.getIOActionsInstance() == null) {
             startActivity(new Intent(this, SplashScreenActivity.class));
             onDestroy();
             return;
@@ -179,10 +179,10 @@ public class MainActivity extends AppCompatActivity
         }
         if (requestCode == LoginActivity.LOGIN_FINISHED) {
             updateNavName();
-            MovieListFragment.updateAdapter(MovieListFragment.NEW_MOVIES_TAB);
+            /*MovieListFragment.updateAdapter(MovieListFragment.NEW_MOVIES_TAB);
             MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
             MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
-            mainRootView.invalidate();
+            mainRootView.invalidate();*/
         }
     }
 
@@ -262,30 +262,30 @@ public class MainActivity extends AppCompatActivity
                 if (CurrentState.getOpenHeight() == 0) {
                     CurrentState.setOpenHeight(viewPager.getHeight());
                     CurrentState.setClosedHeight(viewPager.getHeight() + toolbar.getHeight());
+                    Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
                 }
+                Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
 
                 switch (position) {
                     case MovieListFragment.NEW_MOVIES_TAB:
                         criteriaBar.setVisibility(View.GONE);
+                        //new UpdateUITask().execute(position);
                         break;
                     case MovieListFragment.TOP_RENTALS_TAB:
                         criteriaBar.setVisibility(View.GONE);
+                        //new UpdateUITask().execute(position);
                         break;
                     case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
                         criteriaBar.setVisibility(View.VISIBLE);
                         //viewPager.getLayoutParams().height = CurrentState.getOpenHeight()
                         //        - R.dimen.text_margin;
-                        List<Movie> newRecommendations = ReviewController.getRecommendations();
-                        Log.e("recommendations", "New:" + newRecommendations + "\nOld:"
-                                +recommendations
-                                + "\nelevation=" + findViewById(R.id.major_button).getElevation());
+                        List<Movie> newRecommendations;
                         setupMajorButton();
                         break;
                     default:
                         Log.e("GTMovies", "Incorrect int for tab.");
                 }
-                if (findViewById(R.id.main_toolbar).getVisibility() == View.INVISIBLE) {
-                }
+                Log.e("CurrentState2", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
             }
 
             @Override
@@ -335,6 +335,15 @@ public class MainActivity extends AppCompatActivity
         final RelativeLayout majorButton = (RelativeLayout) findViewById(R.id.major_button);
         final TextView majorText = (TextView) findViewById(R.id.major_text);
         final GradientDrawable majorBackground = (GradientDrawable) majorButton.getBackground();
+
+
+        if (majorButton.getElevation() == R.dimen.raised_elevation) {
+            recommendations = ReviewController.getRecommendations(ReviewController.BY_MAJOR);
+        } else {
+            recommendations = ReviewController.getRecommendations();
+        }
+        new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
+
         majorButton.setOnClickListener(new View.OnClickListener() {
             boolean selected = false;
 
@@ -347,8 +356,7 @@ public class MainActivity extends AppCompatActivity
                             ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary),
                             PorterDuff.Mode.LIGHTEN);
                     majorText.setTextColor(Color.WHITE);
-                    recommendations = ReviewController.getRecommendations(
-                            ReviewController.BY_MAJOR);
+                    recommendations = ReviewController.getRecommendations(ReviewController.BY_MAJOR);
                     selected = true;
                 } else {
                     majorButton.setElevation(getResources().getDimension(R.dimen.flat_elevation));
@@ -574,21 +582,8 @@ public class MainActivity extends AppCompatActivity
      */
     public void updateUI(int page) {
         Log.e("GTMovies", "updateUI");
-        //MovieListFragment movieListFragment = MovieListFragment.newInstance(integer);
-        //((FrameLayout) findViewById(R.id.main_frame_layout)).removeAllViews();
-        //((FrameLayout) findViewById(R.id.main_frame_layout)).addView(findViewById());
         MovieListFragment.updateAdapter(page);
 
-            /*Log.e("FrameLayout", ((FrameLayout) findViewById(R.id.main_frame_layout)).getViewTreeObserver().toString());
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
-                    MovieListFragment.newInstance(integer)).commitAllowingStateLoss();
-            //transaction.remove(movieListFragment);
-            getSupportFragmentManager().executePendingTransactions();
-            ((ViewPager) findViewById(R.id.view_pager)).getAdapter().startUpdate(
-                    (ViewGroup) findViewById(R.id.main_frame_layout));
-            movieFragmentPagerAdapter.saveState();
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
-                    MovieListFragment.newInstance(integer)).commitAllowingStateLoss();*/
         findViewById(R.id.movie_detail_container).invalidate();
         findViewById(R.id.movie_list_view).invalidate();
         findViewById(R.id.movie_list).invalidate();
@@ -611,129 +606,6 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
-
-
-
-
-    /**
-     * Obtains movie details from APi
-     * @param movie Movie object containing MovieID to use to find movie
-     * @param list the list to add the movie to
-     */
-    private void getMovie(final Movie movie, final List<Movie> list) {
-        Log.d("GTMovies", "getMovie Got to handleIntent");
-        if (movie == null) {
-            return;
-        }
-
-        // Creating the JSONRequest
-        String movieID = SingletonMagic.search + "/" + movie.getID();
-        final String urlRaw = String.format(
-                SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
-
-        Log.d("getMovie API", urlRaw);
-        JsonObjectRequest detailRequest = new JsonObjectRequest
-                (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject resp) {
-                if (resp == null) {
-                    Log.e("JSONRequest ERROR", "getMovie Null Response Received");
-                }
-
-                // NOTE TO AUSTANG
-                // yeah this is it
-                // this should initialize id, title, description, critic rating, posterURL, Genres
-                // if you need anything else, you have access to:
-                //     year, mpaa_rating, runtime, release_dates, abridged_cast, abridged_directors
-                //     studio
-                //  and a few more things that you really don't need to care about
-                //  everything i just stated above you can get through
-                //     (theMovie).getFullInfo.getString("the thing you want");
-                //  the exceptions would be
-                //    release_dates: (theMovie).getFullInfo.getJSONObject("release_dates");
-                //    cast && directors: (theMovie).getFullInfo.getJSONArray("the thing you want");
-                list.add(new Movie(resp));
-
-
-                Log.d("getMovie movie success", "rec movie:" + new Movie(resp));
-                Log.d("getMovie volley success", "rec movie:" + urlRaw);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
-            }
-        });
-
-        // Access the RequestQueue through singleton class.
-        // Add Requests to RequestQueue
-        SingletonMagic.getInstance(this).addToRequestQueue(detailRequest);
-    }
-
-    //TODO: Consult Austin to erase this code
-    /**
-     * NOT USED!
-     */
-    private void scroller() {
-        //the outer scrollView
-        /*final ScrollView outerScrollView = (ScrollView) findViewById(R.id.main_view2);
-
-        if (outerScrollView.onStartNestedScroll(findViewById(R.id.main_linear_layout),
-                findViewById(R.id.movie_list_view), View.SCROLL_AXIS_VERTICAL)) {
-            Log.d("main", "onStartNestedScroll true");
-        } else {
-            Log.d("main", "onStartNestedScroll true");
-        }
-
-        final ViewTreeObserver.OnScrollChangedListener downListener = new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                ((ScrollView) findViewById(R.id.main_view2)).fullScroll(View.FOCUS_DOWN);
-            }
-        };
-
-        final ViewTreeObserver.OnScrollChangedListener upListener = new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                ((ScrollView) findViewById(R.id.main_view2)).fullScroll(View.FOCUS_UP);
-            }
-        };
-
-
-        findViewById(R.id.main_frame_layout).setOnTouchListener(new View.OnTouchListener() {
-            private ViewTreeObserver observer;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d("main", "scroller ontouch");
-                if (event.getAction() == MotionEvent.ACTION_SCROLL) {
-                    if (event.getAxisValue(MotionEvent.AXIS_VSCROLL) > 0) {
-                        if (observer != null) {
-                            observer.removeOnScrollChangedListener(upListener);
-                            observer.removeOnScrollChangedListener(downListener);
-                            observer = outerScrollView.getViewTreeObserver();
-                            observer.addOnScrollChangedListener(upListener);
-                        } else {
-                            observer = outerScrollView.getViewTreeObserver();
-                            observer.addOnScrollChangedListener(upListener);
-                        }
-                    } else if (event.getAxisValue(MotionEvent.AXIS_VSCROLL) < 0) {
-                        observer.removeOnScrollChangedListener(upListener);
-                        observer.removeOnScrollChangedListener(downListener);
-                        observer = outerScrollView.getViewTreeObserver();
-                        observer.addOnScrollChangedListener(downListener);
-                    } else {
-                        observer = outerScrollView.getViewTreeObserver();
-                        observer.addOnScrollChangedListener(downListener);
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });*/
-    }
 
 
     /**
@@ -808,17 +680,17 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
             IOActions.logoutUser();
             Intent intent = getIntent();
-            finish();
             startActivity(intent);
+            finish();
         }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public static void setIOA(IOActions actions) {
-        ioa = actions;
-    }
+    //public static void setIOA(IOActions actions) {
+    //    ioa = actions;
+    //}
 
 
 }
