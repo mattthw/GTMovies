@@ -56,7 +56,7 @@ public class IOActions extends Application {
             if (userSignedIn()) {
                 Log.println(Log.ASSERT, "GTMovies", CurrentState.getUser().getUsername() + " signed in.");
             } else {
-                CurrentState.setUser(new User());
+                CurrentState.setUser(null);
 //            Log.println(Log.ASSERT, "GTMovies", "no user signed in.");
             }
             ioa = this;
@@ -74,7 +74,7 @@ public class IOActions extends Application {
         } catch (FileNotFoundException f) {
             accounts = new HashSet<>();
             movies = new HashSet<>();
-            CurrentState.setUser(new User());
+            CurrentState.setUser(null);
             commit();
             Log.println(Log.INFO, "GTMovies", "Created new empty set for user accounts");
         } catch (IOException i) {
@@ -169,7 +169,7 @@ public class IOActions extends Application {
     /**
      * save changes to USER and ACCOUNTS
      */
-    protected static void commit() {
+    protected static boolean commit() {
         try {
             saveAccounts();
             saveUser();
@@ -181,6 +181,7 @@ public class IOActions extends Application {
         } catch (Exception e) {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }
+        return true;
     }
 
     /**
@@ -271,11 +272,19 @@ public class IOActions extends Application {
      * @return true if CurrentState.getUser() set
      */
     public static boolean logoutUser() {
-        Log.println(Log.ASSERT, "GTMovies", CurrentState.getUser().getUsername() + " signed out.");
-        CurrentState.setUser(new User());
-        commit();
-        return true;
+        if (CurrentState.getUser() != null) {
+            Log.println(Log.ASSERT, "GTMovies", CurrentState.getUser().getUsername() + " signed out.");
+            CurrentState.setUser(null);
+            commit();
+            return true;
+        }
+        return false;
     }
+
+    /**
+     * removes old user from set and adds new user
+     * @return
+     */
     public static boolean updateUser() {
         User temp = CurrentState.getUser();
         accounts.remove(temp);
@@ -287,9 +296,7 @@ public class IOActions extends Application {
      * @return  true if user is currently signed in
      */
     public static boolean userSignedIn() {
-        return !(CurrentState.getUser() == null
-                || CurrentState.getUser().getUsername().equals("null")
-                || CurrentState.getUser().getUsername().equals("logged_out"));
+        return !(CurrentState.getUser() == null);
     }
     /**
      * if user exists return User object

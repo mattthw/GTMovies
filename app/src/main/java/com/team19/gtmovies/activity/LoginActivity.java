@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
@@ -77,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
             finish();
             return;
         }
-
+        Toast.makeText(getApplicationContext(), "LOGIN ACTIVITY ONCREATE!", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_login);
         rootView = findViewById(R.id.login_root);
         //load login info

@@ -75,7 +75,12 @@ public class WelcomeActivity extends AppCompatActivity {
         count += 1;
     }
 
+    /**
+     * void parents function. We
+     * dont want them to push back!
+     */
     @Override
     public void onBackPressed() {
+        System.exit(0);
     }
 }
