@@ -190,6 +190,12 @@ public class MainActivity extends AppCompatActivity
             MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
             MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
             mainRootView.invalidate();*/
+            if (IOActions.getIOActionsInstance() == null) {
+                startActivity(new Intent(this, SplashScreenActivity.class));
+                finish();
+                Toast.makeText(MainActivity.this, "MAIN ACTIVITY finish", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
     }
 
