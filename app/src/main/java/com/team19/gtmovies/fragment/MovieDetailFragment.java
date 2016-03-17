@@ -127,6 +127,10 @@ public class MovieDetailFragment extends Fragment {
     private void populateList() {
         // Find the ListView resource.
 //        mainListView = (ListView) getActivity().findViewById( R.id.commentListView );
+        if (mItem == null) {
+            Log.e("GTMovies", "Couldn't populate list because null mItem.");
+            return;
+        }
         Object[] reviewList = mItem.getReviews().values().toArray();
         ArrayList<String> commentList = new ArrayList<>(reviewList.length);
         for (Object o : reviewList) {

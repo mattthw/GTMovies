@@ -360,7 +360,8 @@ public class UserProfileActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_delete:
                 changeDelete();
-                return true;
+                Toast.makeText(UserProfileActivity.this, "User deleted!", Toast.LENGTH_SHORT).show();
+                //return true;then fallthrough
             case android.R.id.home:
                 finish();
                 return true;
