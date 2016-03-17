@@ -30,8 +30,10 @@ public class WelcomeActivity extends AppCompatActivity {
             actionBar.hide();
         }
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lobster-Regular.ttf");
-        TextView myTextView = (TextView)findViewById(R.id.welcomeView);
-        myTextView.setTypeface(myTypeface);
+        TextView title = (TextView)findViewById(R.id.welcomeView);
+        TextView subtitle = (TextView)findViewById(R.id.msgView);
+        title.setTypeface(myTypeface);
+        subtitle.setTypeface((myTypeface));
     }
 
     /**

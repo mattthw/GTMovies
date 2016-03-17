@@ -152,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.pwRegister).setVisibility(View.VISIBLE);
         findViewById(R.id.nameLayout).setVisibility(View.VISIBLE);
         findViewById(R.id.cancel_button).setVisibility(View.VISIBLE);
-        ((Button) findViewById(R.id.email_sign_in_button)).setText("Create account");
+        ((Button) findViewById(R.id.email_sign_in_button)).setText("Create");
         register = true;
         Log.println(Log.DEBUG, "GTMovies",
                 "register/sign in toggle- register? '" + register + "'");
