@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         //result updates header. dont fuck it up.
         // BACK to activity_main if the user did indeed log in.
         //has to be done after view stuff setup or else will act on null views
-        startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.LOGIN_FINISHED);
+//        startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.LOGIN_FINISHED);
 
 
         // Populate lists of new movies and top rentals
@@ -145,6 +145,11 @@ public class MainActivity extends AppCompatActivity
         MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.LOGIN_FINISHED);
+    }
     /*@Override
     protected void onStart() {
         super.onStart();
@@ -681,11 +686,12 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_logout) {
             IOActions.logoutUser();
-            Intent intent = getIntent();
-            intent.putExtra("finish", true);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-            startActivity(intent);
-            finish();
+            recreate();
+//            Intent intent = getIntent();
+////            intent.putExtra("finish", true);
+////            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+//            startActivity(intent);
+//            finish();
         }
 
         drawer.closeDrawer(GravityCompat.START);
