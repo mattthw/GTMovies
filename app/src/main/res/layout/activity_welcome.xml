@@ -14,8 +14,8 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/welcome_title"
-        android:id="@+id/emailView"
+        android:text="@string/splash_title"
+        android:id="@+id/welcomeView"
         style="@style/Base.TextAppearance.AppCompat.Subhead"
         android:onClick="disguisedToast"
         android:textColor="#FFFFFF"
@@ -61,7 +61,11 @@
             android:id="@+id/register_button"
             android:onClick="userRegister"
             android:nestedScrollingEnabled="true"
-            android:singleLine="false" />
+            android:singleLine="false"
+            android:layout_marginRight="5dp"
+            android:layout_margin="15dp"
+            android:backgroundTint="@color/background_floating_material_light"
+            android:textColor="@color/colorPrimaryDark" />
 
         <Button
             android:layout_width="wrap_content"
@@ -70,7 +74,11 @@
             android:id="@+id/login_button"
             android:onClick="userLogin"
             android:nestedScrollingEnabled="true"
-            android:singleLine="false" />
+            android:singleLine="false"
+            android:layout_marginLeft="5dp"
+            android:layout_margin="15dp"
+            android:backgroundTint="@color/background_floating_material_light"
+            android:textColor="@color/colorPrimaryDark" />
 
     </LinearLayout>
 

@@ -1,6 +1,7 @@
 package com.team19.gtmovies.activity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -129,6 +131,9 @@ public class SplashScreenActivity extends AppCompatActivity {
             Log.e("GTMovies", e.getMessage());
         }
         new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
+        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lobster-Regular.ttf");
+        TextView myTextView = (TextView)findViewById(R.id.splash_view);
+        myTextView.setTypeface(myTypeface);
 
 
         /*mVisible = true;

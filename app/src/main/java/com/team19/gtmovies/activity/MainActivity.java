@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         if (ioa == null) {
             startActivity(new Intent(this, SplashScreenActivity.class));
-            finish();
+            onDestroy();
             return;
         }
 
