@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -76,11 +77,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         if (IOActions.getIOActionsInstance() == null) {
             startActivity(new Intent(this, SplashScreenActivity.class));
-            onDestroy();
+            finish();
             return;
         }
 
         Log.w("MAINACTIVITY", "ONCREATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+        Toast.makeText(MainActivity.this, "MAIN ACTIVITY ONCREATE!", Toast.LENGTH_SHORT).show();
 
         setContentView(R.layout.activity_main);
         mainRootView = findViewById(R.id.main_view);
@@ -104,13 +106,13 @@ public class MainActivity extends AppCompatActivity
 
         // Layout navigation
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+//        navigationView.setNavigationItemSelectedListener(this);
+//
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
+//        View header=navigationView.getHeaderView(0);
+//        TextView name = (TextView)header.findViewById(R.id.headerName);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        View header=navigationView.getHeaderView(0);
-        TextView name = (TextView)header.findViewById(R.id.headerName);
-        name.setText(CurrentState.getUser().getName());
 
         //result updates header. dont fuck it up.
         // BACK to activity_main if the user did indeed log in.
@@ -197,7 +199,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         View header=navigationView.getHeaderView(0);
         TextView name = (TextView)header.findViewById(R.id.headerName);
-        if (name != null) {
+        if (CurrentState.getUser() != null) {
             name.setText(CurrentState.getUser().getName());
             Log.println(Log.ASSERT, "GTMovies", "header name updated to: " + name);
         } else {
@@ -680,6 +682,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
             IOActions.logoutUser();
             Intent intent = getIntent();
+            intent.putExtra("finish", true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
             startActivity(intent);
             finish();
         }

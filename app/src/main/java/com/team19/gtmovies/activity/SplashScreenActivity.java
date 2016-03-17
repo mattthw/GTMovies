@@ -121,7 +121,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         rootView = findViewById(R.id.splash_view);
-
+        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lobster-Regular.ttf");
+        TextView myTextView = (TextView)findViewById(R.id.splash_view);
+        myTextView.setTypeface(myTypeface);
         splashScreenVisited = true;
         try {
             //MainActivity.setIOA(new IOActions(this));
@@ -130,9 +132,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             Log.e("GTMovies", e.getMessage());
         }
         new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
-        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lobster-Regular.ttf");
-        TextView myTextView = (TextView)findViewById(R.id.splash_view);
-        myTextView.setTypeface(myTypeface);
 
 
         /*mVisible = true;
