@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        //update header with current user's name
         updateNavName();
 
         // Populate lists of new movies and top rentals
@@ -128,28 +128,6 @@ public class MainActivity extends AppCompatActivity
         MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
     }
 
-
-    /*@Override
-    protected void onStart() {
-        super.onStart();
-        getMovies();
-        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                MovieListFragment.newInstance(0)).commit();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getMovies();
-        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                MovieListFragment.newInstance(0)).commit();
-    }*/
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle bundle) {
-        //nothing
-    }
 
 
     /**
@@ -196,11 +174,25 @@ public class MainActivity extends AppCompatActivity
         TextView name = (TextView)header.findViewById(R.id.headerName);
         if (CurrentState.getUser() != null) {
             name.setText(CurrentState.getUser().getName());
-            Log.println(Log.ASSERT, "GTMovies", "header name updated to: " + name);
+            Log.println(Log.DEBUG, "GTMovies", "header name updated to: " + name);
         } else {
-            Log.println(Log.ERROR,"GTMovies", "header view null, couldn't update.");
+            Log.println(Log.INFO,"GTMovies", "header view null, couldn't update.");
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Sets up the TabView
@@ -386,6 +378,52 @@ public class MainActivity extends AppCompatActivity
         */
     }
 
+
+    private class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
+        private List<Movie> movieList;
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            switch (params[0]) {
+                case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
+                    getMoviesFromAPI(SingletonMagic.recommendations,
+                            recommendations);
+                    break;
+                default:
+            }
+            for (int i = 0; i < 1; i++) {
+                Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
+            }
+            for (int i = 0; i < 1; i++) {
+                Log.i("Useless", "Do Androids Dream of Electric Sheep?");
+            }
+            return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            //super.onPostExecute(integer);
+        }
+
+    }
+
+
+    /**
+     * Updates user interface
+     * @param page which tab to update
+     */
+    public void updateUI(int page) {
+        Log.i("GTMovies", "updateUI called");
+        MovieListFragment.updateAdapter(page);
+
+        findViewById(R.id.movie_detail_container).invalidate();
+        findViewById(R.id.movie_list_view).invalidate();
+        findViewById(R.id.movie_list).invalidate();
+        findViewById(R.id.view_pager).invalidate();
+        findViewById(R.id.main_linear_layout).invalidate();
+        findViewById(R.id.main_view2).invalidate();
+        findViewById(R.id.content_main).invalidate();
+    }
+
     /**
      * Obtains the movies from the API
      * @param requestType differetiates new movies and top rental
@@ -457,7 +495,6 @@ public class MainActivity extends AppCompatActivity
                             if (resp == null) {
                                 Log.e("JSONRequest ERROR", "Null Response Received");
                             }
-
                             // put movies into a JSONArray
                             JSONArray tmpMovies = null;
                             try {
@@ -484,7 +521,7 @@ public class MainActivity extends AppCompatActivity
                                 MovieListFragment.setNewMoviesList(movieArray);
                                 updateUI(MovieListFragment.NEW_MOVIES_TAB);
                                 //MovieListFragment.setTopRentalsList(movieArray);        //TODO:Remove
-                        /*movieListFragment = MovieListFragment.newInstance(
+                                /*movieListFragment = MovieListFragment.newInstance(
                                 MovieListFragment.NEW_MOVIES_TAB);)*/
 
                                 tab = "newMovies";
@@ -514,96 +551,10 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
         }
-
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
-        private List<Movie> movieList;
-
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            switch (params[0]) {
-                case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                    getMoviesFromAPI(SingletonMagic.recommendations,
-                            recommendations);
-                    break;
-                default:
-            }
-            for (int i = 0; i < 1; i++) {
-                Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
-            }
-            for (int i = 0; i < 1; i++) {
-                Log.i("Useless", "Do Androids Dream of Electric Sheep?");
-            }
-            return params[0];
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            //super.onPostExecute(integer);
-        }
-
-    }
-
-
-    /**
-     * Updates user interface
-     * @param page which tab to update
-     */
-    public void updateUI(int page) {
-        Log.e("GTMovies", "updateUI");
-        MovieListFragment.updateAdapter(page);
-
-        findViewById(R.id.movie_detail_container).invalidate();
-        findViewById(R.id.movie_list_view).invalidate();
-        findViewById(R.id.movie_list).invalidate();
-        findViewById(R.id.view_pager).invalidate();
-        findViewById(R.id.main_linear_layout).invalidate();
-        findViewById(R.id.main_view2).invalidate();
-        findViewById(R.id.content_main).invalidate();
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -619,47 +570,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        Log.
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) findViewById(R.id.search_bar);
-        searchView.setSubmitButtonEnabled(true);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        //searchView.setIconifiedByDefault(false);
-        return true;
-    }*/
-
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        Log.e("GTMovies", "Problem here");
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.nav_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-        }
-        if (id == R.id.nav_logout) {
-            Log.e("GTMovies", "logout problem");
-            IOActions.logoutUser();
-            Log.e("GTMovies", "logout problem2");
-            //startActivity(new Intent(this, LoginActivity.class));
-            Intent intent = getIntent();
-            Log.e("GTMovies", "logout problem3");
-            finish();
-            Log.e("GTMovies", "logout problem");
-            startActivity(intent);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -678,21 +588,33 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_logout) {
             IOActions.logoutUser();
+            //recreate this class. leave this. tested and true works.
             recreate();
-//            Intent intent = getIntent();
-////            intent.putExtra("finish", true);
-////            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-//            startActivity(intent);
-//            finish();
         }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    //public static void setIOA(IOActions actions) {
-    //    ioa = actions;
-    //}
 
+    @Override
+    protected void onSaveInstanceState(Bundle bundle) {
+        //nothing
+    }
+    /*@Override
+    protected void onStart() {
+        super.onStart();
+        getMovies();
+        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                MovieListFragment.newInstance(0)).commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getMovies();
+        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                MovieListFragment.newInstance(0)).commit();
+    }*/
 
 }

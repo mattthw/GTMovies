@@ -59,8 +59,8 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Log.e("GTMovies", "getItem position=" + position);
-        Log.e("GTMovies", "Tabs3");
+        Log.i("GTMovies", "getItem position=" + position);
+        Log.i("GTMovies", "Tabs3");
         MovieListFragment fragment;
         if (position < 3) {
             MovieListFragment newFragment = MovieListFragment.newInstance(position);
@@ -88,7 +88,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         Log.d("Jinu MFragPagerAdapt",  Arrays.toString(Thread.currentThread().getStackTrace()));
         //way of returning each title to populate tabs
-        Log.e("GTMovies", "getPageTitle " + tabTitles);
+        Log.i("GTMovies", "getPageTitle " + tabTitles);
         return tabTitles[position];
     }
 
