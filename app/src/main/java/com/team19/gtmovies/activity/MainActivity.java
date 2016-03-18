@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity
             if (IOActions.getIOActionsInstance() == null) {
                 startActivity(new Intent(this, SplashScreenActivity.class));
                 finish();
-                Toast.makeText(MainActivity.this, "MAIN ACTIVITY finish", Toast.LENGTH_SHORT).show();
+                Log.e("GTMovies", "MainActivity killed because IOActions NULL!\n DDEAAAAAATHHHH!!!!");
                 return;
             }
         }
