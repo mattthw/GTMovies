@@ -25,7 +25,6 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -88,7 +87,6 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(intent, 13);
         }
         Log.w("GTMovies", "MAIN ACTIVITY ONCREATE!");
-        Toast.makeText(MainActivity.this, "MAIN ACTIVITY ONCREATE!", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_main);
         mainRootView = findViewById(R.id.main_view);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

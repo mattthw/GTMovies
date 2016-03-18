@@ -19,7 +19,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
@@ -62,7 +61,6 @@ public class LoginActivity extends AppCompatActivity {
     //app users storage
     protected static Set<User> accounts;
     private View rootView;
-    private Intent thisIntent;
     private static boolean verified = false;
 
     /**
@@ -73,18 +71,14 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toast.makeText(getApplicationContext(), "LOGIN ACTIVITY ONCREATE!", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
-        thisIntent = getIntent();
-        setResult(-1);
-        Log.println(Log.WARN, "GTMovies", "LOGIN ACTIVITY ONCREATE!");
         /* SET THIS IN ADVANCE IN CASE ACTIVITY IS DESTROYED!
          * @Matt 17/March/2016
          */
-//        setResult(RESULT_CANCELED, thisIntent);
+        setResult(-1);
+        Log.println(Log.WARN, "GTMovies", "LOGIN ACTIVITY ONCREATE!");
         if (IOActions.userSignedIn()) {
             Log.i("GTMovies", "user already logged in");
-//            setResult(RESULT_OK, thisIntent);
             finish();
             return;
         }
@@ -98,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }
-
 
         //remove up button
         ActionBar actionBar = getSupportActionBar();
@@ -146,6 +139,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data != null && !data.getBooleanExtra("login", true)) {
                 onRegisterPressed();
+        } else if (resultCode != 1) {
+            finish();
         }
     }
 
@@ -283,7 +278,6 @@ public class LoginActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        setResult(RESULT_CANCELED);
         super.onBackPressed();
         finish();
     }
@@ -307,10 +301,7 @@ public class LoginActivity extends AppCompatActivity {
             else {
                 getParent().setResult(1);
             }
-        } else {
-            setResult(RESULT_CANCELED);
         }
-        //
         super.onDestroy();
     }
 
@@ -373,7 +364,6 @@ public class LoginActivity extends AppCompatActivity {
                         "'" + CurrentState.getUser().getUsername()
                                 + "' signed in." , Snackbar.LENGTH_LONG).show();
                 // We are done. Go back to MainActivity, after a set delay.
-//                setResult(RESULT_OK,thisIntent);
                 TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
