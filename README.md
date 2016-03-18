@@ -23,3 +23,4 @@ Team Number: 18
         * `registration`
 
 
+![MainActivity screen](http://i.imgur.com/09eibMM.jpg)
