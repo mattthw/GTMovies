@@ -1,5 +1,6 @@
 package com.team19.gtmovies.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -58,10 +59,11 @@ public class LoginActivity extends AppCompatActivity {
     private String passwordCheck = null;
     private String name = null;
     private HashMap<String, Integer> attempts = new HashMap<>();
-    public static int LOGIN_FINISHED = 20;
     //app users storage
     protected static Set<User> accounts;
     private View rootView;
+    private Intent thisIntent;
+    private static boolean verified = false;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -71,17 +73,24 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Toast.makeText(getApplicationContext(), "LOGIN ACTIVITY ONCREATE!", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
+        thisIntent = getIntent();
+        setResult(-1);
+        Log.println(Log.WARN, "GTMovies", "LOGIN ACTIVITY ONCREATE!");
+        /* SET THIS IN ADVANCE IN CASE ACTIVITY IS DESTROYED!
+         * @Matt 17/March/2016
+         */
+//        setResult(RESULT_CANCELED, thisIntent);
         if (IOActions.userSignedIn()) {
-            Log.d("IOActions", "user already logged in");
-            setResult(0);
+            Log.i("GTMovies", "user already logged in");
+//            setResult(RESULT_OK, thisIntent);
             finish();
             return;
         }
-        Toast.makeText(getApplicationContext(), "LOGIN ACTIVITY ONCREATE!", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_login);
         rootView = findViewById(R.id.login_root);
-        //load login info
+        //start welcome screen
         startActivityForResult(new Intent(this, WelcomeActivity.class), 1);
         //load existing users
         try {
@@ -130,7 +139,6 @@ public class LoginActivity extends AppCompatActivity {
                 onRegisterPressed();
             }
         });
-//        setResult(1, new Intent().putExtra("done", true));
     }
 
 
@@ -275,7 +283,9 @@ public class LoginActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        System.exit(0);
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
+        finish();
     }
 
     @Override
@@ -290,6 +300,17 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        if (verified) {
+            if (getParent() == null) {
+                setResult(1);
+            }
+            else {
+                getParent().setResult(1);
+            }
+        } else {
+            setResult(RESULT_CANCELED);
+        }
+        //
         super.onDestroy();
     }
 
@@ -341,11 +362,18 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
             // Check if no view has focus:
             if (success) {
+                verified = true;
+                if (getParent() == null) {
+                    setResult(1);
+                }
+                else {
+                    getParent().setResult(1);
+                }
                 Snackbar.make(findViewById(R.id.login_root),
                         "'" + CurrentState.getUser().getUsername()
                                 + "' signed in." , Snackbar.LENGTH_LONG).show();
                 // We are done. Go back to MainActivity, after a set delay.
-                setResult(1);
+//                setResult(RESULT_OK,thisIntent);
                 TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
@@ -386,7 +414,6 @@ public class LoginActivity extends AppCompatActivity {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();
                 }
-                setResult(0);
             }
         }
 
@@ -395,5 +422,6 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
         }
     }
+
 }
 

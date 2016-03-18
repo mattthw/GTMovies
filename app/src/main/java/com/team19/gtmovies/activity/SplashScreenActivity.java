@@ -119,6 +119,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.w("GTMovies", "SPLASH SCREEN ONCREATE!!");
         setContentView(R.layout.activity_splash_screen);
         rootView = findViewById(R.id.splash_view);
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lobster-Regular.ttf");
@@ -127,6 +128,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         splashScreenVisited = true;
         try {
             //MainActivity.setIOA(new IOActions(this));
+//            IOActions ioa = ((IOActions) this.getApplication());
             new IOActions(this);
         } catch (Exception e) {
             Log.e("GTMovies", e.getMessage());
@@ -389,10 +391,17 @@ public class SplashScreenActivity extends AppCompatActivity {
      * What to do after UI updated
      */
     private void finished() {
+        finish();
+    }
+    public void finish() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(SPLASH_SCREEN_VISITED, true);
+        //NEED THIS setFlags TO CLEAR OLD LOGINACTIVITY INTENTS
+        // WHICH MAY PREVENT NEW LOGINACTIVITY
+        //FROM BEING STARTED -Matt
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        finish();
+        super.finish();
     }
 
 

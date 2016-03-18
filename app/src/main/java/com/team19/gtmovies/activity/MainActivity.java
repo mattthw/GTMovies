@@ -66,59 +66,48 @@ public class MainActivity extends AppCompatActivity
     private static int currentPage;
     private List<Movie> recommendations;
     private boolean generalRecommendations = true;
+    public static int LOGIN_FINISHED = 13;
+    public static int LOGIN_GOOD = 15;
+    public static int LOGIN_CANCEL = 14;
 
-    public MainActivity() {
-        super();
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (IOActions.getIOActionsInstance() == null) {
+            Log.e("GTMovies", "IOActions.getIOActionsInstance == null !");
             startActivity(new Intent(this, SplashScreenActivity.class));
             finish();
             return;
         }
-
-        Log.w("MAINACTIVITY", "ONCREATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+        Log.println(Log.ASSERT, "GTMovies", "current user='" + CurrentState.getUser() + "'");
+        if (CurrentState.getUser() == null) {
+            //start loginactivity
+            Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivityForResult(intent, 13);
+        }
+        Log.w("GTMovies", "MAIN ACTIVITY ONCREATE!");
         Toast.makeText(MainActivity.this, "MAIN ACTIVITY ONCREATE!", Toast.LENGTH_SHORT).show();
-
         setContentView(R.layout.activity_main);
         mainRootView = findViewById(R.id.main_view);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(),
-                R.color.colorPrimaryDark));
-
-        //LOGIN THINGS
-        Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
-
+        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(),R.color.colorPrimaryDark));
         // Layout toolbar
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
-
         // Layout drawer
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         // Layout navigation
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(this);
-//
-//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(this);
-//        View header=navigationView.getHeaderView(0);
-//        TextView name = (TextView)header.findViewById(R.id.headerName);
+        navigationView.setNavigationItemSelectedListener(this);
 
 
-        //result updates header. dont fuck it up.
-        // BACK to activity_main if the user did indeed log in.
-        //has to be done after view stuff setup or else will act on null views
-//        startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.LOGIN_FINISHED);
-
+        updateNavName();
 
         // Populate lists of new movies and top rentals
         //getMovies();
@@ -127,8 +116,6 @@ public class MainActivity extends AppCompatActivity
         findViewById(R.id.criteria_bar).setVisibility(View.GONE);
         //getMoviesFromAPI(SingletonMagic.topRental, null);
         //getMoviesFromAPI(SingletonMagic.newMovie, null);
-
-
         //getMoviesFromAPI(SingletonMagic.topRental, null);
         // Setup tabs and search
         //fragmentManager = getSupportFragmentManager();
@@ -145,11 +132,7 @@ public class MainActivity extends AppCompatActivity
         MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.LOGIN_FINISHED);
-    }
+
     /*@Override
     protected void onStart() {
         super.onStart();
@@ -181,15 +164,23 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("GTMovies", "resultCode=" + resultCode);
         if (requestCode == UserProfileActivity.HEADER_NAME_UPDATED) {
             updateNavName();
         }
-        if (requestCode == LoginActivity.LOGIN_FINISHED) {
-            updateNavName();
-            /*MovieListFragment.updateAdapter(MovieListFragment.NEW_MOVIES_TAB);
-            MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
-            MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
-            mainRootView.invalidate();*/
+        if (requestCode == 13) {
+            if (resultCode == 1) {
+                if (CurrentState.getUser() == null) {
+                    Log.e("GTMovies", "go log in!! >:(");
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivityForResult(intent, 13);
+                } else {
+                    updateNavName();
+                }
+            } else if (resultCode == -1) {
+                Log.e("GTMovies", "login cancelled, quitting app.");
+                finish();
+            }
         }
     }
 
@@ -197,11 +188,6 @@ public class MainActivity extends AppCompatActivity
      * update header name
      */
     public void updateNavName() {
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
         View header=navigationView.getHeaderView(0);
         TextView name = (TextView)header.findViewById(R.id.headerName);
         if (CurrentState.getUser() != null) {
@@ -579,7 +565,12 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
         }
+//        @Override
+//        protected void onPostCreate(Bundle savedInstanceState) {
+//            super.onPostCreate(savedInstanceState);
+//        }
     }
 
 

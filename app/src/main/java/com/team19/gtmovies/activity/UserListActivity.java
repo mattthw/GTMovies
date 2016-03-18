@@ -110,7 +110,8 @@ public class UserListActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
             // This ID represents the Home or Up button. In the case of this
             // activity, the Up button is shown.
-            navigateUpTo(new Intent(this, MainActivity.class));
+            //navigateUpTo(new Intent(this, MainActivity.class));
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
