@@ -2,10 +2,12 @@ package com.team19.gtmovies.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.team19.gtmovies.R;
@@ -27,6 +29,11 @@ public class WelcomeActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
+        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lobster-Regular.ttf");
+        TextView title = (TextView)findViewById(R.id.welcomeView);
+        TextView subtitle = (TextView)findViewById(R.id.msgView);
+        title.setTypeface(myTypeface);
+        subtitle.setTypeface((myTypeface));
     }
 
     /**
@@ -68,7 +75,12 @@ public class WelcomeActivity extends AppCompatActivity {
         count += 1;
     }
 
-    @Override
-    public void onBackPressed() {
-    }
+//    /**
+//     * void parents function. We
+//     * dont want them to push back!
+//     */
+//    @Override
+//    public void onBackPressed() {
+//        System.exit(0);
+//    }
 }

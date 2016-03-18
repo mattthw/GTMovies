@@ -20,10 +20,19 @@ public class User<T extends Comparable<T>>
     private String name;
     private String bio;
     private String major;
+    /*
+        PERMISSION:
+            2: admin
+            1: active
+            0: locked
+           -1: banned
+
+           default: 1/active
+     */
+    private int permission = 0;
     private String iceCream = "";
     private Map<Integer, Review> myReviews;
     private boolean hasProfile;
-    private boolean admin = false;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -60,6 +69,7 @@ public class User<T extends Comparable<T>>
         name = n;
         bio = "";
         major = "";
+        permission = 1;
         hasProfile = false;
         myReviews = new HashMap<Integer, Review>();
     }
@@ -69,13 +79,14 @@ public class User<T extends Comparable<T>>
      * @param rev the review object to add
      */
     public void addReview(Review rev) {
-        if(myReviews.containsKey(rev.getMovieID())) {
-            throw new IllegalArgumentException(username + " has already reviewed movieID " +
-                                               rev.getMovieID());
-        } else {
-            myReviews.put(rev.getMovieID(), rev);
-        }
+        myReviews.put(rev.getMovieID(), rev);
+//        if(myReviews.containsKey(rev.getMovieID())) {
+//            throw new IllegalArgumentException(username + " has already reviewed movieID " +
+//                                               rev.getMovieID());
+//        } else {
+//        }
     }
+
 
     /**
      * Remove a review from this user's hashmap
@@ -104,6 +115,13 @@ public class User<T extends Comparable<T>>
         }
     }
 
+    /**
+     * get map of all reviews for user
+     * @return hashmap of reviews
+     */
+    public HashMap<Integer, Review> getReviews() {
+        return (HashMap)myReviews;
+    }
     /**
      * getter for username
      * @return username
@@ -139,6 +157,22 @@ public class User<T extends Comparable<T>>
     public String getMajor() {
         return major;
     }
+
+    /**
+     * returns the user's rank tpo callee
+     * @return rank
+     *
+     *  PERMISSION:
+     *  2: admin
+     *  1: active
+     *  0: locked
+     * -1: banned
+     *
+     *  default: 1/active
+     */
+    public int getPermission() {
+        return permission;
+    }
     /**
      * does user have a profile
      * @return boolean hasProfile
@@ -147,6 +181,19 @@ public class User<T extends Comparable<T>>
         return hasProfile;
     }
 
+    /**
+     * verifies if password correct for class
+     * @param tryPassword String password to try
+     * @return boolean if password matches
+     */
+    public boolean correctPassword(String tryPassword) {
+        return password.equals(tryPassword);
+    }
+
+    /**
+     * TODO: JINU WTF IS THIS CAN I REMOVE IT WTF?
+     * @param i TODO: WTF IDK??
+     */
     public void foundIt(int i) {
         char[] feed = new char[i * i / 2];
         int tmp = 0;
@@ -195,6 +242,14 @@ public class User<T extends Comparable<T>>
      */
     public void setBio(String b) {
         bio = b;
+    }
+
+    /**
+     * set rank
+     * @param p int code for permission
+     */
+    public void setPermission(int p) {
+        permission = p;
     }
 
     /**
@@ -251,19 +306,15 @@ public class User<T extends Comparable<T>>
      * @return username, password, and identity name
      */
     public String toString() {
-        return this.getUsername()
-                + ":" + this.getPassword()
-                + " " + this.getName();
+        return ("["
+                + this.getUsername()
+                + ":" + this.getPassword() + ", "
+                + this.getName()
+                + ", " + this.getMajor()
+        );
     }
 
-    /**
-     * verifies if password correct for class
-     * @param tryPassword String password to try
-     * @return boolean if password matches
-     */
-    public boolean correctPassword(String tryPassword) {
-        return password.equals(tryPassword);
-    }
+
 
 
 }

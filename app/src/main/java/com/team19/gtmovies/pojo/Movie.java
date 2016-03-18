@@ -2,14 +2,14 @@ package com.team19.gtmovies.pojo;
 
 import android.util.Log;
 
+import com.team19.gtmovies.data.IOActions;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +20,7 @@ public class Movie implements Comparable<Movie>, Serializable {
     // Rest in JSON
     private int id;
     private String title;
-    private List<Genre> genres = new ArrayList<>();
+    //private List<Genre> genres = new ArrayList<>();
     private String posterURL;
     private int rating = 0;
     private String description;
@@ -62,10 +62,10 @@ public class Movie implements Comparable<Movie>, Serializable {
             rating = fullInfo.getJSONObject("ratings").getInt("critics_score");
             posterURLs = fullInfo.getJSONObject("posters");
             posterURL = posterURLs.getString("thumbnail");
-//            tmpJArray = fullInfo.getJSONArray("genres");
-//            for (int i = 0; i < tmpJArray.length(); i++) {
-//                genres.add(Genre.toGenre(tmpJArray.getString(i)));
-//            }
+            //tmpJArray = fullInfo.getJSONArray("genres");
+            //for (int i = 0; i < tmpJArray.length(); i++) {
+                //genres.add(Genre.toGenre(tmpJArray.getString(i)));
+            //}
         } catch (JSONException e) {
             Log.e("JSON Error", "JSONException while parsing single movie" + e.toString());
         }
@@ -86,12 +86,12 @@ public class Movie implements Comparable<Movie>, Serializable {
      * @param rev the review object
      */
     public void addReview(Review rev) {
-        if(myReviews.containsKey(rev.getUsername())) {
-            throw new IllegalArgumentException(rev.getUsername() + " has already reviewed movieID " +
-                    id);
-        } else {
-            myReviews.put(rev.getUsername(), rev);
-        }
+        myReviews.put(rev.getUsername(), rev);
+//        if(myReviews.containsKey(rev.getUsername())) {
+//            throw new IllegalArgumentException(rev.getUsername() + " has already reviewed movieID " +
+//                    id);
+//        } else {
+//        }
     }
 
     /**
@@ -121,6 +121,13 @@ public class Movie implements Comparable<Movie>, Serializable {
         }
     }
 
+    /**
+     * get map of all reviews for movie
+     * @return hashmap of reviews
+     */
+    public HashMap<Integer, Review> getReviews() {
+        return (HashMap)myReviews;
+    }
     @Override
     public int compareTo(Movie other) {
         return this.id - other.getID();
@@ -158,19 +165,47 @@ public class Movie implements Comparable<Movie>, Serializable {
 
     /**
      * calculate and return average rating of all users for this movie
-     * @return
+     * @return rating of movie based on users' reviews
      */
     public int getUserRating() {
-        double runningtotal = 0;
-        int numusers = 0;
+        double total = 0;
+        int userCount = 0;
         for(Review i : myReviews.values()) {
-            runningtotal += i.getScore();
-            numusers++;
+            total += i.getScore();
+            userCount++;
         }
-        if(numusers == 0) { // in case of divide by zero
-            return 0;
+        if(userCount == 0) { // in case of divide by zero
+            return -1;
         } else {
-            return (int)((runningtotal/((double)numusers)) * 20);
+            return (int)((total/((double)userCount)) * 20);
+        }
+    }
+
+    /**
+     * Returns average user rating of movie base on reviewers having specified major
+     * @param major major to filter by
+     * @return rating by users with specified major
+     */
+    public int getUserRatingByMajor(String major) {
+        int total = 0;
+        int userCount = 0;
+        for (Review review : myReviews.values()) {
+            String curr = review.getUsername();
+            User user = IOActions.getUserByUsername(curr);
+            String otherMajor = null;
+            if (user != null)
+                otherMajor= IOActions.getUserByUsername(curr).getMajor();
+            if (otherMajor != null && major.equals(otherMajor)) {
+                Log.v("GTMovies",
+                        "getRatingByMajor(parm:" + major + ", curr:" + curr + ")");
+                total += review.getScore();
+                userCount++;
+            }
+        }
+        if (userCount > 0) {
+            return (int)((total/((double)userCount)) * 20);
+        } else {
+            return -1;
         }
     }
 
@@ -218,9 +253,9 @@ public class Movie implements Comparable<Movie>, Serializable {
      *
      * @return the Genres of the Movie as an ArrayList
      */
-    public List<Genre> getGenres() {
-        return genres;
-    }
+    //public List<Genre> getGenres() {
+        //return genres;
+    //}
 
     /**
      * Returns backing JSONObject of this Movie
@@ -231,14 +266,25 @@ public class Movie implements Comparable<Movie>, Serializable {
         return fullInfo;
     }
 
+    private boolean isLocal() {
+        if (getTitle() == null || getTitle().equals(""))
+            return true;
+        return false;
+    }
+
     /**
      * toString
      * @return string
      */
     public String toString() {
-        return ("{id:" + getID() + "},"
-                +"{title:" + getTitle() + "},"
-                + "{rating:" + getRating() +"},"
-                + "{description:" + getDescription() + "}");
+        if (!isLocal()) {
+            return ("{id:" + getID() + "},"
+                    +"{title:" + getTitle() + "},"
+                    + "{rating:" + getRating() +"},"
+                    + "{description:" + getDescription() + "}");
+        } else {
+            return ("[ID:'" + getID() + "', "
+                    +"USER_RATING:'" + getUserRating() + "']");
+        }
     }
 }

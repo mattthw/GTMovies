@@ -4,9 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.exception.DuplicateUserException;
 import com.team19.gtmovies.exception.NullUserException;
+import com.team19.gtmovies.fragment.MovieListFragment;
 import com.team19.gtmovies.pojo.Movie;
 import com.team19.gtmovies.pojo.Review;
 import com.team19.gtmovies.pojo.User;
@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +31,8 @@ import java.util.Set;
  * @version 2.0
  */
 public class IOActions extends Application {
+    private static IOActions ioa = null;
+    private static MovieListFragment movieListFragment = null;
     private static FileInputStream fileIn;
     private static FileOutputStream fileOut;
     private static ObjectInputStream objectIn;
@@ -39,7 +42,7 @@ public class IOActions extends Application {
     private static final String AFILE = "ACCOUNTS.txt";
     private static final String UFILE = "USER.txt";
     private static final String MFILE = "MOVIES.txt";
-    private static Set<User> accounts;
+    private static Set<User> accounts = null;
     private static Set<Movie> movies;
 
     /**
@@ -47,13 +50,16 @@ public class IOActions extends Application {
      * @param c context passed by calling class
      */
     public IOActions(Context c)  {
-        ioaContext = c;
-        onStart();
-        if (userSignedIn()) {
-            Log.println(Log.ASSERT, "GTMovies", CurrentState.getUser().getUsername() + " signed in.");
-        } else {
-            CurrentState.setUser(new User());
+        if (ioa == null) {
+            ioaContext = c;
+            onStart();
+            if (userSignedIn()) {
+                Log.println(Log.ASSERT, "GTMovies", CurrentState.getUser().getUsername() + " signed in.");
+            } else {
+                CurrentState.setUser(null);
 //            Log.println(Log.ASSERT, "GTMovies", "no user signed in.");
+            }
+            ioa = this;
         }
     }
 
@@ -68,7 +74,7 @@ public class IOActions extends Application {
         } catch (FileNotFoundException f) {
             accounts = new HashSet<>();
             movies = new HashSet<>();
-            CurrentState.setUser(new User());
+            CurrentState.setUser(null);
             commit();
             Log.println(Log.INFO, "GTMovies", "Created new empty set for user accounts");
         } catch (IOException i) {
@@ -163,7 +169,7 @@ public class IOActions extends Application {
     /**
      * save changes to USER and ACCOUNTS
      */
-    protected static void commit() {
+    protected static boolean commit() {
         try {
             saveAccounts();
             saveUser();
@@ -175,32 +181,50 @@ public class IOActions extends Application {
         } catch (Exception e) {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }
+        return true;
     }
 
     /**
      * gets accounts
-     * @return HashSet of accounts
+     * @return list of accounts
      */
     public static Set<User> getAccounts() {
         return accounts;
     }
-
+    /**
+     * gets accounts
+     * @return list of accounts
+     */
+    public static ArrayList<String> getUsernames() {
+        ArrayList<String> temp = new ArrayList<>(accounts.size());
+        for (User u : accounts) {
+            temp.add(u.getUsername());
+        }
+        return temp;
+    }
+    /**
+     * gets movies
+     * @return HashSet of movies
+     */
+    public static Set<Movie> getMovies() {
+        return movies;
+    }
     /**
      * add new user
      * @param user user object
      * @throws DuplicateUserException
      */
+
     public static void addUser(User user)
             throws DuplicateUserException, NullUserException {
         if (accounts.contains(user) || user.getUsername().equals("null")) {
             throw new DuplicateUserException();
         } else {
             accounts.add(user);
-            Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
             commit();
+            Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
         }
     }
-
     /**
      * remove user from accounts
      * @param user User Object
@@ -215,77 +239,6 @@ public class IOActions extends Application {
         commit();
     }
 
-    /**
-     * gets movies
-     * @return HashSet of movies
-     */
-    public static Set<Movie> getMovies() {
-        return movies;
-    }
-
-    /**
-     * add new movie
-     * @param movie movie object
-     */
-    public static void addMovie(Movie movie) {
-        if(movies.contains(movie)) {
-            throw new IllegalArgumentException("IOActions: this movie is already in the HashSet.");
-        } else {
-            movies.add(movie);
-            Log.println(Log.INFO, "GTMovies", "New movie added! (" + movie.getID() + ")");
-            commit();
-        }
-    }
-
-    /**
-     * remove movie from movies hashmap
-     * @param movie Movie object
-     */
-    public static void deleteMovie(Movie movie) {
-        if(movie == null) {
-            throw new IllegalArgumentException("Can't remove null movie!");
-        } else {
-            int movid = movie.getID();
-            movies.remove(movie);
-            Log.println(Log.INFO, "GTMovies", "Movie '" + movid + "' deleted.");
-            commit();
-        }
-    }
-
-    /**
-     * gets sign in status
-     * @return  true if user is currently signed in
-     */
-    public static boolean userSignedIn() {
-        return !(CurrentState.getUser() == null || CurrentState.getUser().getUsername().equals("null"));
-    }
-
-    /**
-     * if user exists return User object
-     * else throw exception (it is expected that it will not fail)
-     * @param un username
-     * @return User
-     */
-    public static User getUserByUsername(String un) {
-        for (User u: accounts) {
-            if (u.getUsername().equalsIgnoreCase(un))
-                return u;
-        }
-        return null;
-    }
-
-    /**
-     * gets the Movie object if titles match
-     * @param title title of movie
-     * @return Movie object
-     */
-    public static Movie getMovieByTitle(String title) {
-        for (Movie m: movies) {
-            if (m.getTitle().equalsIgnoreCase(title))
-                return m;
-        }
-        return null;
-    }
 
     /**
      * log user in and commit changes
@@ -314,42 +267,69 @@ public class IOActions extends Application {
             return false;
         }
     }
-
     /**
      * reset user to default null
      * @return true if CurrentState.getUser() set
      */
     public static boolean logoutUser() {
-        Log.println(Log.ASSERT, "GTMovies", CurrentState.getUser().getUsername() + " signed out.");
-        CurrentState.setUser(new User());
-        commit();
-        return true;
+        if (CurrentState.getUser() != null) {
+            Log.println(Log.ASSERT, "GTMovies", CurrentState.getUser().getUsername() + " signed out.");
+            CurrentState.setUser(null);
+            commit();
+            return true;
+        }
+        return false;
     }
 
+    /**
+     * removes old user from set and adds new user
+     * @return
+     */
+    public static boolean updateUser() {
+        User temp = CurrentState.getUser();
+        accounts.remove(temp);
+        accounts.add(temp);
+        return true;
+    }
+    /**
+     * gets sign in status
+     * @return  true if user is currently signed in
+     */
+    public static boolean userSignedIn() {
+        return !(CurrentState.getUser() == null);
+    }
+    /**
+     * if user exists return User object
+     * else throw exception (it is expected that it will not fail)
+     * @param un username
+     * @return User
+     */
+    public static User getUserByUsername(String un) {
+        for (User u: accounts) {
+            if (u.getUsername().equalsIgnoreCase(un))
+                return u;
+        }
+        return null;
+    }
+
+
+    /**
+     * Save a new rating to both the respective user and local movie object
+     * @param movieid ID from tomatoes
+     * @param score score given by user
+     * @param comment comment given by user
+     * @return true if success
+     */
     public static boolean SaveNewRating(int movieid, int score, String comment) {
         User ouruser = CurrentState.getUser();
-        Movie ourmovie = null;
-
-        // Find the movie for the given username;
-        try {
-            for(Movie m : movies) {
-                if(m.getID() == movieid) {
-                    ourmovie = m;
-                    break;
-                }
-            }
-        } catch(Exception e) {
-            Log.println(Log.ERROR, "GTMovies", "Something wrong!!!!!!!" + e);
-        }
-        if(ourmovie == null) {
+        boolean success = true;
+        Movie ourmovie = getMovieById(movieid);
+        // Remove existing movie (if exists)
+        if (ourmovie == null) {
             ourmovie = new Movie(movieid, 'c');
         } else {
-            //remove existing movie
             movies.remove(ourmovie);
         }
-        // Remove both from hashsets
-        accounts.remove(ouruser);
-
         // Add the new rating to each
         Review r = new Review(score, comment, ouruser.getUsername(), ourmovie.getID());
         try {
@@ -357,21 +337,14 @@ public class IOActions extends Application {
             ourmovie.addReview(r);
         } catch (Exception e){
             Log.println(Log.ASSERT, "GTMovies", e.getMessage());
-            // Add both back to hashsets
-            accounts.add(ouruser);
-            movies.add(ourmovie);
-            return false;
+            success = false;
         }
-
-        // Add both back to hashsets
-        accounts.add(ouruser);
+        // Add movie back to hashset
+        updateUser();
         movies.add(ourmovie);
-
-        // Save stuff
         commit();
-        return true;
+        return success;
     }
-
     /**
      * return Movie object for given id
      * @param movieid id form tomato API
@@ -379,7 +352,6 @@ public class IOActions extends Application {
      */
     public static Movie getMovieById(int movieid) {
         Movie ourmovie = null;
-
         // Find the movie for the given username;
         try {
             for(Movie m : movies) {
@@ -389,8 +361,57 @@ public class IOActions extends Application {
                 }
             }
         } catch(Exception e) {
-            Log.println(Log.ERROR, "GTMovies", "Something wrong!!!!!!!" + e);
+            Log.println(Log.ERROR, "GTMovies", e.getMessage());
         }
         return ourmovie;
     }
+    /**
+     * add new movie
+     * @param movie movie object
+     */
+    public static void addMovie(Movie movie) {
+        if(movies.contains(movie)) {
+            throw new IllegalArgumentException("IOActions: this movie is already in the HashSet.");
+        } else {
+            movies.add(movie);
+            Log.println(Log.INFO, "GTMovies", "New movie added! (" + movie.getID() + ")");
+            commit();
+        }
+    }
+    /**
+     * remove movie from movies hashmap
+     * @param movie Movie object
+     */
+    public static void deleteMovie(Movie movie) {
+        if(movie == null) {
+            throw new IllegalArgumentException("Can't remove null movie!");
+        } else {
+            int movid = movie.getID();
+            movies.remove(movie);
+            Log.println(Log.INFO, "GTMovies", "Movie '" + movid + "' deleted.");
+            commit();
+        }
+    }
+
+    /**
+     * provides persistent MovieListFragment
+     */
+    public static void setMovieListFragment(MovieListFragment newList) {
+        movieListFragment = newList;
+    }
+    /**
+     * gets persistent MovieListFragment
+     */
+    public static MovieListFragment getMovieListFragment() {
+        return movieListFragment;
+    }
+
+    /**
+     * Getter for ioa actions
+     * @return
+     */
+    public static IOActions getIOActionsInstance() {
+        return ioa;
+    }
+
 }

@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_manage_profile"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/action_edit_profile" />
-        <item
-            android:id="@+id/nav_admin"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/action_user_list" />
-    </group>
+    <item
+        android:id="@+id/nav_manage_profile"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="@string/action_edit_profile" />
 
-    <item android:title="@string/title_social">
+    <item
+        android:title="@string/title_admin">
         <menu>
             <item
                 android:id="@+id/nav_friends"
-                android:icon="@drawable/ic_menu_share"
-                android:title="@string/action_friends" />
+                android:icon="@drawable/ic_group_black_24dp"
+                android:title="@string/action_users" />
         </menu>
     </item>
 
@@ -25,12 +20,20 @@
         <menu>
             <item
                 android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/ic_settings_black_24dp"
                 android:title="@string/action_settings" />
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/ic_power_settings_new_black_24dp"
                 android:title="@string/action_logout" />
         </menu>
     </item>
+    <TextView
+        android:id="@+id/nav_branding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:textSize="20sp"
+        android:text="@string/splash_title">
+    </TextView>
 </menu>

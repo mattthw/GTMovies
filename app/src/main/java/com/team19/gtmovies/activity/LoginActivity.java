@@ -1,9 +1,12 @@
 package com.team19.gtmovies.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -12,19 +15,23 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.exception.DuplicateUserException;
 import com.team19.gtmovies.exception.IllegalUserException;
 import com.team19.gtmovies.exception.NullUserException;
 import com.team19.gtmovies.pojo.User;
 
+import java.util.HashMap;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 //import com.team19.gtmovies.JinuTestActivity;
 
@@ -50,10 +57,11 @@ public class LoginActivity extends AppCompatActivity {
     private String password = null;
     private String passwordCheck = null;
     private String name = null;
-    //app user status
-    public static final String USER_STATUS = "USER";
+    private HashMap<String, Integer> attempts = new HashMap<>();
     //app users storage
     protected static Set<User> accounts;
+    private View rootView;
+    private static boolean verified = false;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -64,9 +72,19 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        /* SET THIS IN ADVANCE IN CASE ACTIVITY IS DESTROYED!
+         * @Matt 17/March/2016
+         */
+        setResult(-1);
+        Log.println(Log.WARN, "GTMovies", "LOGIN ACTIVITY ONCREATE!");
+        if (IOActions.userSignedIn()) {
+            Log.i("GTMovies", "user already logged in");
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_login);
-        //load login info
+        rootView = findViewById(R.id.login_root);
+        //start welcome screen
         startActivityForResult(new Intent(this, WelcomeActivity.class), 1);
         //load existing users
         try {
@@ -74,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }
-
 
         //remove up button
         ActionBar actionBar = getSupportActionBar();
@@ -115,11 +132,6 @@ public class LoginActivity extends AppCompatActivity {
                 onRegisterPressed();
             }
         });
-        //mLoginFormView = findViewById(R.id.login_form);
-        //mProgressView = findViewById(R.id.login_progress);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        // client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
 
@@ -127,6 +139,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data != null && !data.getBooleanExtra("login", true)) {
                 onRegisterPressed();
+        } else if (resultCode != 1) {
+            finish();
         }
     }
 
@@ -142,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.pwRegister).setVisibility(View.VISIBLE);
         findViewById(R.id.nameLayout).setVisibility(View.VISIBLE);
         findViewById(R.id.cancel_button).setVisibility(View.VISIBLE);
-        ((Button) findViewById(R.id.email_sign_in_button)).setText("Create account");
+        ((Button) findViewById(R.id.email_sign_in_button)).setText("Create");
         register = true;
         Log.println(Log.DEBUG, "GTMovies",
                 "register/sign in toggle- register? '" + register + "'");
@@ -171,12 +185,14 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
+     * If there are form errors (invalid username, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
+        //hide keyboard
+        if (rootView != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
         }
         // Reset errors.
         mEmailView.setError(null);
@@ -188,6 +204,19 @@ public class LoginActivity extends AppCompatActivity {
         password = mPasswordView.getText().toString();
         passwordCheck = mPassConfirmView.getText().toString();
         name = mNameView.getText().toString();
+        //check if should cancel
+        if (mAuthTask != null) {
+            return;
+        } else if ( null != attempts.get(email) && attempts.get(email) >= 3) {
+            Snackbar.make(rootView,
+                    "ACCOUNT '" + email + "' LOCKED!" , Snackbar.LENGTH_SHORT).show();
+            return;
+        } else if ( null != IOActions.getUserByUsername(email)
+                && IOActions.getUserByUsername(email).getPermission() == -1) {
+            Snackbar.make(rootView,
+                    "ACCOUNT '" + email + "' IS BANNED" , Snackbar.LENGTH_SHORT).show();
+            return;
+        }
         boolean cancel = false;
         View focusView = null;
 
@@ -228,6 +257,8 @@ public class LoginActivity extends AppCompatActivity {
                 focusView = mNameView;
                 cancel = true;
             }
+        } else {
+            register = false;
         }
         if (cancel) {
             //cancel and focus on bad field
@@ -247,65 +278,32 @@ public class LoginActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-//        // ATTENTION: This was auto-generated to implement the App Indexing API.
-//        // See https://g.co/AppIndexing/AndroidStudio for more information.
-//        client.connect();
-//        Action viewAction = Action.newAction(
-//                Action.TYPE_VIEW, // TODO: choose an action type.
-//                "Login Page", // TODO: Define a title for the content shown.
-//                // TODO: If you have web page content that matches this app activity's content,
-//                // make sure this auto-generated web page URL is correct.
-//                // Otherwise, set the URL to null.
-//                Uri.parse("http://host/path"),
-//                // TODO: Make sure this auto-generated app deep link URI is correct.
-//                Uri.parse("android-app://com.team19.gtmovies/http/host/path")
-//        );
-//        AppIndex.AppIndexApi.start(client, viewAction);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-//        // ATTENTION: This was auto-generated to implement the App Indexing API.
-//        // See https://g.co/AppIndexing/AndroidStudio for more information.
-//        Action viewAction = Action.newAction(
-//                Action.TYPE_VIEW, // TODO: choose an action type.
-//                "Login Page", // TODO: Define a title for the content shown.
-//                // TODO: If you have web page content that matches this app activity's content,
-//                // make sure this auto-generated web page URL is correct.
-//                // Otherwise, set the URL to null.
-//                Uri.parse("http://host/path"),
-//                // TODO: Make sure this auto-generated app deep link URI is correct.
-//                Uri.parse("android-app://com.team19.gtmovies/http/host/path")
-//        );
-//        AppIndex.AppIndexApi.end(client, viewAction);
-//        client.disconnect();
     }
 
     @Override
     public void onDestroy() {
+        if (verified) {
+            if (getParent() == null) {
+                setResult(1);
+            }
+            else {
+                getParent().setResult(1);
+            }
+        }
         super.onDestroy();
-
-        //update header
-        ((TextView) MainActivity.navHeader.findViewById(R.id.headerName))
-                .setText(CurrentState.getUser().getName());
-        ((TextView) MainActivity.navHeader.findViewById(R.id.headerUsername))
-                .setText(CurrentState.getUser().getUsername());
-
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        });
-        //MainActivity.navigationView.addHeaderView(MainActivity.nav_header);
     }
-
 
     /**
      * INNER CLASS FOR USER LOGIN
@@ -323,7 +321,7 @@ public class LoginActivity extends AppCompatActivity {
                     IOActions.addUser(new User(email, password, name));
                     boolean result = IOActions.loginUser(email, password);
                     Log.println(Log.DEBUG, "GTMovies",
-                            "REGISTER: returning '" + result + "'");
+                            "REGISTER: returning '" + register + "'");
                     return result;
                 } catch (DuplicateUserException e) {
                     Log.e("GTMovies", e.getMessage());
@@ -340,7 +338,7 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     boolean result = IOActions.loginUser(email, password);
                     Log.println(Log.DEBUG, "GTMovies",
-                            "REGISTER: returning '" + result + "'");
+                            "REGISTER: returning '" + register + "'");
                     return result;
                 } catch (NullUserException e) {
                     Log.e("GTMovies", e.getMessage());
@@ -353,14 +351,48 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
+            // Check if no view has focus:
             if (success) {
-                Snackbar.make(MainActivity.rootView,
+                verified = true;
+                if (getParent() == null) {
+                    setResult(1);
+                }
+                else {
+                    getParent().setResult(1);
+                }
+                Snackbar.make(findViewById(R.id.login_root),
                         "'" + CurrentState.getUser().getUsername()
                                 + "' signed in." , Snackbar.LENGTH_LONG).show();
-                finish();
+                // We are done. Go back to MainActivity, after a set delay.
+                TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {
+//                        NavUtils.navigateUpFromSameTask(LoginActivity.this);
+                        finish();
+                    }
+                };
+                Timer t = new Timer();
+                t.schedule(task, 1000);
             } else {
-                Snackbar.make(MainActivity.rootView,
-                        "Invalid password or username!" , Snackbar.LENGTH_LONG).show();
+                if ( null != attempts.get(email) && attempts.get(email) >= 2) {
+                    Snackbar.make(rootView, "ACCOUNT '" + email + "' LOCKED!",
+                            Snackbar.LENGTH_SHORT).show();
+                    IOActions.getUserByUsername(email).setPermission(0);
+                }
+                if (IOActions.getUserByUsername(email) != null) {
+                    if (attempts.get(email) != null) {
+                        attempts.put(email, attempts.get(email) + 1);
+                        Snackbar.make(rootView,
+                                (3-attempts.get(email))
+                                        + " attempts remaining for " + email,
+                                Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        attempts.put(email, 1);
+                        Snackbar.make(rootView, "2 attempts remaining for " + email,
+                                Snackbar.LENGTH_SHORT).show();
+                        Log.i("GTMovies", error);
+                    }
+                }
                 Log.i("GTMovies", error);
                 if (error.equals("duplicate")) {
                     mEmailView.setError("User already exists");
@@ -380,5 +412,6 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
         }
     }
+
 }
 

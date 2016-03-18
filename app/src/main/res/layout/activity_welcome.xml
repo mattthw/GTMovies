@@ -14,19 +14,18 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/welcome_title"
-        android:id="@+id/emailView"
+        android:text="@string/splash_title"
+        android:id="@+id/welcomeView"
         style="@style/Base.TextAppearance.AppCompat.Subhead"
         android:onClick="disguisedToast"
         android:textColor="#FFFFFF"
         android:textAlignment="center"
-        android:textSize="50sp"
+        android:textSize="65dp"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
-        android:paddingTop="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="41dp" />
+        android:layout_alignParentStart="false"
+        android:layout_centerInParent="true"
+        android:paddingBottom="200dp" />
 
     <!--
     <TextView
@@ -50,9 +49,10 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="76dp">
+        android:layout_alignBottom="@+id/welcomeView"
+        android:paddingBottom="50dp">
 
         <Button
             android:layout_width="wrap_content"
@@ -61,7 +61,11 @@
             android:id="@+id/register_button"
             android:onClick="userRegister"
             android:nestedScrollingEnabled="true"
-            android:singleLine="false" />
+            android:singleLine="false"
+            android:layout_marginRight="5dp"
+            android:layout_margin="15dp"
+            android:backgroundTint="@color/background_floating_material_light"
+            android:textColor="@color/colorPrimaryDark" />
 
         <Button
             android:layout_width="wrap_content"
@@ -70,8 +74,26 @@
             android:id="@+id/login_button"
             android:onClick="userLogin"
             android:nestedScrollingEnabled="true"
-            android:singleLine="false" />
+            android:singleLine="false"
+            android:layout_marginLeft="5dp"
+            android:layout_margin="15dp"
+            android:backgroundTint="@color/background_floating_material_light"
+            android:textColor="@color/colorPrimaryDark" />
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="an app worth downloading"
+        android:id="@+id/msgView"
+        android:textColor="@color/abc_secondary_text_material_dark"
+        android:textSize="26dp"
+        android:layout_alignTop="@+id/welcomeView"
+        android:paddingTop="70dp"
+        android:singleLine="true"
+        android:textAlignment="center"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

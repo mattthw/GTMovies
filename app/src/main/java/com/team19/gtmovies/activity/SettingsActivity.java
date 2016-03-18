@@ -22,9 +22,12 @@ import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
-import com.team19.gtmovies.CurrentState;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.data.CurrentState;
+import com.team19.gtmovies.pojo.User;
 
 import java.util.List;
 
@@ -43,6 +46,8 @@ import java.util.List;
  * @version 1.0
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+
+    private View rootView;
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -51,7 +56,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
-
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list.
@@ -295,16 +299,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-//                    try {
-//                        IOActions.deleteUser(IOActions.currentUser);
-//                    } catch (NullUserException e) {
-//                        Log.e("GTMovies", "Could not delete user '" + IOActions.currentUser + "'!");
-//                    }
-//                    System.exit(0);
+                    int perm = CurrentState.getUser().getPermission();
+                    User u = CurrentState.getUser();
+                    if (perm == 2) {
+                        Toast.makeText(getActivity(), u.getUsername() + " had admin removed.", Toast.LENGTH_SHORT).show();
+                        CurrentState.getUser().setPermission(1);
+                    } else {
+                        Toast.makeText(getActivity(), u.getUsername() + " now has admin.", Toast.LENGTH_SHORT).show();
+                        CurrentState.getUser().setPermission(2);
+                    }
                     return true;
                 }
             });
-
         }
 
         @Override

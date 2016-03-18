@@ -1,13 +1,14 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="profile_switch"
-        android:summary="Allow other users to view information about me"
-        android:title="Profile is Public" />
+    <!--<SwitchPreference-->
+        <!--android:defaultValue="true"-->
+        <!--android:key="profile_switch"-->
+        <!--android:summary="Allow other users to view information about me"-->
+        <!--android:title="Profile is Public" />-->
 
-    <Preference android:title="@string/pref_account_delete"
+    <Preference
+        android:title="@string/pref_account_delete"
         android:key="@string/pref_account_delete"
-        android:summary="This action is irreversible"/>
+        android:summary="mimicks remote setting of admin status"/>
 
 </PreferenceScreen>
