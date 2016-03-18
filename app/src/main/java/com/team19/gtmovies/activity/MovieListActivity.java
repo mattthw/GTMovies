@@ -105,14 +105,14 @@ public class MovieListActivity extends AppCompatActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            for (int i = 0; i < 1; i++) {
-                for (int j = 0; j < 1; j++) {
-                    Log.i("Useless", "This one might actually be it.");
-                }
-                for (int j = 0; j < 1; j++) {
-                    Log.i("Useless", "But probably isn't");
-                }
-            }
+//            for (int i = 0; i < 1; i++) {
+//                for (int j = 0; j < 1; j++) {
+//                    Log.i("Useless", "This one might actually be it.");
+//                }
+//                for (int j = 0; j < 1; j++) {
+//                    Log.i("Useless", "But probably isn't");
+//                }
+//            }
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.movie_list_content, parent, false);
             return new ViewHolder(view);

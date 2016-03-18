@@ -128,7 +128,8 @@ public class MovieDetailFragment extends Fragment {
         // Find the ListView resource.
 //        mainListView = (ListView) getActivity().findViewById( R.id.commentListView );
         if (mItem == null) {
-            Log.e("GTMovies", "Couldn't populate list because null mItem.");
+            Log.i("GTMovies", "Didn't populate review list because local movie object null for "
+                    + getArguments().getString(ARG_ITEM_TITLE));
             return;
         }
         Object[] reviewList = mItem.getReviews().values().toArray();
@@ -142,7 +143,7 @@ public class MovieDetailFragment extends Fragment {
                 commentList.add(u + ": " + s);
             }
         }
-        Log.println(Log.ASSERT, "GTMovies", commentList.toString());
+        Log.println(Log.DEBUG, "GTMovies", commentList.toString());
         // Create ArrayAdapter using the comments list.
         listAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, commentList);
         // Set the ArrayAdapter as the ListView's adapter.
