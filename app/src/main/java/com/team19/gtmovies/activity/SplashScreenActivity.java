@@ -220,6 +220,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             Log.d("finished", "recs");
                             if (finishedNewMovies && finishedTopRentals) {
                                 Log.d("finished", "recs completely");
+                                IOActions.setMovieListFragment(new MovieListFragment());
                                 finished();
                             }
                         }
@@ -272,7 +273,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                             }
                             for (int i = 0; i < tmpMovies.length(); i++) {
                                 try {
-
                                     movieArray.add(new Movie(tmpMovies.getJSONObject(i)));
                                 } catch (JSONException e) {
                                     Log.e("Movie Error", "Couldn't make Movie" + i + "in Main");
@@ -289,6 +289,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                                 Log.d("finished", "new");
                                 if (finishedTopRentals || finishedYourRecommendations) {
                                     Log.d("finished", "new completely");
+                                    IOActions.setMovieListFragment(new MovieListFragment());
                                     finished();
                                 }
                             } else if (requestType.equals(SingletonMagic.topRental)) {
@@ -299,6 +300,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                                 Log.d("finished", "rentals");
                                 if (finishedNewMovies || finishedYourRecommendations) {
                                     Log.d("finished", "rent completely");
+                                    IOActions.setMovieListFragment(new MovieListFragment());
                                     finished();
                                 }
                             } else {

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.team19.gtmovies.exception.DuplicateUserException;
 import com.team19.gtmovies.exception.NullUserException;
+import com.team19.gtmovies.fragment.MovieListFragment;
 import com.team19.gtmovies.pojo.Movie;
 import com.team19.gtmovies.pojo.Review;
 import com.team19.gtmovies.pojo.User;
@@ -31,6 +32,7 @@ import java.util.Set;
  */
 public class IOActions extends Application {
     private static IOActions ioa = null;
+    private static MovieListFragment movieListFragment = null;
     private static FileInputStream fileIn;
     private static FileOutputStream fileOut;
     private static ObjectInputStream objectIn;
@@ -389,6 +391,19 @@ public class IOActions extends Application {
             Log.println(Log.INFO, "GTMovies", "Movie '" + movid + "' deleted.");
             commit();
         }
+    }
+
+    /**
+     * provides persistent MovieListFragment
+     */
+    public static void setMovieListFragment(MovieListFragment newList) {
+        movieListFragment = newList;
+    }
+    /**
+     * gets persistent MovieListFragment
+     */
+    public static MovieListFragment getMovieListFragment() {
+        return movieListFragment;
     }
 
     /**

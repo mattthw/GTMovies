@@ -464,6 +464,14 @@ public class MovieListFragment extends Fragment {
     }
 
     /**
+     * public getter for newMovieList
+     * @return current newMovieList
+     */
+    public static List getNewMovieList() {
+        return newMoviesList;
+    }
+
+    /**
      * Sets current tab
      * @param position position of current tab
      */

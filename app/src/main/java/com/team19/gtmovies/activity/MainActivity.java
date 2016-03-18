@@ -65,9 +65,7 @@ public class MainActivity extends AppCompatActivity
     private static int currentPage;
     private List<Movie> recommendations;
     private boolean generalRecommendations = true;
-    public static int LOGIN_FINISHED = 13;
-    public static int LOGIN_GOOD = 15;
-    public static int LOGIN_CANCEL = 14;
+
 
 
     @Override
@@ -178,6 +176,14 @@ public class MainActivity extends AppCompatActivity
             } else if (resultCode == -1) {
                 Log.e("GTMovies", "login cancelled, quitting app.");
                 finish();
+            }
+
+            //debug code from @austin
+            if (IOActions.getIOActionsInstance() == null) {
+                startActivity(new Intent(this, SplashScreenActivity.class));
+                finish();
+                Toast.makeText(MainActivity.this, "MAIN ACTIVITY finish", Toast.LENGTH_SHORT).show();
+                return;
             }
         }
     }
@@ -563,12 +569,9 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
+            //super.onPostExecute(integer);
         }
-//        @Override
-//        protected void onPostCreate(Bundle savedInstanceState) {
-//            super.onPostCreate(savedInstanceState);
-//        }
+
     }
 
 
