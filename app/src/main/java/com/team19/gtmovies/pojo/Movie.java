@@ -3,11 +3,19 @@ package com.team19.gtmovies.pojo;
 import android.util.Log;
 
 import com.team19.gtmovies.data.IOActions;
+import com.team19.gtmovies.exception.DuplicateUserException;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +52,18 @@ public class Movie implements Comparable<Movie>, Serializable {
                     + " of the list of movies";
             myReviews = new HashMap<String, Review>();
         }
+    }
+
+    /**
+     * Another constructor
+     * @param id what to set the id to
+     * @param title what to set title to
+     * @param rating what to set rating to
+     */
+    public Movie(int id, String title, int rating) {
+        this.id = id;
+        this.title = title;
+        this.rating = rating;
     }
 
     /**
@@ -192,17 +212,36 @@ public class Movie implements Comparable<Movie>, Serializable {
      * @return rating of movie based on users' reviews
      */
     public int getUserRating() {
-        double total = 0;
-        int userCount = 0;
-        for(Review i : myReviews.values()) {
-            total += i.getScore();
-            userCount++;
+        String url = "http://45.55.175.68/test.php?mode=9&movid=" + id;
+        InputStream is = null;
+        try {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            is = response.getEntity().getContent();
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: addUser: error in server connection: " + e.toString());
         }
-        if(userCount == 0) { // in case of divide by zero
-            return -1;
-        } else {
-            return (int)((total/((double)userCount)) * 20);
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            String result = reader.readLine();
+            return Integer.parseInt(result);
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: adduser: error in decoding data: " + e.toString());
         }
+//        double total = 0;
+//        int userCount = 0;
+//        for(Review i : myReviews.values()) {
+//            total += i.getScore();
+//            userCount++;
+//        }
+//        if(userCount == 0) { // in case of divide by zero
+//            return -1;
+//        } else {
+//            return (int)((total/((double)userCount)) * 20);
+//        }
+        return 0;
     }
 
     /**

@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(new Intent(this, WelcomeActivity.class), 1);
         //load existing users
         try {
-            accounts = IOActions.getAccounts();
+            //accounts = IOActions.getAccounts();
         } catch (Exception e) {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }

@@ -49,11 +49,7 @@ public class IOActions extends Application {
     private static ObjectOutputStream objectOut;
     private static Context ioaContext;
 
-    private static final String AFILE = "ACCOUNTS.txt";
     private static final String UFILE = "USER.txt";
-    private static final String MFILE = "MOVIES.txt";
-    private static Set<User> accounts = null;
-    private static Set<Movie> movies;
 
     /**
      * constructor for IOActions
@@ -78,12 +74,8 @@ public class IOActions extends Application {
      */
     protected static void onStart() {
         try {
-            loadAccounts();
             loadUser();
-            loadMovies();
         } catch (FileNotFoundException f) {
-            accounts = new HashSet<>();
-            movies = new HashSet<>();
             CurrentState.setUser(null);
             commit();
             Log.println(Log.INFO, "GTMovies", "Created new empty set for user accounts");
@@ -92,33 +84,6 @@ public class IOActions extends Application {
         } catch (Exception e) {
             Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
         }
-    }
-    /**
-     * gets object from serialized file
-     * @throws ClassNotFoundException if error on readObject()
-     * @throws IOException if error opening file
-     */
-    protected static void loadAccounts()
-            throws ClassNotFoundException, IOException {
-        fileIn = ioaContext.openFileInput(AFILE);
-        objectIn = new ObjectInputStream(fileIn);
-        accounts = (HashSet<User>) objectIn.readObject();
-        objectIn.close();
-        Log.println(Log.DEBUG, "GTMovies", "ACCOUNTS loaded with: " + accounts);
-    }
-
-    /**
-     * gets object from serialized file
-     * @throws ClassNotFoundException if error on readObject()
-     * @throws IOException if error opening file
-     */
-    protected static void loadMovies()
-            throws ClassNotFoundException, IOException {
-        fileIn = ioaContext.openFileInput(MFILE);
-        objectIn = new ObjectInputStream(fileIn);
-        movies = (HashSet<Movie>) objectIn.readObject();
-        objectIn.close();
-        Log.println(Log.DEBUG, "GTMovies", "MOVIES loaded with: " + movies);
     }
 
     /**
@@ -133,19 +98,6 @@ public class IOActions extends Application {
         CurrentState.setUser((User) objectIn.readObject());
         objectIn.close();
         Log.println(Log.DEBUG, "GTMovies", "USER loaded with: " + CurrentState.getUser());
-    }
-
-    /**
-     * serializes and writes HashSet accounts object
-     * @throws IOException if fails to write out
-     */
-    public static void saveAccounts()
-            throws IOException {
-        fileOut = ioaContext.openFileOutput(AFILE, Context.MODE_PRIVATE);
-        objectOut = new ObjectOutputStream(fileOut);
-        objectOut.writeObject(accounts);
-        objectOut.close();
-        Log.println(Log.INFO, "GTMovies", AFILE + " saved.");
     }
 
     /**
@@ -164,26 +116,11 @@ public class IOActions extends Application {
     }
 
     /**
-     * serializes and writes HashSet movies object
-     * @throws IOException if fails to write out
-     */
-    public static void saveMovies()
-            throws IOException {
-        fileOut = ioaContext.openFileOutput(MFILE, Context.MODE_PRIVATE);
-        objectOut = new ObjectOutputStream(fileOut);
-        objectOut.writeObject(movies);
-        objectOut.close();
-        Log.println(Log.INFO, "GTMovies", MFILE + " saved.");
-    }
-
-    /**
      * save changes to USER and ACCOUNTS
      */
     protected static boolean commit() {
         try {
-            saveAccounts();
             saveUser();
-            saveMovies();
         } catch (FileNotFoundException f) {
             Log.e("GTMovies", "FileNotFoundException: "+Log.getStackTraceString(f));
         } catch (IOException i) {
@@ -198,26 +135,94 @@ public class IOActions extends Application {
      * gets accounts
      * @return list of accounts
      */
-    public static Set<User> getAccounts() {
-        return accounts;
-    }
-    /**
-     * gets accounts
-     * @return list of accounts
-     */
     public static ArrayList<String> getUsernames() {
-        ArrayList<String> temp = new ArrayList<>(accounts.size());
-        for (User u : accounts) {
-            temp.add(u.getUsername());
+        String url = "http://45.55.175.68/test.php?mode=7";
+        InputStream is = null;
+        try {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            is = response.getEntity().getContent();
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: addUser: error in server connection: " + e.toString());
         }
-        return temp;
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            String result = reader.readLine();
+            StringTokenizer st = new StringTokenizer(result, "\\", false);
+            result = st.nextToken();
+            if(result.charAt(0) == '0') {
+                return new ArrayList<String>();
+            } else {
+                ArrayList<String> temp = new ArrayList<String>();
+                Log.d("GTMovies Database", "GetUsernames: " + result);
+                temp.add(result);
+                while(st.hasMoreTokens()) {
+                    result = st.nextToken();
+                    Log.d("GTMovies Database", "GetUsernames: " + result);
+                    temp.add(result);
+                }
+                return temp;
+            }
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: getUserByUsername: error in decoding data: " + e.toString());
+        }
+        return new ArrayList<String>();
+        //ArrayList<String> temp = new ArrayList<>(accounts.size());
+        //for (User u : accounts) {
+        //    temp.add(u.getUsername());
+        //}
+        //return temp;
     }
     /**
      * gets movies
      * @return HashSet of movies
      */
     public static Set<Movie> getMovies() {
-        return movies;
+        String url = "http://45.55.175.68/test.php?mode=8";
+        InputStream is = null;
+        try {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            is = response.getEntity().getContent();
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: addUser: error in server connection: " + e.toString());
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            String result = reader.readLine();
+            StringTokenizer st = new StringTokenizer(result, "\\", false);
+            result = st.nextToken();
+            if(result.charAt(0) == '0') {
+                return new HashSet<Movie>();
+            } else {
+                HashSet<Movie> temp = new HashSet<Movie>();
+                int id = Integer.parseInt(result);
+                result = st.nextToken(); // to title
+                String title = new String(result);
+                result = st.nextToken(); // to rating
+                int rating = Integer.parseInt(result);
+                Log.d("GTMovies Database", "GetMovies: " + new Movie(id, title, rating));
+                temp.add(new Movie(id, title, rating));
+                while(st.hasMoreTokens()) {
+                    result = st.nextToken();
+                    id = Integer.parseInt(result);
+                    result = st.nextToken(); // to title
+                    title = new String(result);
+                    result = st.nextToken(); // to rating
+                    rating = Integer.parseInt(result);
+                    Log.d("GTMovies Database", "GetUsernames: " + result);
+                    temp.add(new Movie(id, title, rating));
+                }
+                return temp;
+            }
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: getUserByUsername: error in decoding data: " + e.toString());
+        }
+        return new HashSet<Movie>();
     }
     /**
      * add new user
@@ -250,10 +255,9 @@ public class IOActions extends Application {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
             String result = reader.readLine();
-            if(result.charAt(0) == 0) {
+            if(result.charAt(0) == '0') {
                 throw new DuplicateUserException();
             } else {
-                accounts.add(user);
                 Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
             }
         } catch (Exception e) {
@@ -287,7 +291,6 @@ public class IOActions extends Application {
         }
 
         String uname = user.getUsername();
-        accounts.remove(user);
         Log.println(Log.INFO, "GTMovies", "User '" + uname + "' deleted.");
         commit();
     }
@@ -356,8 +359,6 @@ public class IOActions extends Application {
             Log.e("GTMovies", "IOActions: updateUser: error in server connection: " + e.toString());
         }
 
-        accounts.remove(temp);
-        accounts.add(temp);
         return true;
     }
     /**
@@ -439,29 +440,44 @@ public class IOActions extends Application {
      * @return true if success
      */
     public static boolean SaveNewRating(int movieid, int score, String comment) {
-        User ouruser = CurrentState.getUser();
-        boolean success = true;
-        Movie ourmovie = getMovieById(movieid);
-        // Remove existing movie (if exists)
-        if (ourmovie == null) {
-            ourmovie = new Movie(movieid, 'c');
-        } else {
-            movies.remove(ourmovie);
-        }
-        // Add the new rating to each
-        Review r = new Review(score, comment, ouruser.getUsername(), ourmovie.getID());
+        String url = "http://45.55.175.68/test.php?mode=6&movid=" + movieid
+                + "&uname='" + CurrentState.getUser().getUsername()
+                + "'&score=" + score
+                + "&comm='" + comment + "'";
+        InputStream is = null;
         try {
-            ouruser.addReview(r);
-            ourmovie.addReview(r);
-        } catch (Exception e){
-            Log.println(Log.ASSERT, "GTMovies", e.getMessage());
-            success = false;
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            is = response.getEntity().getContent();
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: SaveNewRating: error in server connection: " + e.toString());
         }
-        // Add movie back to hashset
-        updateUser();
-        movies.add(ourmovie);
-        commit();
-        return success;
+
+//        User ouruser = CurrentState.getUser();
+//        boolean success = true;
+//        Movie ourmovie = getMovieById(movieid);
+//        // Remove existing movie (if exists)
+//        if (ourmovie == null) {
+//            ourmovie = new Movie(movieid, 'c');
+//        } else {
+//            movies.remove(ourmovie);
+//        }
+//        // Add the new rating to each
+//        Review r = new Review(score, comment, ouruser.getUsername(), ourmovie.getID());
+//        try {
+//            ouruser.addReview(r);
+//            ourmovie.addReview(r);
+//        } catch (Exception e){
+//            Log.println(Log.ASSERT, "GTMovies", e.getMessage());
+//            success = false;
+//        }
+//        // Add movie back to hashset
+//        updateUser();
+//        movies.add(ourmovie);
+//        commit();
+//        return success;
+        return true;
     }
     /**
      * return Movie object for given id
@@ -517,33 +533,6 @@ public class IOActions extends Application {
 //            Log.println(Log.ERROR, "GTMovies", e.getMessage());
 //        }
 //        return ourmovie;
-    }
-    /**
-     * add new movie
-     * @param movie movie object
-     */
-    public static void addMovie(Movie movie) {
-        if(movies.contains(movie)) {
-            throw new IllegalArgumentException("IOActions: this movie is already in the HashSet.");
-        } else {
-            movies.add(movie);
-            Log.println(Log.INFO, "GTMovies", "New movie added! (" + movie.getID() + ")");
-            commit();
-        }
-    }
-    /**
-     * remove movie from movies hashmap
-     * @param movie Movie object
-     */
-    public static void deleteMovie(Movie movie) {
-        if(movie == null) {
-            throw new IllegalArgumentException("Can't remove null movie!");
-        } else {
-            int movid = movie.getID();
-            movies.remove(movie);
-            Log.println(Log.INFO, "GTMovies", "Movie '" + movid + "' deleted.");
-            commit();
-        }
     }
 
     /**
