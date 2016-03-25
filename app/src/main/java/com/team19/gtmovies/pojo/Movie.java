@@ -47,6 +47,30 @@ public class Movie implements Comparable<Movie>, Serializable {
     }
 
     /**
+     * Set the Movie ID
+     * @param id The Movie ID to set to
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * Set the Movie Title
+     * @param t The Movie Title to set to
+     */
+    public void setTitle(String t) {
+        title = t;
+    }
+
+    /**
+     * Set the movie rating
+     * @param r The movie rating to set to
+     */
+    public void setRating(int r) {
+        rating = r;
+    }
+
+    /**
      * Accepts a JSONObject and creates a Movie out of it
      *
      * @param jObj the JSONObject to base this Movie off of

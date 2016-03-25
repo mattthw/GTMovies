@@ -42,8 +42,8 @@ public class User<T extends Comparable<T>>
         username = "null";
         password = "null";
         name = "logged_out";
-        bio = "";
-        major = "";
+        bio = "none";
+        major = "none";
         hasProfile = false;
         myReviews = new HashMap<Integer, Review>();
     }
@@ -67,8 +67,8 @@ public class User<T extends Comparable<T>>
         username = u;
         password = p;
         name = n;
-        bio = "";
-        major = "";
+        bio = "none";
+        major = "none";
         permission = 1;
         hasProfile = false;
         myReviews = new HashMap<Integer, Review>();
@@ -133,7 +133,7 @@ public class User<T extends Comparable<T>>
      * getter for password
      * @return password
      */
-    protected String getPassword() {
+    public String getPassword() {
         return this.password;
     }
     /**

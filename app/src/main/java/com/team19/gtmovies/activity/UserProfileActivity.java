@@ -235,7 +235,7 @@ public class UserProfileActivity extends AppCompatActivity {
      */
     private void saveProfile() {
         // Remove the user entry from IOAction's account list (we will add it back later)
-        IOActions.getAccounts().remove(cu);
+        // IOActions.getAccounts().remove(cu);
 
         // Store the current hasProfile variable (will come in handy for the snackbar)
         boolean hasprofileback = cu.getHasProfile();
@@ -246,19 +246,21 @@ public class UserProfileActivity extends AppCompatActivity {
         cu.setBio(eBio.getText().toString());
         cu.setHasProfile(true); // They saved their new info, so profile is made automatically for them.
 
+        IOActions.updateUser();
+
         // Save everything to disk
-        try {
-            IOActions.saveUser();
-            IOActions.getAccounts().add(cu);
-            IOActions.saveAccounts();
-            IOActions.saveMovies();
-        } catch (FileNotFoundException f) {
-            Log.e("GTMovies", "FileNotFoundException: "+Log.getStackTraceString(f));
-        } catch (IOException i) {
-            Log.e("GTMovies", "IOException: "+Log.getStackTraceString(i));
-        } catch (Exception e) {
-            Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
-        }
+//        try {
+//            IOActions.saveUser();
+//            IOActions.getAccounts().add(cu);
+//            IOActions.saveAccounts();
+//            IOActions.saveMovies();
+//        } catch (FileNotFoundException f) {
+//            Log.e("GTMovies", "FileNotFoundException: "+Log.getStackTraceString(f));
+//        } catch (IOException i) {
+//            Log.e("GTMovies", "IOException: "+Log.getStackTraceString(i));
+//        } catch (Exception e) {
+//            Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
+//        }
 
         // Disable text fields and make snackbar for visual confirmation
         eName.setEnabled(false);
