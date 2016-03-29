@@ -341,8 +341,7 @@ public class IOActions extends Application {
      * removes old user from set and adds new user
      * @return
      */
-    public static boolean updateUser() {
-        User temp = CurrentState.getUser();
+    public static boolean updateUser(User temp) {
 
         String url = "http://45.55.175.68/test.php?mode=3&uname='" + temp.getUsername()
                 + "'&pword='" + temp.getPassword()

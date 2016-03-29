@@ -246,7 +246,7 @@ public class UserProfileActivity extends AppCompatActivity {
         cu.setBio(eBio.getText().toString());
         cu.setHasProfile(true); // They saved their new info, so profile is made automatically for them.
 
-        IOActions.updateUser();
+        IOActions.updateUser(cu);
 
         // Save everything to disk
 //        try {

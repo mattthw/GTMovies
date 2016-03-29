@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -46,7 +47,9 @@ public class UserListActivity extends AppCompatActivity {
         Collections.sort(usernameList);
         usernameList.remove(CurrentState.getUser().getUsername());
         String hisRank = "";
+        Log.d("GTMovies", "populatelist: " + usernameList);
         for (int i = 0; i < usernameList.size(); i++) {
+            Log.d("GTMovies", "populatelist: " + usernameList.get(i));
             int perm = IOActions.getUserByUsername(usernameList.get(i)).getPermission();
             if (perm == 2) {
                 hisRank = "[A]";
