@@ -96,7 +96,11 @@ public class IOActions extends Application {
         fileIn = ioaContext.openFileInput(UFILE);
         objectIn = new ObjectInputStream(fileIn);
         CurrentState.setUser((User) objectIn.readObject());
-        CurrentState.setUser(IOActions.getUserByUsername(CurrentState.getUser().getUsername()));
+        if(CurrentState.getUser() != null) {
+            CurrentState.setUser(IOActions.getUserByUsername(CurrentState.getUser().getUsername()));
+        }
+        Log.d("GTMovies", "loaduser: " + CurrentState.getUser().toString());
+        commit();
         objectIn.close();
         Log.println(Log.DEBUG, "GTMovies", "USER loaded with: " + CurrentState.getUser());
     }
@@ -352,6 +356,7 @@ public class IOActions extends Application {
                 + "'&perm=" + temp.getPermission()
                 + "&hasp=" + (temp.getHasProfile() ? 1 : 0);
         try {
+            url = url.replace(" ", "%20");
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
