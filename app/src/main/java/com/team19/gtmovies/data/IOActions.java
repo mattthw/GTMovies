@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -96,7 +97,11 @@ public class IOActions extends Application {
         fileIn = ioaContext.openFileInput(UFILE);
         objectIn = new ObjectInputStream(fileIn);
         CurrentState.setUser((User) objectIn.readObject());
-        CurrentState.setUser(IOActions.getUserByUsername(CurrentState.getUser().getUsername()));
+        if(CurrentState.getUser() != null) {
+            CurrentState.setUser(IOActions.getUserByUsername(CurrentState.getUser().getUsername()));
+        }
+        Log.d("GTMovies", "loaduser: " + CurrentState.getUser().toString());
+        commit();
         objectIn.close();
         Log.println(Log.DEBUG, "GTMovies", "USER loaded with: " + CurrentState.getUser());
     }
@@ -352,6 +357,7 @@ public class IOActions extends Application {
                 + "'&perm=" + temp.getPermission()
                 + "&hasp=" + (temp.getHasProfile() ? 1 : 0);
         try {
+            url = url.replace(" ", "%20");
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
@@ -446,6 +452,7 @@ public class IOActions extends Application {
                 + "&comm='" + comment + "'";
         InputStream is = null;
         try {
+            url = url.replace(" ", "%20");
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
@@ -533,6 +540,56 @@ public class IOActions extends Application {
 //            Log.println(Log.ERROR, "GTMovies", e.getMessage());
 //        }
 //        return ourmovie;
+    }
+
+    public static ArrayList<Review> getListMovieReviews(int movieid) {
+        String url = "http://45.55.175.68/test.php?mode=10&movid=" + movieid;
+        InputStream is = null;
+        try {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            is = response.getEntity().getContent();
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: getListMovieReviews: error in server connection: " + e.toString());
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            String result = reader.readLine();
+            StringTokenizer st = new StringTokenizer(result, "\\", false);
+            result = st.nextToken();
+            if(result.charAt(0) == '0') {
+                return new ArrayList<Review>();
+            } else {
+                ArrayList<Review> temp = new ArrayList<Review>();
+                String uname = new String(result);
+                result = st.nextToken(); // to movieid
+                int movid = Integer.parseInt(result);
+                result = st.nextToken(); // to score
+                int score = Integer.parseInt(result);
+                result = st.nextToken(); // to comment
+                String comm = new String(result);
+                Log.d("GTMovies Database", "getListMovieReviews: " + new Review(score, comm, uname, movid));
+                temp.add(new Review(score, comm, uname, movid));
+                while(st.hasMoreTokens()) {
+                    result = st.nextToken(); // to uname
+                    uname = new String(result);
+                    result = st.nextToken(); // to movieid
+                    movid = Integer.parseInt(result);
+                    result = st.nextToken(); // to score
+                    score = Integer.parseInt(result);
+                    result = st.nextToken(); // to comment
+                    comm = new String(result);
+                    Log.d("GTMovies Database", "getListMovieReviews: " + new Review(score, comm, uname, movid));
+                    temp.add(new Review(score, comm, uname, movid));
+                }
+                return temp;
+            }
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: getListMovieReviews: error in decoding data: " + e.toString());
+        }
+        return new ArrayList<Review>();
     }
 
     /**
