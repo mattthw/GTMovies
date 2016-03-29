@@ -1,13 +1,16 @@
 package com.team19.gtmovies.activity;
 
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -66,7 +69,37 @@ public class MainActivity extends AppCompatActivity
     private static int currentPage;
     private List<Movie> recommendations;
     private boolean generalRecommendations = true;
+    private boolean mIsBound = false;
+    private MusicService mServ;
+    private Intent musicthing;
+    private ServiceConnection Scon =new ServiceConnection(){
 
+        public void onServiceConnected(ComponentName name, IBinder
+                binder) {
+            mServ = ((MusicService.ServiceBinder) binder).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            mServ = null;
+        }
+    };
+
+    void doBindService(){
+        musicthing = new Intent(this,MusicService.class);
+        bindService(musicthing,
+                Scon,Context.BIND_AUTO_CREATE);
+        mIsBound = true;
+    }
+
+    void doUnbindService()
+    {
+        if(mIsBound)
+        {
+            stopService(musicthing);
+            unbindService(Scon);
+            mIsBound = false;
+        }
+    }
 
 
     @Override
@@ -132,9 +165,19 @@ public class MainActivity extends AppCompatActivity
         MovieListFragment.updateAdapter(MovieListFragment.NEW_MOVIES_TAB);
         MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
         MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
+
+        doBindService();
+        Intent music = new Intent();
+        music.setClass(this,MusicService.class);
+        Log.e("MUSIC", "Main Stuff Stuff");
+        startService(music);
     }
 
-
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        doUnbindService();
+//    }
 
     /**
      * do things depending on results from activities called.
