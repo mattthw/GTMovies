@@ -96,6 +96,7 @@ public class IOActions extends Application {
         fileIn = ioaContext.openFileInput(UFILE);
         objectIn = new ObjectInputStream(fileIn);
         CurrentState.setUser((User) objectIn.readObject());
+        CurrentState.setUser(IOActions.getUserByUsername(CurrentState.getUser().getUsername()));
         objectIn.close();
         Log.println(Log.DEBUG, "GTMovies", "USER loaded with: " + CurrentState.getUser());
     }
