@@ -451,6 +451,7 @@ public class IOActions extends Application {
                 + "&comm='" + comment + "'";
         InputStream is = null;
         try {
+            url = url.replace(" ", "%20");
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
