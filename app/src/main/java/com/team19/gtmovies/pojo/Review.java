@@ -19,7 +19,7 @@ public class Review implements Serializable {
     /**
      * Constructor for the Review Class.
      * Creates a review for the
-     * customer with a 0 score and an empty comment section.
+     * customer with a 0 score and an empty commen  t section.
      */
     public Review() {
         this(0, "", "", 0);
