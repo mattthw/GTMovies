@@ -182,8 +182,8 @@ public class IOActions extends Application {
         //return temp;
     }
     /**
-     * gets movies
-     * @return HashSet of movies
+     * gets rated movies from database
+     * @return Set of movies
      */
     public static Set<Movie> getMovies() {
         String url = "http://45.55.175.68/test.php?mode=8";
@@ -231,7 +231,7 @@ public class IOActions extends Application {
         return new HashSet<Movie>();
     }
     /**
-     * add new user
+     * add new user to the database
      * @param user user object
      * @throws DuplicateUserException
      */
@@ -279,7 +279,7 @@ public class IOActions extends Application {
     }
 
     /**
-     * remove user from accounts
+     * remove user from database
      * @param user User Object
      * @throws NullUserException if DNE
      */
@@ -303,7 +303,7 @@ public class IOActions extends Application {
 
 
     /**
-     * log user in and commit changes
+     * log user in and commit changes to current state
      * @param uname username
      * @param p password
      * @return true if success
@@ -330,7 +330,7 @@ public class IOActions extends Application {
         }
     }
     /**
-     * reset user to default null
+     * reset user to default null and commit changes to current state
      * @return true if CurrentState.getUser() set
      */
     public static boolean logoutUser() {
@@ -344,7 +344,7 @@ public class IOActions extends Application {
     }
 
     /**
-     * removes old user from set and adds new user
+     * updates a user in the database
      * @return
      */
     public static boolean updateUser(User temp) {
@@ -375,8 +375,8 @@ public class IOActions extends Application {
         return !(CurrentState.getUser() == null);
     }
     /**
-     * if user exists return User object
-     * else throw exception (it is expected that it will not fail)
+     * if a user exists in database, make and return a user object
+     * else return null (it is expected that it will not fail)
      * @param un username
      * @return User
      */
@@ -439,7 +439,7 @@ public class IOActions extends Application {
 
 
     /**
-     * Save a new rating to both the respective user and local movie object
+     * Save a new rating to database
      * @param movieid ID from tomatoes
      * @param score score given by user
      * @param comment comment given by user
@@ -487,7 +487,7 @@ public class IOActions extends Application {
         return true;
     }
     /**
-     * return Movie object for given id
+     * return Movie object for given id from database
      * @param movieid id form tomato API
      * @return Movie object with matching ID
      */
@@ -542,6 +542,11 @@ public class IOActions extends Application {
 //        return ourmovie;
     }
 
+    /**
+     * get an arraylist of movie reviews for a given movie ID
+     * @param movieid the movie ID to get reviews for
+     * @return an arraylist of movie reviews corresponding to movieid
+     */
     public static ArrayList<Review> getListMovieReviews(int movieid) {
         String url = "http://45.55.175.68/test.php?mode=10&movid=" + movieid;
         InputStream is = null;
@@ -594,12 +599,14 @@ public class IOActions extends Application {
 
     /**
      * provides persistent MovieListFragment
+     * @param newList MovieListFragment to set
      */
     public static void setMovieListFragment(MovieListFragment newList) {
         movieListFragment = newList;
     }
     /**
      * gets persistent MovieListFragment
+     * @return the fragment
      */
     public static MovieListFragment getMovieListFragment() {
         return movieListFragment;
@@ -607,7 +614,7 @@ public class IOActions extends Application {
 
     /**
      * Getter for ioa actions
-     * @return
+     * @return the current IOActions state
      */
     public static IOActions getIOActionsInstance() {
         return ioa;
