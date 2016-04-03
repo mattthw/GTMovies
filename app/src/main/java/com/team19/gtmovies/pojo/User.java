@@ -191,8 +191,9 @@ public class User<T extends Comparable<T>>
     }
 
     /**
-     * TODO: JINU WTF IS THIS CAN I REMOVE IT WTF?
-     * @param i TODO: WTF IDK??
+     * //TODO: Actually use this lol
+     * Used to check a certain achievement as unlocked
+     * @param i the unlocked achievement
      */
     public void foundIt(int i) {
         char[] feed = new char[i * i / 2];

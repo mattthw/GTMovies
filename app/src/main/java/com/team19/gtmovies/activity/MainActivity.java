@@ -69,6 +69,9 @@ public class MainActivity extends AppCompatActivity
     private static int currentPage;
     private List<Movie> recommendations;
     private boolean generalRecommendations = true;
+
+/*
+// Meant for NyanCat
     private boolean mIsBound = false;
     private MusicService mServ;
     private Intent musicthing;
@@ -101,14 +104,20 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // Put following in code
+
+        doBindService();
+        Intent music = new Intent();
+        music.setClass(this,MusicService.class);
+        startService(music);
+
+    // Do doUnbindService onDestroy
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // because screw async
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
         if (IOActions.getIOActionsInstance() == null) {
             Log.e("GTMovies", "IOActions.getIOActionsInstance == null !");
@@ -165,19 +174,7 @@ public class MainActivity extends AppCompatActivity
         MovieListFragment.updateAdapter(MovieListFragment.NEW_MOVIES_TAB);
         MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
         MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
-
-        doBindService();
-        Intent music = new Intent();
-        music.setClass(this,MusicService.class);
-        Log.e("MUSIC", "Main Stuff Stuff");
-        startService(music);
     }
-
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        doUnbindService();
-//    }
 
     /**
      * do things depending on results from activities called.
@@ -219,7 +216,7 @@ public class MainActivity extends AppCompatActivity
      * update header name
      */
     public void updateNavName() {
-        View header=navigationView.getHeaderView(0);
+        View header = navigationView.getHeaderView(0);
         TextView name = (TextView)header.findViewById(R.id.headerName);
         if (CurrentState.getUser() != null) {
             name.setText(CurrentState.getUser().getName());
@@ -254,7 +251,7 @@ public class MainActivity extends AppCompatActivity
         ((ViewPager) findViewById(R.id.view_pager)).addOnPageChangeListener(
                 new ViewPager.OnPageChangeListener() {
             LinearLayout criteriaBar = (LinearLayout) findViewById(R.id.criteria_bar);
-            //Sliding animations to use for the additional criteria bar in endations
+            //Sliding animations to use for the additional criteria bar in recommendations
             /*Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_down);
             Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -365,7 +362,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Sets up listener for genre button
+     * Sets up listener for major button
      */
     public void setupMajorButton() {
         boolean selected = false;
@@ -475,7 +472,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Obtains the movies from the API
-     * @param requestType differetiates new movies and top rental
+     * @param requestType differentiates new movies and top rental
      * @param movieList list of movies to get details about for recommendations
      */
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {

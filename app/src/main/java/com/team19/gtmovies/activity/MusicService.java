@@ -63,6 +63,9 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
         return START_STICKY;
     }
 
+    /**
+     * Pauses the music playing
+     */
     public void pauseMusic() {
         if (mPlayer.isPlaying()) {
             mPlayer.pause();
@@ -71,6 +74,9 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
         }
     }
 
+    /**
+     * Resumes the music
+     */
     public void resumeMusic() {
         if (mPlayer.isPlaying() == false) {
             mPlayer.seekTo(length);
@@ -78,6 +84,9 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
         }
     }
 
+    /**
+     * Stops the music and calls release on MediaPlayer
+     */
     public void stopMusic() {
         mPlayer.stop();
         mPlayer.release();
@@ -97,6 +106,7 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
         }
     }
 
+    @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
 
         Toast.makeText(this, "music player failed", Toast.LENGTH_SHORT).show();

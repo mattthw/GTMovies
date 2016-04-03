@@ -122,8 +122,6 @@ public class MovieDetailFragment extends Fragment {
         populateList();
         return rootView;
     }
-
-
     private void populateList() {
         // Find the ListView resource.
 //        mainListView = (ListView) getActivity().findViewById( R.id.commentListView );
