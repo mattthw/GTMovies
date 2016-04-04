@@ -40,7 +40,7 @@ public class UserListActivity extends AppCompatActivity {
         userIntent.putExtra("UNAME", strName);
     }
 
-    private void populateList() {
+    private ArrayList<String> populateList() {
         // Find the ListView resource.
         mainListView = (ListView) findViewById( R.id.userListView );
         ArrayList<String> usernameList = IOActions.getUsernames();
@@ -81,6 +81,7 @@ public class UserListActivity extends AppCompatActivity {
                 }
             }
         });
+        return usernameList;
     }
 
     /**
