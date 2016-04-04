@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 
@@ -29,7 +30,9 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.team19.gtmovies.data.CurrentState.*;
 import static org.junit.matchers.JUnitMatchers.containsString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -46,17 +49,13 @@ public class UserListActivityTest {
     private static User u3 = null;
     private static ArrayList<String> testNames = null;
 
-    /** this line is preferred way to hook up to activity */
-    @Rule
-    public ActivityTestRule<UserListActivity> mActivityRule = new ActivityTestRule<>(UserListActivity.class);
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        User u0 = new User ("oiwhdowaif", "passw", "");
-        User u1 = new User("bob94", "pass", "Bob");
-        User u2 = new User("dogsrule1", "pass", "Mark");
-        User u3 = new User("NULL", "pass", "");
+        u0 = new User ("oiwhdowaif", "passw", "");
+        u1 = new User("bob94", "pass", "Bob");
+        u2 = new User("dogsrule1", "pass", "Mark");
+        u3 = new User("NULL", "pass", "");
 
         u0.setPermission(-1);
         u1.setPermission(2);
@@ -74,17 +73,25 @@ public class UserListActivityTest {
         );
     }
 
+    /** this line is preferred way to hook up to activity */
+    @Rule
+    public ActivityTestRule<UserListActivity> mActivityRule = new ActivityTestRule<>(UserListActivity.class);
+
+    @Mock
+    CurrentState currState = new CurrentState(u1);
+
+
     @Test
     public void checkPopulate() {
         when(IOActions.getUsernames()).thenReturn(testNames);
-        when(CurrentState.getUser()).thenReturn(u1);
-        when(CurrentState.getUser().getUsername()).thenReturn(u1.getUsername());
+        when(currState.getUser()).thenReturn(u1);
+        when(currState.getUser().getUsername()).thenReturn("Bob");
 
         //check that it formatted u0 properly
         onView(withId(R.id.userListView))
             .check(matches(
                     withText(
-                            containsString("[B]   " + u0.getUsername())
+                            containsString("[B]   " + "")
                     )
             ));
     }
