@@ -232,6 +232,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
     /**
      * Saves user profile
+     * cu is CurrentState.getUser unless caleed from UserProfileActivity,
+     * in which case the intent is checked and csis set to the user with the
+     * name of the extra information.
      */
     private void saveProfile() {
         // Remove the user entry from IOAction's account list (we will add it back later)
@@ -246,21 +249,7 @@ public class UserProfileActivity extends AppCompatActivity {
         cu.setBio(eBio.getText().toString());
         cu.setHasProfile(true); // They saved their new info, so profile is made automatically for them.
 
-        IOActions.updateUser(cu);
-
-        // Save everything to disk
-//        try {
-//            IOActions.saveUser();
-//            IOActions.getAccounts().add(cu);
-//            IOActions.saveAccounts();
-//            IOActions.saveMovies();
-//        } catch (FileNotFoundException f) {
-//            Log.e("GTMovies", "FileNotFoundException: "+Log.getStackTraceString(f));
-//        } catch (IOException i) {
-//            Log.e("GTMovies", "IOException: "+Log.getStackTraceString(i));
-//        } catch (Exception e) {
-//            Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
-//        }
+        IOActions.updateUser(cu); //save users new information to DB
 
         // Disable text fields and make snackbar for visual confirmation
         eName.setEnabled(false);
@@ -286,16 +275,6 @@ public class UserProfileActivity extends AppCompatActivity {
         t.schedule(task, 1000);
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            // Respond to the action bar's Up/Home button
-//            case android.R.id.home:
-//                finish();
-//                return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     /** inner class for alert that user doesn't currently have a profile.
      * (asks if they want to create one)
