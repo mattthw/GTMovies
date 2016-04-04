@@ -36,7 +36,7 @@ public class Movie implements Comparable<Movie>, Serializable {
     private String description;
     private JSONObject posterURLs;
     private JSONObject fullInfo;
-    private Map<String, Review> myReviews;
+    private Map<String, Review> myReviews = new HashMap<>();
     private static final long serialVersionUID = 1L;
 
     /**
