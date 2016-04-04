@@ -6,20 +6,20 @@ import com.team19.gtmovies.pojo.User;
  * Created by a on 2/22/2016.
  */
 public class CurrentState {
-    private static final CurrentState ourInstance = new CurrentState();
+//    private static final CurrentState ourInstance = new CurrentState();
     private static User currentUser;
     private static int openHeight = 0;
     private static int closedHeight = 0;
 
-    public static CurrentState getInstance() {
-        return ourInstance;
-    }
+//    public static CurrentState getInstance() {
+//        return ourInstance;
+//    }
 
     /**
      * private CurrentState constructor
      */
-    private CurrentState() {
-        currentUser = null;
+    public CurrentState(User u) {
+        currentUser = u;
     }
 
     /**

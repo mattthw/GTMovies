@@ -132,9 +132,16 @@ public class MovieDetailFragment extends Fragment {
                     + getArguments().getString(ARG_ITEM_TITLE));
             return;
         }
-        Object[] reviewList = mItem.getReviews().values().toArray();
+//        Object[] reviewList = mItem.getReviews().values().toArray();
+        Object[] reviewList = IOActions.getListMovieReviews(getArguments().getInt(ARG_ITEM_ID, -1)).toArray();
         ArrayList<String> commentList = new ArrayList<>(reviewList.length);
+        double total = 0;
+        int userCount = 0;
         for (Object o : reviewList) {
+            //average user score
+            total += ((Review)o).getScore();
+            userCount++;
+            //review coments
             String s = ((Review)o).getComment();
             String u = ((Review)o).getUsername();
             int mID = ((Review)o).getMovieID();
@@ -143,22 +150,19 @@ public class MovieDetailFragment extends Fragment {
                 commentList.add(u + ": " + s);
             }
         }
+
+        if(userCount == 0) { // in case of divide by zero
+            userRatingView.setText("N/A");
+        } else {
+            int tempScore = ((int)((total/((double)userCount)) * 20));
+            userRatingView.setText(tempScore + "");
+        }
         Log.println(Log.DEBUG, "GTMovies", commentList.toString());
         // Create ArrayAdapter using the comments list.
         listAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, commentList);
         // Set the ArrayAdapter as the ListView's adapter.
         mainListView.setAdapter( listAdapter );
-//        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//
-//                Object o = mainListView.getItemAtPosition(position);
-//                String name=(String)o;//As you are using Default String Adapter
-//                userIntent.putExtra("UNAME", name);
-//                startActivity(userIntent);
-////                Toast.makeText(getBaseContext(),name + " selected", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+
         setListViewHeightBasedOnChildren(mainListView);
     }
 

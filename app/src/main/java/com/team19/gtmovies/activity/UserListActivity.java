@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +16,7 @@ import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.fragment.MovieListFragment;
+import com.team19.gtmovies.pojo.User;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -39,14 +41,17 @@ public class UserListActivity extends AppCompatActivity {
         userIntent.putExtra("UNAME", strName);
     }
 
-    private void populateList() {
+    private ArrayList<String> populateList() {
         // Find the ListView resource.
         mainListView = (ListView) findViewById( R.id.userListView );
         ArrayList<String> usernameList = IOActions.getUsernames();
         Collections.sort(usernameList);
-        usernameList.remove(CurrentState.getUser().getUsername());
+        User tmp = CurrentState.getUser();
+        usernameList.remove(tmp.getUsername());
         String hisRank = "";
+        Log.d("GTMovies", "populatelist: " + usernameList);
         for (int i = 0; i < usernameList.size(); i++) {
+            Log.d("GTMovies", "populatelist: " + usernameList.get(i));
             int perm = IOActions.getUserByUsername(usernameList.get(i)).getPermission();
             if (perm == 2) {
                 hisRank = "[A]";
@@ -78,6 +83,7 @@ public class UserListActivity extends AppCompatActivity {
                 }
             }
         });
+        return usernameList;
     }
 
     /**
