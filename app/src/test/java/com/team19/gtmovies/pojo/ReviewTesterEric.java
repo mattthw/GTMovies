@@ -1,4 +1,4 @@
-package com.team19.gtmovies;
+package com.team19.gtmovies.pojo;
 import com.ibm.icu.impl.IllegalIcuArgumentException;
 import com.team19.gtmovies.pojo.Review;
 
