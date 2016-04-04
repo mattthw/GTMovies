@@ -12,6 +12,7 @@ import java.util.Set;
 
 /**
  * Created by a on 3/8/2016.
+ * used to get recommended movies for current user
  */
 public class ReviewController {
     //Constants for how to obtain recommendations

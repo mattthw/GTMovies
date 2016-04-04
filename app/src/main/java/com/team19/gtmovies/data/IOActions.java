@@ -123,6 +123,9 @@ public class IOActions extends Application {
 
     /**
      * save changes to USER and ACCOUNTS
+     * EDIT: After implementing database this only saves
+     * the currentUser to file.
+     * everything else is stored remotely.
      */
     protected static boolean commit() {
         try {
@@ -138,8 +141,8 @@ public class IOActions extends Application {
     }
 
     /**
-     * gets accounts
-     * @return list of accounts
+     * gets accounts from mysql database on remote server
+     * @return list of usernames from database
      */
     public static ArrayList<String> getUsernames() {
         String url = "http://45.55.175.68/test.php?mode=7";
@@ -174,16 +177,13 @@ public class IOActions extends Application {
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: getUsernames: error in decoding data: " + e.toString());
         }
+        //returned if exceptions prevent return of valid list
         return new ArrayList<String>();
-        //ArrayList<String> temp = new ArrayList<>(accounts.size());
-        //for (User u : accounts) {
-        //    temp.add(u.getUsername());
-        //}
-        //return temp;
     }
     /**
      * gets rated movies from database
-     * @return Set of movies
+     * @return Set of Movie objects created with information
+     *      from the database.
      */
     public static Set<Movie> getMovies() {
         String url = "http://45.55.175.68/test.php?mode=8";
@@ -269,13 +269,6 @@ public class IOActions extends Application {
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: adduser: error in decoding data: " + e.toString());
         }
-//        if (accounts.contains(user) || user.getUsername().equals("null")) {
-//            throw new DuplicateUserException();
-//        } else {
-//            accounts.add(user);
-//            commit();
-//            Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
-//        }
     }
 
     /**
@@ -345,7 +338,7 @@ public class IOActions extends Application {
 
     /**
      * updates a user in the database
-     * @return
+     * @return true if completed without exception
      */
     public static boolean updateUser(User temp) {
 
@@ -363,6 +356,7 @@ public class IOActions extends Application {
             HttpResponse response = httpclient.execute(httpget);
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: updateUser: error in server connection: " + e.toString());
+            return false;
         }
 
         return true;
@@ -374,6 +368,7 @@ public class IOActions extends Application {
     public static boolean userSignedIn() {
         return !(CurrentState.getUser() == null);
     }
+
     /**
      * if a user exists in database, make and return a user object
      * else return null (it is expected that it will not fail)
@@ -429,12 +424,6 @@ public class IOActions extends Application {
             Log.e("GTMovies", "IOActions: getUserByUsername: error in decoding data: " + e.toString());
         }
         return null;
-
-//        for (User u: accounts) {
-//            if (u.getUsername().equalsIgnoreCase(un))
-//                return u;
-//        }
-//        return null;
     }
 
 
@@ -459,31 +448,8 @@ public class IOActions extends Application {
             is = response.getEntity().getContent();
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: SaveNewRating: error in server connection: " + e.toString());
+            return false;
         }
-
-//        User ouruser = CurrentState.getUser();
-//        boolean success = true;
-//        Movie ourmovie = getMovieById(movieid);
-//        // Remove existing movie (if exists)
-//        if (ourmovie == null) {
-//            ourmovie = new Movie(movieid, 'c');
-//        } else {
-//            movies.remove(ourmovie);
-//        }
-//        // Add the new rating to each
-//        Review r = new Review(score, comment, ouruser.getUsername(), ourmovie.getID());
-//        try {
-//            ouruser.addReview(r);
-//            ourmovie.addReview(r);
-//        } catch (Exception e){
-//            Log.println(Log.ASSERT, "GTMovies", e.getMessage());
-//            success = false;
-//        }
-//        // Add movie back to hashset
-//        updateUser();
-//        movies.add(ourmovie);
-//        commit();
-//        return success;
         return true;
     }
     /**
@@ -520,26 +486,14 @@ public class IOActions extends Application {
                 result = st.nextToken(); // change to rating
                 m.setRating(Integer.parseInt(result));
                 Log.d("GTMovies Database", "GetMovieById: Movie Rating: " + result);
+                m.setReviews(); //set reviews form DB
                 return m;
             }
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: getMovieByID: error in decoding data: " + e.toString());
         }
+        //if failed
         return null;
-
-//        Movie ourmovie = null;
-//        // Find the movie for the given username;
-//        try {
-//            for(Movie m : movies) {
-//                if(m.getID() == movieid) {
-//                    ourmovie = m;
-//                    break;
-//                }
-//            }
-//        } catch(Exception e) {
-//            Log.println(Log.ERROR, "GTMovies", e.getMessage());
-//        }
-//        return ourmovie;
     }
 
     /**
@@ -594,6 +548,7 @@ public class IOActions extends Application {
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: getListMovieReviews: error in decoding data: " + e.toString());
         }
+        //return empty if failed
         return new ArrayList<Review>();
     }
 
