@@ -172,6 +172,11 @@ public class UserProfileActivity extends AppCompatActivity {
         updateRank();
         Toast.makeText(UserProfileActivity.this, "RANK CHANGED", Toast.LENGTH_SHORT).show();
     }
+
+    /**
+     * ADMIN OPTION to DELETE cu User object form the remote database.
+     * NON-REVERSABLE
+     */
     public void changeDelete() {
         try {
             IOActions.deleteUser(IOActions.getUserByUsername(cu.getUsername()));
@@ -180,7 +185,9 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * add reviews to our adapter for listview
+     */
     private void populateList() {
         // Find the ListView resource.
 //        mainListView = (ListView) getActivity().findViewById( R.id.commentListView );
