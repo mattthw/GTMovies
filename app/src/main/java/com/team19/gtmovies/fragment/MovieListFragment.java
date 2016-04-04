@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -51,6 +53,9 @@ public class MovieListFragment extends Fragment {
     private static boolean tabs = false;
     private boolean search = false;
 
+    private static View mTopBar;
+    private static Toolbar mToolbar;
+    private static ViewPager mViewPager;
     private static MovieRecyclerViewAdapter newMoviesAdapter;
     private static MovieRecyclerViewAdapter topRentalsAdapter;
     private static MovieRecyclerViewAdapter yourRecommendationsAdapter;
@@ -159,38 +164,6 @@ public class MovieListFragment extends Fragment {
         return fragment;
     }
 
-    /*
-     * obtains MovieListFragment instance
-     * @param page number for page
-     * @return current MovieListFragment instance
-     */
-    /*public static MovieListFragment getInstance(int page) {
-        switch (page) {
-            case 0: return tab0;
-            case 1: return tab1;
-            case 2: return tab2;
-            case 3: return searchFragment;
-            default: return null;
-        }
-    }*/
-
-    /*@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
-            }
-        }
-    }*/
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -203,6 +176,9 @@ public class MovieListFragment extends Fragment {
             }
         }
         View rootView = inflater.inflate(R.layout.movie_list, container, false);
+        mTopBar =  getActivity().findViewById(R.id.app_bar);
+        mToolbar = (Toolbar) getActivity().findViewById(R.id.main_toolbar);
+        mViewPager = (ViewPager) getActivity().findViewById(R.id.view_pager);
         Log.d("MLFrag", "popping into onCreateView");
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list_view);
         if (rootView.findViewById(R.id.movie_list_view) == null) {
@@ -210,56 +186,15 @@ public class MovieListFragment extends Fragment {
         }
 
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            boolean scrolled;
-            int oldy = -1;
+        mRecyclerView.addOnScrollListener(new HidingScrollListener(0) {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == 0 && !scrolled && oldy < 0 && mAdapter.movieList != null
-                        && mAdapter.movieList.size() > 4
-                        && getArguments().getInt(ARG_ITEM_ID) != YOUR_RECOMMENDATIONS_TAB) {
-                    if (getActivity().findViewById(R.id.main_toolbar).getVisibility()
-                            == View.VISIBLE) {
-                        //Todo: Jinu, this would be where we would refresh the page
-                        Log.d("Scroll", "refresh page");
-                    } else {
-                        mAdapter.toggleTopBars(-1);
-                    }
-                } /*else if (newState == 0
-                        && (getArguments().getInt(ARG_ITEM_ID) == YOUR_RECOMMENDATIONS_TAB
-                        || mAdapter.getMovieList() == yourRecommendationsList)) {
-                    Log.d("RecScroll", "called");
-                    if (getActivity() != null && getActivity().findViewById(R.id.main_toolbar) != null) {
-                        Log.d("RecScroll", "not null");
-                        if (getActivity().findViewById(R.id.main_toolbar).getVisibility() == View.GONE) {
-                            Log.d("RecScroll", "viewgone");
-                            getActivity().findViewById(R.id.view_pager).getLayoutParams().height
-                                    = CurrentState.getOpenHeight() - R.dimen.text_margin;
-                        } else {
-                            Log.d("RecScroll", "view visible");
-                            //getActivity().findViewById(R.id.view_pager).getLayoutParams().height
-                            //        = CurrentState.getClosedHeight() - R.dimen.text_margin;
-                        }
-                    }*/
-                if (newState == 2 && mAdapter.movieList != null
-                        && mAdapter.movieList.size() > 4
-                        && getArguments().getInt(ARG_ITEM_ID) != YOUR_RECOMMENDATIONS_TAB) {
-                        mAdapter.toggleTopBars(oldy);
-                        Log.d("Toggle", "2scroll oldy=" + oldy);
-                }
-                super.onScrollStateChanged(recyclerView, newState);
-                Log.d("OnScrollState", "newState=" + newState);
-                scrolled = false;
+            public void onHide() {
+               hideToolbar();
             }
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                Log.d("OnScroll", "let me know dx=" + dx + " dy=" + dy);
-                scrolled = true;
-                if (dy != 0) {
-                    oldy = dy;
-                }
+            public void onShow() {
+                showToolbar();
             }
         });
 
@@ -553,6 +488,55 @@ public class MovieListFragment extends Fragment {
         return searchMovieList;
     }
 
+    /**
+     * Hides top toolbar
+     */
+    public void hideToolbar() {
+        if (CurrentState.getOpenHeight() == 0) {
+            setHeights();
+        }
+        getActivity().findViewById(R.id.app_bar).animate().translationY(-mToolbar.getHeight()).setInterpolator(
+                new AccelerateInterpolator(2));
+        //getActivity().findViewById(R.id.content_main).animate().y(
+                //CurrentState.getClosedHeight()).setInterpolator(new AccelerateInterpolator(2));
+        getActivity().findViewById(R.id.main_frame_layout).animate().y(
+                CurrentState.getClosedHeight()).setInterpolator(new AccelerateInterpolator(2));
+        getActivity().findViewById(R.id.movie_list).animate().y(
+                CurrentState.getClosedHeight()).setInterpolator(new AccelerateInterpolator(2));
+        getActivity().findViewById(R.id.movie_list_view).animate().y(
+                CurrentState.getClosedHeight()).setInterpolator(new AccelerateInterpolator(2));
+        getActivity().findViewById(R.id.movie_detail_container).animate().y(
+                CurrentState.getClosedHeight()).setInterpolator(new AccelerateInterpolator(2));
+        //mViewPager.animate().y(CurrentState.getClosedHeight()).setInterpolator(
+                //new AccelerateInterpolator(2));
+        Log.d("CurrentState", "closed height=" + CurrentState.getClosedHeight());
+    }
+    //https://mzgreen.github.io/2015/02/15/How-to-hideshow-Toolbar-when-list-is-scroling(part1)/
+
+    /**
+     * Shows top toolbar
+     */
+    public void showToolbar() {
+        getActivity().findViewById(R.id.app_bar).animate().translationY(0).setInterpolator(
+                new DecelerateInterpolator(2));
+        getActivity().findViewById(R.id.main_frame_layout).animate().y(
+                CurrentState.getOpenHeight()).setInterpolator(new DecelerateInterpolator(2));
+        //mViewPager.animate().y(CurrentState.getOpenHeight()).setInterpolator(
+                //new DecelerateInterpolator(2));
+        Log.d("CurrentState", "open height=" + CurrentState.getOpenHeight());
+    }
+
+    /**
+     * Sets current height values
+     */
+    public void setHeights() {
+        //set new height options
+        CurrentState.setOpenHeight(mViewPager.getHeight());
+        CurrentState.setClosedHeight(mViewPager.getHeight() + mToolbar.getHeight());
+        Log.d("CurrentState", "height=" + CurrentState.getOpenHeight() + " height="
+                + CurrentState.getClosedHeight());
+    }
+
 
 
 
@@ -765,7 +749,7 @@ public class MovieListFragment extends Fragment {
                     Log.d("heights", "viewPager:" + viewPager.getHeight()
                             + " toolbar:" + toolbar.getHeight());
                     toolbar.setVisibility(View.GONE);
-                    criteriaBar.setVisibility(View.GONE);
+                    //criteriaBar.setVisibility(View.GONE);
                     oldPosition = position;
                     //scrollView.fullScroll(ScrollView.FOCUS_DOWN);
                 } else if (position < 0) {
@@ -773,8 +757,8 @@ public class MovieListFragment extends Fragment {
                     viewPager.getLayoutParams().height = CurrentState.getOpenHeight();
                     toolbar.setVisibility(View.VISIBLE);
                     if (movieList == yourRecommendationsList) {
-                        criteriaBar.setVisibility(View.VISIBLE);
-                        viewPager.getLayoutParams().height = CurrentState.getOpenHeight() - R.dimen.text_margin;
+                        //criteriaBar.setVisibility(View.VISIBLE);
+                        //viewPager.getLayoutParams().height = CurrentState.getOpenHeight() - R.dimen.text_margin;
                     }
                     oldPosition = position;
                     //scrollView.fullScroll(ScrollView.FOCUS_UP);
@@ -784,9 +768,69 @@ public class MovieListFragment extends Fragment {
             }
         }
 
+        /**
+         * Getter for movie list
+         * @return movie list
+         */
         public List getMovieList() {
             return movieList;
         }
+    }
+
+
+    /**
+     *
+     */
+    public abstract class HidingScrollListener extends RecyclerView.OnScrollListener {
+        private int threshold;
+        private int scrolledY = 0;
+        private boolean isVisible = true;
+
+        /**
+         * Public constructor for HidingScrollListener
+         * @param newThreshold threshold to toggle content visibility at
+         */
+        public HidingScrollListener(int newThreshold) {
+            threshold = newThreshold;
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+            if (firstVisibleItem == 0) {
+                if (!isVisible) {
+                    onShow();
+                    isVisible = true;
+                }
+            } else {
+                if (scrolledY > threshold && isVisible) {
+                    onHide();
+                    isVisible = false;
+                    scrolledY = 0;
+                } else if (scrolledY < -threshold && !isVisible) {
+                    onShow();
+                    isVisible = false;
+                    scrolledY = 0;
+                }
+            }
+
+            if ((isVisible && dy > 0) || (!isVisible && dy < 0)) {
+                scrolledY += dy;
+            }
+        }
+
+
+        /**
+         * Handles hiding of content
+         */
+        public abstract void onHide();
+
+        /**
+         * Handles showing of content
+         */
+        public abstract void onShow();
     }
 }
 
