@@ -16,6 +16,7 @@ import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.fragment.MovieListFragment;
+import com.team19.gtmovies.pojo.User;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -40,12 +41,13 @@ public class UserListActivity extends AppCompatActivity {
         userIntent.putExtra("UNAME", strName);
     }
 
-    private void populateList() {
+    private ArrayList<String> populateList() {
         // Find the ListView resource.
         mainListView = (ListView) findViewById( R.id.userListView );
         ArrayList<String> usernameList = IOActions.getUsernames();
         Collections.sort(usernameList);
-        usernameList.remove(CurrentState.getUser().getUsername());
+        User tmp = CurrentState.getUser();
+        usernameList.remove(tmp.getUsername());
         String hisRank = "";
         Log.d("GTMovies", "populatelist: " + usernameList);
         for (int i = 0; i < usernameList.size(); i++) {
@@ -81,6 +83,7 @@ public class UserListActivity extends AppCompatActivity {
                 }
             }
         });
+        return usernameList;
     }
 
     /**
