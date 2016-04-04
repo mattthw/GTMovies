@@ -270,18 +270,6 @@
             android:visibility="gone"
             android:maxLines="1" />
 
-        <Button
-            style="@android:style/Widget.Material.Light.Button.Borderless"
-            android:text="@string/delete_user"
-            android:id="@+id/buttonDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="changeDelete"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:visibility="gone"
-            android:maxLines="1" />
 
         <Button
             android:text="@string/save_profile"

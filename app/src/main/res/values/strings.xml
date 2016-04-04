@@ -173,4 +173,6 @@
     <string name="uname">Username:</string>
     <string name="change_rank">change rank</string>
     <string name="delete_user">delete user</string>
+    <string name="gtmov_tag">GTMovies</string>
+    <string name="gtmovtag">GTMovies</string>
 </resources>
