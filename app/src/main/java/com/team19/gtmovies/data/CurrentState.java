@@ -3,7 +3,8 @@ package com.team19.gtmovies.data;
 import com.team19.gtmovies.pojo.User;
 
 /**
- * Created by a on 2/22/2016.
+ * Created by Austin on 2/22/2016.
+ * used by all other classes when requesting current user info
  */
 public class CurrentState {
 //    private static final CurrentState ourInstance = new CurrentState();
@@ -16,7 +17,10 @@ public class CurrentState {
 //    }
 
     /**
-     * private CurrentState constructor
+     * default constructor for CurrentState
+     * @param u require the correct user as parameter as form of
+     *          DEPENDENCY INJECTION. replaces singleton implementation.
+     *          @Matt 3/April/2016
      */
     public CurrentState(User u) {
         currentUser = u;

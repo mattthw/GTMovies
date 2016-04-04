@@ -100,6 +100,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         reviewDialog = new ReviewDialogFragment();
         //open review dialog
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /**
+         * LISTENER FOR REVIEW BUTTON. WHEN CLICKED THIS
+         * CREATES A NEW DIALOG TO LET USER ADD NEW REVIEW.
+         */
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,9 +113,6 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * inner anonymous class to create review dialog fragment
-     */
     /**
      * Class needed for spinner XML item
      */
@@ -128,7 +129,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     /**
-     * inner class for dialog
+     *
+     * inner class for dialog. This Dialog is presented when user
+     * clicks button to leave a new review
      */
     public static class ReviewDialogFragment extends DialogFragment {
         protected Spinner scoreSpin;

@@ -33,7 +33,6 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//import com.team19.gtmovies.JinuTestActivity;
 
 /**
  * A login screen that offers login via email/password.
@@ -58,16 +57,9 @@ public class LoginActivity extends AppCompatActivity {
     private String passwordCheck = null;
     private String name = null;
     private HashMap<String, Integer> attempts = new HashMap<>();
-    //app users storage
-    protected static Set<User> accounts;
     private View rootView;
     private static boolean verified = false;
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    //private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
