@@ -48,9 +48,9 @@ public class Movie implements Comparable<Movie>, Serializable {
         if (j == -1) {
             this.init();
         } else {
-            final int MAXRATING = 10;
+            final int MAX_RATING = 10;
             title = "Title" + j;
-            rating = MAXRATING;
+            rating = MAX_RATING;
             description = "Description of the movie number " + j
                     + " of the list of movies";
             myReviews = new HashMap<String, Review>();
@@ -246,8 +246,8 @@ public class Movie implements Comparable<Movie>, Serializable {
         }
 
         try {
-            final int BYTESIZE = 8;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), BYTESIZE);
+            final int BYTE_SIZE = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), BYTE_SIZE);
             String result = reader.readLine();
             return Integer.parseInt(result);
         } catch (Exception e) {
