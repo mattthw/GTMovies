@@ -435,6 +435,9 @@ public class IOActions extends Application {
      * @return true if success
      */
     public static boolean SaveNewRating(int movieid, int score, String comment) {
+        if(comment == "") {
+            comment = "no comment";
+        }
         String url = "http://45.55.175.68/test.php?mode=6&movid=" + movieid
                 + "&uname='" + CurrentState.getUser().getUsername()
                 + "'&score=" + score
