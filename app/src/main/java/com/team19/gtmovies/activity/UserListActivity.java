@@ -96,7 +96,7 @@ public class UserListActivity extends AppCompatActivity {
 
                 Object o = mainListView.getItemAtPosition(position);
                 String name=(String)o;//As you are using Default String Adapter
-                name = name.substring(name.lastIndexOf(" ") + 1);
+                name = name.substring(name.lastIndexOf(' ') + 1);
                 userIntent.putExtra("UNAME", name);
                 if (IOActions.getUserByUsername(name) != null) {
                     startActivityForResult(userIntent, UserProfileActivity.PROFILE_VIEWED);

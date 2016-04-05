@@ -48,9 +48,8 @@ public class Movie implements Comparable<Movie>, Serializable {
         if (j == -1) {
             this.init();
         } else {
-            final int MAXRATING = 10;
             title = "Title" + j;
-            rating = MAXRATING;
+            rating = 10;
             description = "Description of the movie number " + j
                     + " of the list of movies";
             myReviews = new HashMap<String, Review>();
@@ -246,8 +245,7 @@ public class Movie implements Comparable<Movie>, Serializable {
         }
 
         try {
-            final int BYTESIZE = 8;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), BYTESIZE);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
             String result = reader.readLine();
             return Integer.parseInt(result);
         } catch (Exception e) {
@@ -295,10 +293,9 @@ public class Movie implements Comparable<Movie>, Serializable {
             }
         }
         if (userCount > 0) {
-            final int REVIEWMULTIPLIER = 20;
             Log.d("jUnit", "major: " + major);
             Log.d("jUnit", "userCount = " + userCount + "\ntotal = " + total + "\n");
-            return (int)((total/((double)userCount)) * REVIEWMULTIPLIER);
+            return (int)((total/((double)userCount)) * 20);
         } else {
             return -1;
         }
@@ -309,14 +306,14 @@ public class Movie implements Comparable<Movie>, Serializable {
      * If you find this don't tell Matt.
      */
     private void init() {
-        final int MYID = 37737;
-        final int MYRATING = 101;
-        id = MYID;
+        final int mYID = 37737;
+        final int mYRATING = 101;
+        id = mYID;
         title = "Matt the Great and Supreme";
         description = "Matt is a Great Leader of the Team 19 (18). Known for his " +
                 "battle prowess and unmatched sex appeal, those who knew him " +
                 "mentioned him as the LORD";
-        rating = MYRATING;
+        rating = mYRATING;
     }
     /**
      * Returns the description of the Movie
