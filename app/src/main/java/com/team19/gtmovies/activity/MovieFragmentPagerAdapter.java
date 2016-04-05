@@ -33,11 +33,11 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     /**
      * Constructor for MovieFragmentPagerAdapter
      * @param fragmentManager Fragment manager
-     * @param context context
+     * @param context1 context
      */
-    public MovieFragmentPagerAdapter(FragmentManager fragmentManager, Context context) {
+    public MovieFragmentPagerAdapter(FragmentManager fragmentManager, Context context1) {
         super(fragmentManager);
-        this.context = context;
+        this.context = context1;
 
 //        for (int i = 0; i < 1; i++) {
 //            for (int j = 0; j < 1000; j++) {

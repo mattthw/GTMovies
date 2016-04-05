@@ -59,23 +59,23 @@ public class Movie implements Comparable<Movie>, Serializable {
 
     /**
      * Another constructor
-     * @param id what to set the id to
-     * @param title what to set title to
-     * @param rating what to set rating to
+     * @param id1 what to set the id to
+     * @param title1 what to set title to
+     * @param rating1 what to set rating to
      */
-    public Movie(int id, String title, int rating) {
-        this.id = id;
-        this.title = title;
-        this.rating = rating;
+    public Movie(int id1, String title1, int rating1) {
+        this.id = id1;
+        this.title = title1;
+        this.rating = rating1;
         myReviews = new HashMap<String, Review>();
     }
 
     /**
      * Set the Movie ID
-     * @param id The Movie ID to set to
+     * @param id1 The Movie ID to set to
      */
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int id1) {
+        this.id = id1;
     }
 
     /**

@@ -216,22 +216,22 @@ public class UserProfileActivity extends AppCompatActivity {
      */
     private void setListViewHeightBasedOnChildren(ListView listView) {
         Log.e("Listview Size ", "" + listView.getCount());
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
+        ListAdapter listAdapter1 = listView.getAdapter();
+        if (listAdapter1 == null) {
 
             return;
         }
 
         int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
+        for (int i = 0; i < listAdapter1.getCount(); i++) {
+            View listItem = listAdapter1.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
         }
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+                + (listView.getDividerHeight() * (listAdapter1.getCount() - 1));
         listView.setLayoutParams(params);
         listView.requestLayout();
 

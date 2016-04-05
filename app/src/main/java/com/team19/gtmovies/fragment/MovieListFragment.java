@@ -268,11 +268,11 @@ public class MovieListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
 
         /*
-        if (SEARCH) {
+        if (search) {
             if (searchMovieList != null) {
                 mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
             }
-            SEARCH = false;
+            search = false;
         } else if (getArguments() != null) {
             Log.d("GTMovies: onCreateView", currentTab + "");
             mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(getArguments().getInt(ARG_ITEM_ID)));
@@ -404,7 +404,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Changes movielist.
-     * @param list list to set RECOMMENDATIONS to
+     * @param list list to set recommendations to
      * @return true if successfully set to provided argument false if unable to
      */
     public static boolean setYourRecommendationsList(List<Movie> list) {
@@ -417,9 +417,9 @@ public class MovieListFragment extends Fragment {
     }
 
     /**
-     * Changes searchMovieList on SEARCH
-     * @param list new list of movies from SEARCH query
-     * @return boolean if list can be used to replace movie SEARCH list
+     * Changes searchMovieList on search
+     * @param list new list of movies from search query
+     * @return boolean if list can be used to replace movie search list
      */
     public static boolean setSearchMovieList(List<Movie> list) {
         if (list != null) {
@@ -481,7 +481,7 @@ public class MovieListFragment extends Fragment {
 
 
     /**
-     * Sets fragment to display SEARCH
+     * Sets fragment to display search
      */
     public void setSearch() {
         search = true;
@@ -548,9 +548,9 @@ public class MovieListFragment extends Fragment {
     }
 
     /**
-     * getter for SEARCH movie list
+     * getter for search movie list
      *
-     * @return List of movies in current SEARCH movie list
+     * @return List of movies in current search movie list
      */
     public static List getSearchMovieList() {
         return searchMovieList;
@@ -776,7 +776,7 @@ public class MovieListFragment extends Fragment {
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 /*Comments for Jinu
-    Whenever setting a tab/SEARCH use one of :
+    Whenever setting a tab/search use one of :
 
     MovieListFragment.setNewMoviesList(list);
     MovieListFragment.setTopRentalsList(list);
@@ -808,7 +808,7 @@ public class MovieListFragment extends Fragment {
     tabs that are at the top that I'm not currently using rather than creating a new fragment each
     time.
 
-    In the case that SEARCH does not work properly, we need to try to place this on the line before
+    In the case that search does not work properly, we need to try to place this on the line before
     creating the new fragment instance:
 
     MovieListFragment.setTabPosition(page);

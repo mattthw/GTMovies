@@ -1,16 +1,13 @@
 package com.team19.gtmovies.activity;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -158,10 +155,10 @@ public class MainActivity extends AppCompatActivity
         //new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
         currentPage = 0;
         findViewById(R.id.criteria_bar).setVisibility(View.GONE);
-        //getMoviesFromAPI(SingletonMagic.topRental, null);
-        //getMoviesFromAPI(SingletonMagic.newMovie, null);
-        //getMoviesFromAPI(SingletonMagic.topRental, null);
-        // Setup tabs and search
+        //getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
+        //getMoviesFromAPI(SingletonMagic.NEW_MOVIE, null);
+        //getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
+        // Setup tabs and SEARCH
         //fragmentManager = getSupportFragmentManager();
         //criteriaActivity = (CriteriaActivity) findViewById(R.id.criteria_bar);
         setupTabs();
@@ -263,7 +260,7 @@ public class MainActivity extends AppCompatActivity
 //                switch (position) {
 //                    case MovieListFragment.TOP_RENTALS_TAB:
 //                        if (!MovieListFragment.hasTopRentalsList()) {
-//                            getMoviesFromAPI(SingletonMagic.topRental, null);
+//                            getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
 //                        } //otherwise fall through
 //                    case MovieListFragment.NEW_MOVIES_TAB:
 //                        //MovieListFragment has already been displayed. Display again.
@@ -275,7 +272,7 @@ public class MainActivity extends AppCompatActivity
 //                        scroller();
 //                        criteriaBar.setVisibility(View.VISIBLE);
 //                        if (!MovieListFragment.hasYourRecommendationsList()) {
-//                            getMoviesFromAPI(SingletonMagic.recommendations,
+//                            getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
 //                                    ReviewController.getRecommendations());
 //                        } else {
 //                            movieListFragment = MovieListFragment.newInstance(position);
@@ -411,8 +408,8 @@ public class MainActivity extends AppCompatActivity
      */
     public void getMovies() {
         /*// Get the movies
-        List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.newMovie);
-        List<Movie> topRentals = getMoviesFromAPI(SingletonMagic.topRental);
+        List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.NEW_MOVIE);
+        List<Movie> topRentals = getMoviesFromAPI(SingletonMagic.TOP_RENTAL);
         List<Movie> recommendations = getRecommendations();
         // Set the View
         List<List<Movie>> listList = new ArrayList<>();

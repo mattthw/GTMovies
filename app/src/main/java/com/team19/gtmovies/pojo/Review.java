@@ -36,18 +36,18 @@ public class Review implements Serializable {
      * @throws IllegalArgumentException if score > 5 or <0, if comment is
      *          null, or if username is null.
      */
-    public Review(int score, String comment, String username, int movieID) {
-        if (score < 0 || score > 5) {
+    public Review(int score1, String comment1, String username1, int movieID1) {
+        if (score1 < 0 || score1 > 5) {
             throw new IllegalArgumentException("Score is not within valid range.");
-        } else if (comment == null) {
+        } else if (comment1 == null) {
             throw new IllegalArgumentException("A null comment was passed.");
-        } else if (username == null) {
+        } else if (username1 == null) {
             throw new IllegalArgumentException("A null username was passed.");
         }
-        this.score = score;
-        this.comment = comment;
-        this.username = username;
-        this.movieID = movieID;
+        this.score = score1;
+        this.comment = comment1;
+        this.username = username1;
+        this.movieID = movieID1;
     }
 
     /**
@@ -109,8 +109,8 @@ public class Review implements Serializable {
      *
      * @param username the new username to associate with this rating.
      */
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String username1) {
+        this.username = username1;
     }
 
     /**
@@ -118,8 +118,8 @@ public class Review implements Serializable {
      *
      * @param movieID the new movie ID to associate with this rating.
      */
-    public void setMovieID(int movieID) {
-        this.movieID = movieID;
+    public void setMovieID(int movieID1) {
+        this.movieID = movieID1;
     }
 
 }
