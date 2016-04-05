@@ -66,6 +66,7 @@ public class Movie implements Comparable<Movie>, Serializable {
         this.id = id;
         this.title = title;
         this.rating = rating;
+        myReviews = new HashMap<String, Review>();
     }
 
     /**
@@ -264,6 +265,9 @@ public class Movie implements Comparable<Movie>, Serializable {
     public int getUserRatingByMajor(String major) {
         int total = 0;
         int userCount = 0;
+        if (major == null) {
+            throw new IllegalArgumentException("null major cannot exist");
+        }
         for (Review review : myReviews.values()) {
             String curr = review.getUsername();
             User user = IOActions.getUserByUsername(curr);
@@ -274,10 +278,13 @@ public class Movie implements Comparable<Movie>, Serializable {
                 Log.v("GTMovies",
                         "getRatingByMajor(parm:" + major + ", curr:" + curr + ")");
                 total += review.getScore();
+                Log.d("jUnit", "otherMajor: " + otherMajor + "\ncurr:" + curr + "\n");
                 userCount++;
             }
         }
         if (userCount > 0) {
+            Log.d("jUnit", "major: " + major);
+            Log.d("jUnit", "userCount = " + userCount + "\ntotal = " + total + "\n");
             return (int)((total/((double)userCount)) * 20);
         } else {
             return -1;
