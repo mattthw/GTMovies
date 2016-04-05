@@ -196,11 +196,11 @@ public class LoginActivity extends AppCompatActivity {
         password = mPasswordView.getText().toString();
         passwordCheck = mPassConfirmView.getText().toString();
         name = mNameView.getText().toString();
-        final int MAXLOGINATTEMPTS = 3;
+        final int maxLOGINATTEMPTS = 3;
         //check if should cancel
         if (mAuthTask != null) {
             return;
-        } else if ( null != attempts.get(email) && attempts.get(email) >= MAXLOGINATTEMPTS) {
+        } else if ( null != attempts.get(email) && attempts.get(email) >= maxLOGINATTEMPTS) {
             Snackbar.make(rootView,
                     "ACCOUNT '" + email + "' LOCKED!" , Snackbar.LENGTH_SHORT).show();
             return;
@@ -214,7 +214,7 @@ public class LoginActivity extends AppCompatActivity {
         View focusView = null;
 
         //ALWAYS CHECK THESE FIELDS
-        final int MINLENGTH = 3;
+        final int minLENGTH = 3;
         if (TextUtils.isEmpty(email)) {
             //username empty
             mEmailView.setError(getString(R.string.error_field_required));
@@ -225,12 +225,12 @@ public class LoginActivity extends AppCompatActivity {
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
-        } else if (email.length() <= MINLENGTH) {
+        } else if (email.length() <= minLENGTH) {
             //username length
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
-        } else if (password.length() <= MINLENGTH) {
+        } else if (password.length() <= minLENGTH) {
             //password length
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
@@ -365,21 +365,21 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }
                 };
-                final int TIMETOPAUSE = 1000;
+                final int timeTOPAUSE = 1000;
                 Timer t = new Timer();
-                t.schedule(task, TIMETOPAUSE);
+                t.schedule(task, timeTOPAUSE);
             } else {
                 if ( null != attempts.get(email) && attempts.get(email) >= 2) {
                     Snackbar.make(rootView, "ACCOUNT '" + email + "' LOCKED!",
                             Snackbar.LENGTH_SHORT).show();
                     IOActions.getUserByUsername(email).setPermission(0);
                 }
-                final int MINLENGTH = 3;
+                final int minLENGTH = 3;
                 if (IOActions.getUserByUsername(email) != null) {
                     if (attempts.get(email) != null) {
                         attempts.put(email, attempts.get(email) + 1);
                         Snackbar.make(rootView,
-                                (MINLENGTH-attempts.get(email))
+                                (minLENGTH-attempts.get(email))
                                         + " attempts remaining for " + email,
                                 Snackbar.LENGTH_SHORT).show();
                     } else {

@@ -157,8 +157,8 @@ public class IOActions extends Application {
         }
 
         try {
-            final int JUNK = 8;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), JUNK);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             StringTokenizer st = new StringTokenizer(result, "\\", false);
             result = st.nextToken();
@@ -199,8 +199,8 @@ public class IOActions extends Application {
         }
 
         try {
-            final int JUNK = 8;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), JUNK);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             StringTokenizer st = new StringTokenizer(result, "\\", false);
             result = st.nextToken();
@@ -261,8 +261,8 @@ public class IOActions extends Application {
         }
 
         try {
-            final int JUNK = 8;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), JUNK);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             if(result.charAt(0) == '0') {
                 throw new DuplicateUserException();
@@ -392,8 +392,8 @@ public class IOActions extends Application {
         }
 
         try {
-            final int JUNK = 8;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), JUNK);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             StringTokenizer st = new StringTokenizer(result, "\\", false);
             result = st.nextToken();
@@ -478,8 +478,8 @@ public class IOActions extends Application {
         }
 
         try {
-            final int JUNK = 8;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), JUNK);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             StringTokenizer st = new StringTokenizer(result, "\\", false);
             result = st.nextToken();
@@ -523,8 +523,8 @@ public class IOActions extends Application {
         }
 
         try {
-            final int JUNK = 8;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), JUNK);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             StringTokenizer st = new StringTokenizer(result, "\\", false);
             result = st.nextToken();
