@@ -452,7 +452,7 @@ public class MainActivity extends AppCompatActivity
 
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
-        if (requestType.equals(SingletonMagic.recommendations)) {
+        if (requestType.equals(SingletonMagic.RECOMMENDATIONS)) {
             Log.d("getMoviesFromAPI", "recommendations");
             if (movieList == null || movieList.size() <= 0) {
                 return;
@@ -464,9 +464,9 @@ public class MainActivity extends AppCompatActivity
             for (final Movie movie : movieList) {
 
                 //create the request
-                String movieID = SingletonMagic.search + "/" + movie.getID();
+                String movieID = SingletonMagic.SEARCH + "/" + movie.getID();
                 final String urlRaw = String.format(
-                        SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
+                        SingletonMagic.BASE_URL, movieID, "", SingletonMagic.PROF_KEY);
                 movieRequest = new JsonObjectRequest(Request.Method.GET,
                         urlRaw, null, new Response.Listener<JSONObject>() {
 
@@ -502,7 +502,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             final List<Movie> movieArray = new ArrayList<>();
             final String urlRaw = String.format(
-                    SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
+                    SingletonMagic.BASE_URL, requestType, "", SingletonMagic.PROF_KEY);
 
             movieRequest = new JsonObjectRequest
                     (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
@@ -532,7 +532,7 @@ public class MainActivity extends AppCompatActivity
 
                             //Create proper MovieListFragment
                             String tab;
-                            if (requestType.equals(SingletonMagic.newMovie)) {
+                            if (requestType.equals(SingletonMagic.NEW_MOVIE)) {
                                 Log.d("JinuMain", "newMovieFragment");
 
                                 MovieListFragment.setNewMoviesList(movieArray);
@@ -542,7 +542,7 @@ public class MainActivity extends AppCompatActivity
                                 MovieListFragment.NEW_MOVIES_TAB);)*/
 
                                 tab = "newMovies";
-                            } else if (requestType.equals(SingletonMagic.topRental)) {
+                            } else if (requestType.equals(SingletonMagic.TOP_RENTAL)) {
                                 Log.d("JinuMain", "topRentalFragment");
                                 MovieListFragment.setTopRentalsList(movieArray);
                                 updateUI(MovieListFragment.TOP_RENTALS_TAB);
@@ -640,7 +640,7 @@ public class MainActivity extends AppCompatActivity
         protected Integer doInBackground(Integer... params) {
             switch (params[0]) {
                 case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                    getMoviesFromAPI(SingletonMagic.recommendations,
+                    getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
                             recommendations);
                     break;
                 default:
