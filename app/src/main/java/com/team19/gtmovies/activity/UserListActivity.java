@@ -22,16 +22,25 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
-
+/**
+ * UserListActivity is called when user lcocks on 'Users' in
+ * navigation drawer. It populates a ListView with all users from
+ * our database, excluding the current user
+ */
 public class UserListActivity extends AppCompatActivity {
 
     private ListView mainListView ;
     private ArrayAdapter<String> listAdapter ;
     private Intent userIntent = null;
 
-    //TODO: JAVADOCS!!!!!!!
+    /**
+     * default oncreate
+     * adds actionbar for overflow
+     * calls populatList for ListView
+     * @param savedInstanceState
+     */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
         setupActionBar();
@@ -41,13 +50,12 @@ public class UserListActivity extends AppCompatActivity {
         userIntent.putExtra("UNAME", strName);
     }
 
-    private ArrayList<String> populateList() {
-        // Find the ListView resource.
-        mainListView = (ListView) findViewById( R.id.userListView );
-        ArrayList<String> usernameList = IOActions.getUsernames();
-        Collections.sort(usernameList);
-        User tmp = CurrentState.getUser();
-        usernameList.remove(tmp.getUsername());
+    /**
+     * adds proper rank to users in list
+     * @param usernameList   ArrayList of users
+     * @return formatted user list
+     */
+    public ArrayList<String> formatList(ArrayList<String> usernameList) {
         String hisRank = "";
         Log.d("GTMovies", "populatelist: " + usernameList);
         for (int i = 0; i < usernameList.size(); i++) {
@@ -64,6 +72,20 @@ public class UserListActivity extends AppCompatActivity {
             }
             usernameList.set(i, hisRank + "   " + usernameList.get(i));
         }
+        return usernameList;
+    }
+
+    /**
+     * adds list of users to Listview object in activity
+     */
+    public void populateList() {
+        // Find the ListView resource.
+        mainListView = (ListView) findViewById( R.id.userListView );
+        ArrayList<String> usernameList = IOActions.getUsernames();
+        Collections.sort(usernameList);
+        User tmp = CurrentState.getUser();
+        usernameList.remove(tmp.getUsername());
+        usernameList = formatList(usernameList);
         // Create ArrayAdapter using the usernames list.
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernameList);
         // Set the ArrayAdapter as the ListView's adapter.
@@ -83,7 +105,6 @@ public class UserListActivity extends AppCompatActivity {
                 }
             }
         });
-        return usernameList;
     }
 
     /**
