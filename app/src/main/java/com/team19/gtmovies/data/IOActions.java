@@ -126,6 +126,7 @@ public class IOActions extends Application {
      * EDIT: After implementing database this only saves
      * the currentUser to file.
      * everything else is stored remotely.
+     * @return true, because we never fail
      */
     protected static boolean commit() {
         try {
