@@ -42,7 +42,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        Log.d("GTMovies", "Got to search");
+        Log.d("GTMovies", "Got to SEARCH");
         fragmentManager = getSupportFragmentManager();
 
         handleIntent(getIntent());
@@ -82,7 +82,7 @@ public class SearchActivity extends AppCompatActivity {
             }
             // Creating the JSONRequest
             String urlRaw = String.format(
-                    SingletonMagic.baseURL, SingletonMagic.search, "q=" + queryURI, SingletonMagic.profKey);
+                    SingletonMagic.BASE_URL, SingletonMagic.SEARCH, "q=" + queryURI, SingletonMagic.PROF_KEY);
 
             JsonObjectRequest searchRequest = new JsonObjectRequest
                     (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
@@ -116,7 +116,7 @@ public class SearchActivity extends AppCompatActivity {
                                 nextURL = tmpJ.getString("next");
                                 prevURL = tmpJ.getString("prev");
                             } catch (JSONException e) {
-                                Log.e("JSON ERROR", "Fail to get connected URLs in search");
+                                Log.e("JSON ERROR", "Fail to get connected URLs in SEARCH");
                             }
                             nextable = nextURL != null;
                             prevable = prevURL != null;
@@ -214,7 +214,7 @@ public class SearchActivity extends AppCompatActivity {
                             nextURL = tmpJ.getString("next");
                             prevURL = tmpJ.getString("prev");
                         } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Fail to get connected URLs in search");
+                            Log.e("JSON ERROR", "Fail to get connected URLs in SEARCH");
                         }
                         nextable = nextURL != null;
                         prevable = prevURL != null;
@@ -273,7 +273,7 @@ public class SearchActivity extends AppCompatActivity {
                             nextURL = tmpJ.getString("next");
                             prevURL = tmpJ.getString("prev");
                         } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Fail to get connected URLs in search");
+                            Log.e("JSON ERROR", "Fail to get connected URLs in SEARCH");
                         }
                         nextable = nextURL != null;
                         prevable = prevURL != null;

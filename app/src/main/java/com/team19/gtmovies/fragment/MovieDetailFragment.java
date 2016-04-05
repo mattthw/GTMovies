@@ -152,7 +152,8 @@ public class MovieDetailFragment extends Fragment {
         if(userCount == 0) { // in case of divide by zero
             userRatingView.setText("N/A");
         } else {
-            int tempScore = ((int)((total/((double)userCount)) * 20));
+            final int REVIEWMULTIPLIER = 20;
+            int tempScore = ((int)((total/((double)userCount)) * REVIEWMULTIPLIER));
             userRatingView.setText(tempScore + "");
         }
         Log.println(Log.DEBUG, "GTMovies", commentList.toString());

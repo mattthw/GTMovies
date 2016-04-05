@@ -48,8 +48,9 @@ public class Movie implements Comparable<Movie>, Serializable {
         if (j == -1) {
             this.init();
         } else {
+            final int MAXRATING = 10;
             title = "Title" + j;
-            rating = 10;
+            rating = MAXRATING;
             description = "Description of the movie number " + j
                     + " of the list of movies";
             myReviews = new HashMap<String, Review>();
@@ -203,6 +204,14 @@ public class Movie implements Comparable<Movie>, Serializable {
     }
 
     /**
+     * Special hashcode function overriden for Movie
+     * @return the hashcode (id)
+     */
+    public int hashCode() {
+        return id;
+    }
+
+    /**
      * Returns the id of the Movie
      *
      * @return the int id of the Movie
@@ -237,7 +246,8 @@ public class Movie implements Comparable<Movie>, Serializable {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            final int BYTESIZE = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), BYTESIZE);
             String result = reader.readLine();
             return Integer.parseInt(result);
         } catch (Exception e) {
@@ -283,9 +293,10 @@ public class Movie implements Comparable<Movie>, Serializable {
             }
         }
         if (userCount > 0) {
+            final int REVIEWMULTIPLIER = 20;
             Log.d("jUnit", "major: " + major);
             Log.d("jUnit", "userCount = " + userCount + "\ntotal = " + total + "\n");
-            return (int)((total/((double)userCount)) * 20);
+            return (int)((total/((double)userCount)) * REVIEWMULTIPLIER);
         } else {
             return -1;
         }
@@ -296,12 +307,14 @@ public class Movie implements Comparable<Movie>, Serializable {
      * If you find this don't tell Matt.
      */
     private void init() {
-        id = 37737;
+        final int MYID = 37737;
+        final int MYRATING = 101;
+        id = MYID;
         title = "Matt the Great and Supreme";
         description = "Matt is a Great Leader of the Team 19 (18). Known for his " +
                 "battle prowess and unmatched sex appeal, those who knew him " +
                 "mentioned him as the LORD";
-        rating = 101;
+        rating = MYRATING;
     }
     /**
      * Returns the description of the Movie

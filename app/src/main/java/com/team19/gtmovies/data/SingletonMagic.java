@@ -15,22 +15,22 @@ import com.android.volley.toolbox.Volley;
  */
 public class SingletonMagic {
     // Basic URL for the Tomato API
-    // Has three %s placeholders in the middle of baseURL
-    public static final String baseURL =
+    // Has three %s placeholders in the middle of BASE_URL
+    public static final String BASE_URL =
             "http://api.rottentomatoes.com/api/public/v1.0%s.json?%s&apikey=%s";
-    public static final String boxOffice = "/lists/movies/box_office";
-    public static final String newMovie = "/lists/movies/opening";
-    public static final String newDVD = "/lists/dvds/new_releases";
-    public static final String topRental = "/lists/dvds/top_rentals";
-    public static final String search = "/movies";
-    public static final String recommendations = "recommendations";
+    public static final String BOX_OFFICE = "/lists/movies/box_office";
+    public static final String NEW_MOVIE = "/lists/movies/opening";
+    public static final String NEW_DVD = "/lists/dvds/new_releases";
+    public static final String TOP_RENTAL = "/lists/dvds/top_rentals";
+    public static final String SEARCH = "/movies";
+    public static final String RECOMMENDATIONS = "RECOMMENDATIONS";
 
     //Setting strings for URL
-    public static final String numMovies = "limit=%d";
-    public static final String country = "country=%s";
-    public static final String perPage = "page_limit=%d";
-    public static final String numPage = "page=%d";
-    public static final String profKey = "yedukp76ffytfuy24zsqk7f5";
+    public static final String NUM_MOVIES = "limit=%d";
+    public static final String COUNTRY_S = "COUNTRY_S=%s";
+    public static final String PER_PAGE = "page_limit=%d";
+    public static final String NUM_PAGE = "page=%d";
+    public static final String PROF_KEY = "yedukp76ffytfuy24zsqk7f5";
 
     private static SingletonMagic ourInstance;
     private RequestQueue mRequestQueue;

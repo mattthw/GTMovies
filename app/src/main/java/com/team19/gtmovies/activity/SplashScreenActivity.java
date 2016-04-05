@@ -169,7 +169,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     /**
      * Obtains the movies from the API
      * @param requestType differetiates new movies and top rental
-     * @param movieList list of movies to get details about for recommendations
+     * @param movieList list of movies to get details about for RECOMMENDATIONS
      */
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
@@ -184,12 +184,12 @@ public class SplashScreenActivity extends AppCompatActivity {
 //        }, 5000);
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
-        if (requestType.equals(SingletonMagic.recommendations)) {
-            Log.d("getMoviesFromAPI", "recommendations");
+        if (requestType.equals(SingletonMagic.RECOMMENDATIONS)) {
+            Log.d("getMoviesFromAPI", "RECOMMENDATIONS");
             if (movieList == null || movieList.size() <= 0) {
                 return;
             }
-            Snackbar.make(rootView, "Getting recommendations...", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(rootView, "Getting RECOMMENDATIONS...", Snackbar.LENGTH_SHORT).show();
             Log.d("finished", "number of recs=" + movieList.size());
 
             final Map<Integer, Movie> movieMap = new ConcurrentHashMap<>();
@@ -198,9 +198,9 @@ public class SplashScreenActivity extends AppCompatActivity {
             for (final Movie movie : movieList) {
 
                 //create the request
-                String movieID = SingletonMagic.search + "/" + movie.getID();
+                String movieID = SingletonMagic.SEARCH + "/" + movie.getID();
                 final String urlRaw = String.format(
-                        SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
+                        SingletonMagic.BASE_URL, movieID, "", SingletonMagic.PROF_KEY);
                 JsonObjectRequest recoRequest = new JsonObjectRequest(Request.Method.GET,
                         urlRaw, null, new Response.Listener<JSONObject>() {
 
@@ -253,7 +253,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
         } else {
             final String urlRaw = String.format(
-                    SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
+                    SingletonMagic.BASE_URL, requestType, "", SingletonMagic.PROF_KEY);
             final List<Movie> movieArray = new ArrayList<>();
 
             movieRequest = new JsonObjectRequest
@@ -286,7 +286,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                             //Create proper MovieListFragment
                             String tab;
-                            if (requestType.equals(SingletonMagic.newMovie)) {
+                            if (requestType.equals(SingletonMagic.NEW_MOVIE)) {
                                 Log.d("JinuMain", "newMovieFragment");
                                 MovieListFragment.setNewMoviesList(movieArray);
                                 tab = "newMovies";
@@ -297,7 +297,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                                     IOActions.setMovieListFragment(new MovieListFragment());
                                     finished();
                                 }
-                            } else if (requestType.equals(SingletonMagic.topRental)) {
+                            } else if (requestType.equals(SingletonMagic.TOP_RENTAL)) {
                                 Log.d("JinuMain", "topRentalFragment");
                                 MovieListFragment.setTopRentalsList(movieArray);
                                 tab = "topRentals";
@@ -359,9 +359,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         protected Integer doInBackground(Integer... params) {
             switch (params[0]) {
                 case MovieListFragment.TOP_RENTALS_TAB:
-                    getMoviesFromAPI(SingletonMagic.newMovie, null);
-                    getMoviesFromAPI(SingletonMagic.topRental, null);
-                    getMoviesFromAPI(SingletonMagic.recommendations,
+                    getMoviesFromAPI(SingletonMagic.NEW_MOVIE, null);
+                    getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
+                    getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
                             ReviewController.getRecommendations());
                     /*for (int i = 0; i < 10; i++) {
                         for (int j = 0; j < 1000; j++) {

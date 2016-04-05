@@ -1,16 +1,13 @@
 package com.team19.gtmovies.activity;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -69,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     private static int currentPage;
     private List<Movie> recommendations;
     private boolean generalRecommendations = true;
+    private final int RESULTCODE = 13;
 
 /*
 // Meant for NyanCat
@@ -130,7 +128,7 @@ public class MainActivity extends AppCompatActivity
             //start loginactivity
             Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivityForResult(intent, 13);
+            startActivityForResult(intent, RESULTCODE);
         }
         Log.w("GTMovies", "MAIN ACTIVITY ONCREATE!");
         setContentView(R.layout.activity_main);
@@ -158,10 +156,10 @@ public class MainActivity extends AppCompatActivity
         //new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
         currentPage = 0;
         findViewById(R.id.criteria_bar).setVisibility(View.GONE);
-        //getMoviesFromAPI(SingletonMagic.topRental, null);
-        //getMoviesFromAPI(SingletonMagic.newMovie, null);
-        //getMoviesFromAPI(SingletonMagic.topRental, null);
-        // Setup tabs and search
+        //getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
+        //getMoviesFromAPI(SingletonMagic.NEW_MOVIE, null);
+        //getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
+        // Setup tabs and SEARCH
         //fragmentManager = getSupportFragmentManager();
         //criteriaActivity = (CriteriaActivity) findViewById(R.id.criteria_bar);
         setupTabs();
@@ -188,12 +186,12 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == UserProfileActivity.HEADER_NAME_UPDATED) {
             updateNavName();
         }
-        if (requestCode == 13) {
+        if (requestCode == RESULTCODE) {
             if (resultCode == 1) {
                 if (CurrentState.getUser() == null) {
                     Log.e("GTMovies", "go log in!! >:(");
                     Intent intent = new Intent(this, LoginActivity.class);
-                    startActivityForResult(intent, 13);
+                    startActivityForResult(intent, RESULTCODE);
                 } else {
                     updateNavName();
                 }
@@ -251,7 +249,7 @@ public class MainActivity extends AppCompatActivity
         ((ViewPager) findViewById(R.id.view_pager)).addOnPageChangeListener(
                 new ViewPager.OnPageChangeListener() {
             LinearLayout criteriaBar = (LinearLayout) findViewById(R.id.criteria_bar);
-            //Sliding animations to use for the additional criteria bar in recommendations
+            //Sliding animations to use for the additional criteria bar in RECOMMENDATIONS
             /*Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_down);
             Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -263,7 +261,7 @@ public class MainActivity extends AppCompatActivity
 //                switch (position) {
 //                    case MovieListFragment.TOP_RENTALS_TAB:
 //                        if (!MovieListFragment.hasTopRentalsList()) {
-//                            getMoviesFromAPI(SingletonMagic.topRental, null);
+//                            getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
 //                        } //otherwise fall through
 //                    case MovieListFragment.NEW_MOVIES_TAB:
 //                        //MovieListFragment has already been displayed. Display again.
@@ -275,7 +273,7 @@ public class MainActivity extends AppCompatActivity
 //                        scroller();
 //                        criteriaBar.setVisibility(View.VISIBLE);
 //                        if (!MovieListFragment.hasYourRecommendationsList()) {
-//                            getMoviesFromAPI(SingletonMagic.recommendations,
+//                            getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
 //                                    ReviewController.getRecommendations());
 //                        } else {
 //                            movieListFragment = MovieListFragment.newInstance(position);
@@ -334,7 +332,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Sets up search widget
+     * Sets up SEARCH widget
      */
     public void setupSearch() {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -411,15 +409,15 @@ public class MainActivity extends AppCompatActivity
      */
     public void getMovies() {
         /*// Get the movies
-        List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.newMovie);
-        List<Movie> topRentals = getMoviesFromAPI(SingletonMagic.topRental);
-        List<Movie> recommendations = getRecommendations();
+        List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.NEW_MOVIE);
+        List<Movie> topRentals = getMoviesFromAPI(SingletonMagic.TOP_RENTAL);
+        List<Movie> RECOMMENDATIONS = getRecommendations();
         // Set the View
         List<List<Movie>> listList = new ArrayList<>();
         listList.add(newMovies);
         listList.add(topRentals);
-        listList.add(recommendations);
-        listList.add(new ArrayList<Movie>()); //dummy arraylist for recommendations
+        listList.add(RECOMMENDATIONS);
+        listList.add(new ArrayList<Movie>()); //dummy arraylist for RECOMMENDATIONS
         MovieListFragment.fillTabMovieList(listList);
         */
     }
@@ -431,7 +429,7 @@ public class MainActivity extends AppCompatActivity
         protected Integer doInBackground(Integer... params) {
             switch (params[0]) {
                 case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                    getMoviesFromAPI(SingletonMagic.recommendations,
+                    getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
                             recommendations);
                     break;
                 default:
@@ -473,7 +471,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Obtains the movies from the API
      * @param requestType differentiates new movies and top rental
-     * @param movieList list of movies to get details about for recommendations
+     * @param movieList list of movies to get details about for RECOMMENDATIONS
      */
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
@@ -481,8 +479,8 @@ public class MainActivity extends AppCompatActivity
 
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
-        if (requestType.equals(SingletonMagic.recommendations)) {
-            Log.d("getMoviesFromAPI", "recommendations");
+        if (requestType.equals(SingletonMagic.RECOMMENDATIONS)) {
+            Log.d("getMoviesFromAPI", "RECOMMENDATIONS");
             if (movieList == null || movieList.size() <= 0) {
                 return;
             }
@@ -493,9 +491,9 @@ public class MainActivity extends AppCompatActivity
             for (final Movie movie : movieList) {
 
                 //create the request
-                String movieID = SingletonMagic.search + "/" + movie.getID();
+                String movieID = SingletonMagic.SEARCH + "/" + movie.getID();
                 final String urlRaw = String.format(
-                        SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
+                        SingletonMagic.BASE_URL, movieID, "", SingletonMagic.PROF_KEY);
                 movieRequest = new JsonObjectRequest(Request.Method.GET,
                         urlRaw, null, new Response.Listener<JSONObject>() {
 
@@ -509,7 +507,8 @@ public class MainActivity extends AppCompatActivity
                         movieMap.put(mMovie.getID(), mMovie);
 
                         //Check if last
-                        if (movieMap.size() >= movieList.size() - 3) {
+                        final int LASTPOS = 3;
+                        if (movieMap.size() >= movieList.size() - LASTPOS) {
                             //Now update UI
                             List<Movie> movieArray = new ArrayList<>();
                             movieArray.addAll(movieMap.values());
@@ -531,7 +530,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             final List<Movie> movieArray = new ArrayList<>();
             final String urlRaw = String.format(
-                    SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
+                    SingletonMagic.BASE_URL, requestType, "", SingletonMagic.PROF_KEY);
 
             movieRequest = new JsonObjectRequest
                     (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
@@ -561,7 +560,7 @@ public class MainActivity extends AppCompatActivity
 
                             //Create proper MovieListFragment
                             String tab;
-                            if (requestType.equals(SingletonMagic.newMovie)) {
+                            if (requestType.equals(SingletonMagic.NEW_MOVIE)) {
                                 Log.d("JinuMain", "newMovieFragment");
 
                                 MovieListFragment.setNewMoviesList(movieArray);
@@ -571,7 +570,7 @@ public class MainActivity extends AppCompatActivity
                                 MovieListFragment.NEW_MOVIES_TAB);)*/
 
                                 tab = "newMovies";
-                            } else if (requestType.equals(SingletonMagic.topRental)) {
+                            } else if (requestType.equals(SingletonMagic.TOP_RENTAL)) {
                                 Log.d("JinuMain", "topRentalFragment");
                                 MovieListFragment.setTopRentalsList(movieArray);
                                 updateUI(MovieListFragment.TOP_RENTALS_TAB);

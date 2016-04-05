@@ -20,7 +20,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     private static final int PAGE_COUNT = 3;
     private static String tabTitles[] = new String[] {"New Movies",
             "Top Rentals", "Your Recommendations"};
-    private MovieListFragment[] movieListFragments = new MovieListFragment[3];
+    private MovieListFragment[] movieListFragments = new MovieListFragment[PAGE_COUNT];
     private static boolean change;
     private Context context;
 
@@ -62,7 +62,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
         Log.i("GTMovies", "getItem position=" + position);
         Log.i("GTMovies", "Tabs3");
         MovieListFragment fragment;
-        if (position < 3) {
+        if (position < PAGE_COUNT) {
             MovieListFragment newFragment = MovieListFragment.newInstance(position);
             Bundle arguments = new Bundle();
             arguments.putInt(ARG_ITEM_ID, position);
