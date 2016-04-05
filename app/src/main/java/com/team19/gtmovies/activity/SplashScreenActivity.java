@@ -169,7 +169,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     /**
      * Obtains the movies from the API
      * @param requestType differetiates new movies and top rental
-     * @param movieList list of movies to get details about for RECOMMENDATIONS
+     * @param movieList list of movies to get details about for recommendations
      */
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
@@ -189,7 +189,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             if (movieList == null || movieList.size() <= 0) {
                 return;
             }
-            Snackbar.make(rootView, "Getting RECOMMENDATIONS...", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(rootView, "Getting recommendations...", Snackbar.LENGTH_SHORT).show();
             Log.d("finished", "number of recs=" + movieList.size());
 
             final Map<Integer, Movie> movieMap = new ConcurrentHashMap<>();

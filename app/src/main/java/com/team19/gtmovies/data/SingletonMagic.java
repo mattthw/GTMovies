@@ -13,7 +13,7 @@ import com.android.volley.toolbox.Volley;
 /**
  * Created by Jim Jang on 2016-02-22.
  */
-public class SingletonMagic {
+public final class SingletonMagic {
     // Basic URL for the Tomato API
     // Has three %s placeholders in the middle of BASE_URL
     public static final String BASE_URL =
@@ -27,7 +27,7 @@ public class SingletonMagic {
 
     //Setting strings for URL
     public static final String NUM_MOVIES = "limit=%d";
-    public static final String COUNTRY_S = "COUNTRY_S=%s";
+    public static final String COUNTRY = "country=%s";
     public static final String PER_PAGE = "page_limit=%d";
     public static final String NUM_PAGE = "page=%d";
     public static final String PROF_KEY = "yedukp76ffytfuy24zsqk7f5";

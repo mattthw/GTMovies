@@ -54,12 +54,12 @@ public class User<T extends Comparable<T>>
      * @param p password
      * @param n name
      * @throws IllegalUserException if try to create with invalid parameters
-     * @throws NullUserException if parameters null
+     * @throws IllegalArgumentException if parameters null
      */
     public User (String u, String p, String n)
-            throws IllegalUserException, NullPointerException {
+            throws IllegalUserException, IllegalArgumentException {
         if (u == null || p == null || n == null) {
-            throw new NullPointerException("Tried creating a user using null parameters.");
+            throw new IllegalArgumentException("Tried creating a user using null parameters.");
         }
         if (u.length() < 4 || p.length() < 4) {
             throw new IllegalUserException("Username and Password must be >= 4 chars");
