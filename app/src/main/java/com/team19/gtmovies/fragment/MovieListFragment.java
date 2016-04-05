@@ -518,16 +518,19 @@ public class MovieListFragment extends Fragment {
     public static void updateAdapter(int page) {
         switch (page) {
             case NEW_MOVIES_TAB:
-                if (newMoviesAdapter != null)
+                if (newMoviesAdapter != null) {
                     newMoviesAdapter.swapList(newMoviesList);
+                }
                 break;
             case TOP_RENTALS_TAB:
-                if (topRentalsAdapter != null)
+                if (topRentalsAdapter != null) {
                     topRentalsAdapter.swapList(topRentalsList);
+                }
                 break;
             case YOUR_RECOMMENDATIONS_TAB:
-                if (yourRecommendationsAdapter != null)
+                if (yourRecommendationsAdapter != null) {
                     yourRecommendationsAdapter.swapList(yourRecommendationsList);
+                }
                 break;
             default:
                 Log.e("MovieListFragment", "invalid page for updateAdapter");
@@ -553,29 +556,6 @@ public class MovieListFragment extends Fragment {
         return searchMovieList;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Innter class for recyclerview adapter
      */
@@ -584,41 +564,6 @@ public class MovieListFragment extends Fragment {
         private List<Movie> movieList;
         private View itemView;
         private int oldPosition;
-
-        /**
-         * inner class for RecyclerView.ViewHolder
-         */
-        public class MovieViewHolder extends RecyclerView.ViewHolder {
-            public final View mView;
-            public final NetworkImageView mMoviePosterView;
-            public final TextView mMovieTitleView;
-            public final TextView mMovieRatingView;
-            public final TextView mMovieDescriptionView;
-            public Movie mMovieInfo;
-
-            /**
-             * public constructor for viewholder
-             * @param itemView current view
-             */
-            public MovieViewHolder(View itemView) {
-                super(itemView);
-
-                Log.d("MLFrag", "create new MovieViewHolder");
-
-                mView = itemView;
-                mMoviePosterView = (NetworkImageView) itemView.findViewById(R.id.movie_poster);
-                mMoviePosterView.setDefaultImageResId(R.mipmap.slowpoke);
-                mMoviePosterView.setErrorImageResId(R.mipmap.load_error3);
-                mMovieTitleView = (TextView) itemView.findViewById(R.id.movie_title);
-                mMovieRatingView = (TextView) itemView.findViewById(R.id.movie_rating);
-                mMovieDescriptionView = (TextView) itemView.findViewById(R.id.movie_description);
-            }
-
-            @Override
-            public String toString() {
-                return super.toString() + " '" + mMovieTitleView.getText() + "'";
-            }
-        }
 
         /**
          * Public constructor for adapter
@@ -783,9 +728,43 @@ public class MovieListFragment extends Fragment {
 
             }
         }
-
         public List getMovieList() {
             return movieList;
+        }
+
+        /**
+         * inner class for RecyclerView.ViewHolder
+         */
+        public class MovieViewHolder extends RecyclerView.ViewHolder {
+            public final View mView;
+            public final NetworkImageView mMoviePosterView;
+            public final TextView mMovieTitleView;
+            public final TextView mMovieRatingView;
+            public final TextView mMovieDescriptionView;
+            public Movie mMovieInfo;
+
+            /**
+             * public constructor for viewholder
+             * @param itemView current view
+             */
+            public MovieViewHolder(View itemView) {
+                super(itemView);
+
+                Log.d("MLFrag", "create new MovieViewHolder");
+
+                mView = itemView;
+                mMoviePosterView = (NetworkImageView) itemView.findViewById(R.id.movie_poster);
+                mMoviePosterView.setDefaultImageResId(R.mipmap.slowpoke);
+                mMoviePosterView.setErrorImageResId(R.mipmap.load_error3);
+                mMovieTitleView = (TextView) itemView.findViewById(R.id.movie_title);
+                mMovieRatingView = (TextView) itemView.findViewById(R.id.movie_rating);
+                mMovieDescriptionView = (TextView) itemView.findViewById(R.id.movie_description);
+            }
+
+            @Override
+            public String toString() {
+                return super.toString() + " '" + mMovieTitleView.getText() + "'";
+            }
         }
     }
 }

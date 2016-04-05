@@ -280,8 +280,9 @@ public class IOActions extends Application {
      * @throws NullUserException if DNE
      */
     public static void deleteUser(User user) throws NullUserException {
-        if (user == null)
+        if (user == null){
             throw new NullUserException("User is null");
+        }
 
         String url = "http://45.55.175.68/test.php?mode=2&uname='" + user.getUsername() + "'";
         try {

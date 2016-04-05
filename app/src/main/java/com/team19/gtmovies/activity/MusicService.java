@@ -22,12 +22,6 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
     public MusicService() {
     }
 
-    public class ServiceBinder extends Binder {
-        MusicService getService() {
-            return MusicService.this;
-        }
-    }
-
     @Override
     public IBinder onBind(Intent arg0) {
         return mBinder;
@@ -119,5 +113,11 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
             }
         }
         return false;
+    }
+
+    public class ServiceBinder extends Binder {
+        MusicService getService() {
+            return MusicService.this;
+        }
     }
 }
