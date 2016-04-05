@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.android.volley.toolbox.NetworkImageView;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.activity.MovieDetailActivity;
-import com.team19.gtmovies.activity.MovieListActivity;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.pojo.Movie;
@@ -30,6 +29,7 @@ import java.util.List;
  * This fragment is either contained in a {@link MovieListActivity}
  * in two-pane mode (on tablets) or a {@link MovieDetailActivity}
  * on handsets.
+ *
  * @author Austin Leal
  * @version 1.0
  */
@@ -67,9 +67,11 @@ public class MovieListFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
 
     //TODO: ERASE THIS FUNCTION AFTER DEBUG
+
     /**
      * Used only for debugging purposes
      * Returns the name of the said tab and the titles of the Movies associated with the tab
+     *
      * @param position the target position of the tab
      * @return the title of the tab and the title of the Movies associated with the tab
      */
@@ -213,19 +215,33 @@ public class MovieListFragment extends Fragment {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             boolean scrolled;
             int oldy = -1;
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == 0 && !scrolled && oldy < 0 && mAdapter.movieList != null
-                        && mAdapter.movieList.size() > 4
-                        && getArguments().getInt(ARG_ITEM_ID) != YOUR_RECOMMENDATIONS_TAB) {
-                    if (getActivity().findViewById(R.id.main_toolbar).getVisibility()
-                            == View.VISIBLE) {
-                        //Todo: Jinu, this would be where we would refresh the page
-                        Log.d("Scroll", "refresh page");
-                    } else {
-                        mAdapter.toggleTopBars(-1);
+                if (mAdapter.movieList != null) {
+                    if (newState == 0
+                            && !scrolled
+                            && oldy < 0
+                            && mAdapter.movieList.size() > 4
+                            && getArguments().getInt(ARG_ITEM_ID) != YOUR_RECOMMENDATIONS_TAB) {
+                        if (getActivity().findViewById(R.id.main_toolbar).getVisibility()
+                                == View.VISIBLE) {
+                            //Todo: Jinu, this would be where we would refresh the page
+                            Log.d("Scroll", "refresh page");
+                        } else {
+                            mAdapter.toggleTopBars(-1);
+                        }
+                    } else if (newState == 2 && mAdapter.movieList != null
+                            && mAdapter.movieList.size() > 4
+                            && getArguments().getInt(ARG_ITEM_ID) != YOUR_RECOMMENDATIONS_TAB) {
+                        mAdapter.toggleTopBars(oldy);
+                        Log.d("Toggle", "2scroll oldy=" + oldy);
                     }
-                } /*else if (newState == 0
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.d("OnScrollState", "newState=" + newState);
+                scrolled = false;
+                /*else if (newState == 0
                         && (getArguments().getInt(ARG_ITEM_ID) == YOUR_RECOMMENDATIONS_TAB
                         || mAdapter.getMovieList() == yourRecommendationsList)) {
                     Log.d("RecScroll", "called");
@@ -241,15 +257,6 @@ public class MovieListFragment extends Fragment {
                             //        = CurrentState.getClosedHeight() - R.dimen.text_margin;
                         }
                     }*/
-                if (newState == 2 && mAdapter.movieList != null
-                        && mAdapter.movieList.size() > 4
-                        && getArguments().getInt(ARG_ITEM_ID) != YOUR_RECOMMENDATIONS_TAB) {
-                        mAdapter.toggleTopBars(oldy);
-                        Log.d("Toggle", "2scroll oldy=" + oldy);
-                }
-                super.onScrollStateChanged(recyclerView, newState);
-                Log.d("OnScrollState", "newState=" + newState);
-                scrolled = false;
             }
 
             @Override
@@ -262,7 +269,6 @@ public class MovieListFragment extends Fragment {
                 }
             }
         });
-
 
 
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -376,6 +382,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Changes newMovieList.
+     *
      * @param list list to set new movies list to
      * @return true if successfully set to provided argument false if unable to
      */
@@ -390,6 +397,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Changes topRentalsList.
+     *
      * @param list list to set top rentals list to
      * @return true if successfully set to provided argument false if unable to
      */
@@ -404,6 +412,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Changes movielist.
+     *
      * @param list list to set recommendations to
      * @return true if successfully set to provided argument false if unable to
      */
@@ -418,6 +427,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Changes searchMovieList on search
+     *
      * @param list new list of movies from search query
      * @return boolean if list can be used to replace movie search list
      */
@@ -431,6 +441,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Indicates whether newMoviesList has been set
+     *
      * @return True if newMoviesList not null, false otherwise
      */
     public static boolean hasNewMoviesList() {
@@ -439,6 +450,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Indicates whether topRentalsList has been set
+     *
      * @return True if topRentalsList not null, false otherwise
      */
     public static boolean hasTopRentalsList() {
@@ -452,6 +464,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Indicates whether yourRecommendationsList has been set
+     *
      * @return True if yourRecommendationsList not null, false otherwise
      */
     public static boolean hasYourRecommendationsList() {
@@ -465,6 +478,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * public getter for newMovieList
+     *
      * @return current newMovieList
      */
     public static List getNewMovieList() {
@@ -473,6 +487,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Sets current tab
+     *
      * @param position position of current tab
      */
     public static void setTabPosition(int position) {
@@ -496,6 +511,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * A getter for where or not able to display in two panes
+     *
      * @return true if able to display in two panes
      */
     public static boolean isTwoPane() {
@@ -513,6 +529,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Updates array in ArrayList
+     *
      * @param page page to change
      */
     public static void updateAdapter(int page) {
@@ -539,6 +556,7 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Determins of all of the arrays have been populated or not.
+     *
      * @return true if all arrays not null, false otherwise
      */
     public static boolean isFilled() {
@@ -567,6 +585,7 @@ public class MovieListFragment extends Fragment {
 
         /**
          * Public constructor for adapter
+         *
          * @param movieInfo list of movies
          */
         public MovieRecyclerViewAdapter(List<Movie> movieInfo) {
@@ -676,6 +695,7 @@ public class MovieListFragment extends Fragment {
 
         /**
          * Swaps current adapter list
+         *
          * @param list new list to change to
          * @return true if changed, false if no action
          */
@@ -691,13 +711,14 @@ public class MovieListFragment extends Fragment {
 
         /**
          * Collapses top bars on scroll
+         *
          * @param position new scroll position
          */
         private void toggleTopBars(int position) {
             Log.d("toggleTopBars", "old:" + oldPosition + " new:" + position);
             //ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.main_view2);
             View linearView = getActivity().findViewById(R.id.main_view2);
-            View criteriaBar =  getActivity().findViewById(R.id.criteria_bar);
+            View criteriaBar = getActivity().findViewById(R.id.criteria_bar);
             Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.main_toolbar);
             ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.view_pager);
 
@@ -728,6 +749,7 @@ public class MovieListFragment extends Fragment {
 
             }
         }
+
         public List getMovieList() {
             return movieList;
         }
@@ -745,6 +767,7 @@ public class MovieListFragment extends Fragment {
 
             /**
              * public constructor for viewholder
+             *
              * @param itemView current view
              */
             public MovieViewHolder(View itemView) {

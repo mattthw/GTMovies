@@ -15,12 +15,11 @@ import android.widget.Toast;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
-import com.team19.gtmovies.fragment.MovieListFragment;
 import com.team19.gtmovies.pojo.User;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * UserListActivity is called when user lcocks on 'Users' in
@@ -29,14 +28,15 @@ import java.util.Collections;
  */
 public class UserListActivity extends AppCompatActivity {
 
-    private ListView mainListView ;
-    private ArrayAdapter<String> listAdapter ;
+    private ListView mainListView;
+    private ArrayAdapter<String> listAdapter;
     private Intent userIntent = null;
 
     /**
      * default oncreate
      * adds actionbar for overflow
      * calls populatList for ListView
+     *
      * @param savedInstanceState
      */
     @Override
@@ -52,10 +52,11 @@ public class UserListActivity extends AppCompatActivity {
 
     /**
      * adds proper rank to users in list
-     * @param usernameList   ArrayList of users
+     *
+     * @param usernameList ArrayList of users
      * @return formatted user list
      */
-    public ArrayList<String> formatList(ArrayList<String> usernameList) {
+    public List<String> formatList(List<String> usernameList) {
         String hisRank = "";
         Log.d("GTMovies", "populatelist: " + usernameList);
         for (int i = 0; i < usernameList.size(); i++) {
@@ -65,7 +66,7 @@ public class UserListActivity extends AppCompatActivity {
                 hisRank = "[A]";
             } else if (perm == 1) {
                 hisRank = "[U]";
-            }else if (perm == 0) {
+            } else if (perm == 0) {
                 hisRank = "[L]";
             } else if (perm == -1) {
                 hisRank = "[B]";
@@ -80,28 +81,28 @@ public class UserListActivity extends AppCompatActivity {
      */
     public void populateList() {
         // Find the ListView resource.
-        mainListView = (ListView) findViewById( R.id.userListView );
-        ArrayList<String> usernameList = IOActions.getUsernames();
+        mainListView = (ListView) findViewById(R.id.userListView);
+        ArrayList<String> usernameList = (ArrayList<String>) IOActions.getUsernames();
         Collections.sort(usernameList);
         User tmp = CurrentState.getUser();
         usernameList.remove(tmp.getUsername());
-        usernameList = formatList(usernameList);
+        usernameList = (ArrayList<String>) formatList(usernameList);
         // Create ArrayAdapter using the usernames list.
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernameList);
         // Set the ArrayAdapter as the ListView's adapter.
-        mainListView.setAdapter( listAdapter );
+        mainListView.setAdapter(listAdapter);
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
 
                 Object o = mainListView.getItemAtPosition(position);
-                String name=(String)o;//As you are using Default String Adapter
+                String name = (String) o;//As you are using Default String Adapter
                 name = name.substring(name.lastIndexOf(' ') + 1);
                 userIntent.putExtra("UNAME", name);
                 if (IOActions.getUserByUsername(name) != null) {
                     startActivityForResult(userIntent, UserProfileActivity.PROFILE_VIEWED);
                 } else {
-                    Toast.makeText(getBaseContext(),name + " does not exist!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), name + " does not exist!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -120,9 +121,10 @@ public class UserListActivity extends AppCompatActivity {
 
     /**
      * do things depending on results from activities called.
+     *
      * @param requestCode what we are checking
-     * @param resultCode value returned for what being checked
-     * @param data idk
+     * @param resultCode  value returned for what being checked
+     * @param data        idk
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

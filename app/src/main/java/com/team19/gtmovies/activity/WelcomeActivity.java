@@ -30,14 +30,15 @@ public class WelcomeActivity extends AppCompatActivity {
             actionBar.hide();
         }
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lobster-Regular.ttf");
-        TextView title = (TextView)findViewById(R.id.welcomeView);
-        TextView subtitle = (TextView)findViewById(R.id.msgView);
+        TextView title = (TextView) findViewById(R.id.welcomeView);
+        TextView subtitle = (TextView) findViewById(R.id.msgView);
         title.setTypeface(myTypeface);
         subtitle.setTypeface((myTypeface));
     }
 
     /**
      * called when "Login" button does onClick
+     *
      * @param view from XML/activity
      */
     public void userLogin(View view) {
@@ -48,6 +49,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     /**
      * called when "Register" button does onClick
+     *
      * @param view from XML/activity
      */
     public void userRegister(View view) {
@@ -58,6 +60,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     /**
      * hidden method. don't tell Matt if you find this.
+     *
      * @param view from XML/activity
      */
     public void disguisedToast(View view) {
@@ -71,12 +74,12 @@ public class WelcomeActivity extends AppCompatActivity {
         if (count == 4) {
             toast = Toast.makeText(context, hi, duration);
         } else if (count == 7) {
-                toast = Toast.makeText(context, "Stop", duration);
+            toast = Toast.makeText(context, "Stop", duration);
         } else if (count == 10) {
             toast = Toast.makeText(context, au, Toast.LENGTH_LONG);
         }
 
-        if (toast != null){
+        if (toast != null) {
             toast.show();
         }
         count += 1;

@@ -143,7 +143,7 @@ public class UserListActivityTest {
     public void checkFormatList() throws MissingMethodInvocationException,
             NotAMockException {
         assertNotNull(mActivityRule);
-        ArrayList<String> tmp = mActivityRule.getActivity().formatList(testNames);
+        ArrayList<String> tmp = (ArrayList<String>) mActivityRule.getActivity().formatList(testNames);
         assertNotNull(tmp);
 
     }

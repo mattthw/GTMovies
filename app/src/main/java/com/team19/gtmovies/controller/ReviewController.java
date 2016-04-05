@@ -22,6 +22,7 @@ public class ReviewController {
 
     /**
      * Obtains list of RECOMMENDATIONS by parameter
+     *
      * @param code filter for list
      *             1: MAJOR
      *             2: GENRE
@@ -45,7 +46,8 @@ public class ReviewController {
     /**
      * Obtains default list of RECOMMENDATIONS
      * (requires user average rating greater than
-     *      specified amount)
+     * specified amount)
+     *
      * @return default list of RECOMMENDATIONS
      */
     public static List<Movie> getRecommendations() {
@@ -66,6 +68,7 @@ public class ReviewController {
 
     /**
      * Recommends Movies depending on the Movies liked by the User's major
+     *
      * @return List of recommended Movies
      */
     private static List getRecommendationsByMajor() {

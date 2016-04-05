@@ -14,6 +14,7 @@ public class NullUserException extends Exception {
 
     /**
      * constructor
+     *
      * @param message custom message
      */
     public NullUserException(String message) {

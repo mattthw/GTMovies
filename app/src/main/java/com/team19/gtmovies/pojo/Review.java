@@ -31,10 +31,10 @@ public class Review implements Serializable {
      * Creates a review for the Customer with a complete score and a complete
      * comment.
      *
-     * @param score   the score the Customer gave the movie
-     * @param comment the "review/comment" the user gave the movie.
+     * @param score1   the score the Customer gave the movie
+     * @param comment1 the "review/comment" the user gave the movie.
      * @throws IllegalArgumentException if score > 5 or <0, if comment is
-     *          null, or if username is null.
+     *                                  null, or if username is null.
      */
     public Review(int score1, String comment1, String username1, int movieID1) {
         if (score1 < 0 || score1 > 5) {
@@ -107,7 +107,7 @@ public class Review implements Serializable {
     /**
      * Method updates the username associated with this review.
      *
-     * @param username the new username to associate with this rating.
+     * @param username1 the new username to associate with this rating.
      */
     public void setUsername(String username1) {
         this.username = username1;
@@ -116,7 +116,7 @@ public class Review implements Serializable {
     /**
      * Method updates the movie ID associated with this review.
      *
-     * @param movieID the new movie ID to associate with this rating.
+     * @param movieID1 the new movie ID to associate with this rating.
      */
     public void setMovieID(int movieID1) {
         this.movieID = movieID1;

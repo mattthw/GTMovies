@@ -1,4 +1,5 @@
 package com.team19.gtmovies.activity;
+
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -13,7 +14,7 @@ import com.team19.gtmovies.R;
 /**
  * Created by Jim Jang on 2016-03-29.
  */
-public class MusicService extends Service  implements MediaPlayer.OnErrorListener {
+public class MusicService extends Service implements MediaPlayer.OnErrorListener {
 
     private final IBinder mBinder = new ServiceBinder();
     MediaPlayer mPlayer;
@@ -72,7 +73,7 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
      * Resumes the music
      */
     public void resumeMusic() {
-        if (mPlayer.isPlaying() == false) {
+        if (!mPlayer.isPlaying()) {
             mPlayer.seekTo(length);
             mPlayer.start();
         }

@@ -25,6 +25,7 @@ public class CriteriaActivity extends RelativeLayout {
 
     /**
      * Public constructor for ChipView.
+     *
      * @param context current context
      */
     public CriteriaActivity(Context context) {
@@ -56,6 +57,7 @@ public class CriteriaActivity extends RelativeLayout {
 
         /**
          * Constructor for chip
+         *
          * @param text text to display on chip
          */
         public Chip(String text) {
@@ -65,6 +67,7 @@ public class CriteriaActivity extends RelativeLayout {
 
         /**
          * getter for view
+         *
          * @return chip view
          */
         public View getView() {

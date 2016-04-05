@@ -39,6 +39,7 @@ public final class SingletonMagic {
 
     /**
      * Constructor for Singleton. Takes the Application Context as parameter
+     *
      * @param context Context of the Singleton. Recommended to be ApplicationContext
      */
     private SingletonMagic(Context context) {
@@ -46,9 +47,11 @@ public final class SingletonMagic {
         mRequestQueue = getRequestQueue();
         mImageLoader = new ImageLoader(this.mRequestQueue, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap> mCache = new LruCache<String, Bitmap>(10);
+
             public void putBitmap(String url, Bitmap bitmap) {
                 mCache.put(url, bitmap);
             }
+
             public Bitmap getBitmap(String url) {
                 return mCache.get(url);
             }
@@ -58,6 +61,7 @@ public final class SingletonMagic {
     /**
      * Returns the instance for the Singleton
      * Creates a new one if instance does not exist
+     *
      * @param context Context of the Singleton. Recommended to be ApplicationContext
      * @return the instance of the Singleton
      */
@@ -70,6 +74,7 @@ public final class SingletonMagic {
 
     /**
      * Returns the Singleton RequestQueue
+     *
      * @return the Singleton RequestQueue
      */
     public RequestQueue getRequestQueue() {
@@ -83,6 +88,7 @@ public final class SingletonMagic {
 
     /**
      * Returns the Singleton ImageLoader
+     *
      * @return the Singleton ImageLoader
      */
     public ImageLoader getImageLoader() {
@@ -94,6 +100,7 @@ public final class SingletonMagic {
 
     /**
      * Adds a Volley.Request to the RequestQueue
+     *
      * @param req the Request to add
      * @param <T> the expected response type of the Request
      */

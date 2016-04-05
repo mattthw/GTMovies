@@ -102,6 +102,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             hide();
         }
     };*/
+
     /**
      * Touch listener to use for in-layout UI controls to delay hiding the
      * system UI. This is to prevent the jarring behavior of controls going away
@@ -116,7 +117,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             return false;
         }
     };*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +128,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         rootView = findViewById(R.id.splash_view);
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lobster-Regular.ttf");
-        TextView myTextView = (TextView)findViewById(R.id.splash_view);
+        TextView myTextView = (TextView) findViewById(R.id.splash_view);
         myTextView.setTypeface(myTypeface);
         splashScreenVisited = true;
         try {
@@ -168,8 +168,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     /**
      * Obtains the movies from the API
+     *
      * @param requestType differetiates new movies and top rental
-     * @param movieList list of movies to get details about for recommendations
+     * @param movieList   list of movies to get details about for recommendations
      */
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
@@ -244,7 +245,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 /*TimerTask task = new TimerTask() {
                     @Override
                     public void run() {*/
-                        SingletonMagic.getInstance(getBaseContext()).addToRequestQueue(recoRequest);
+                SingletonMagic.getInstance(getBaseContext()).addToRequestQueue(recoRequest);
                 /*    }
                 };*/
                 Log.d("Volley Timer", "Task Created");
@@ -357,6 +358,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void finished() {
         finish();
     }
+
     public void finish() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(SPLASH_SCREEN_VISITED, true);

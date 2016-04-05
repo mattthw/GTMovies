@@ -15,6 +15,7 @@ public class IllegalUserException extends Exception {
 
     /**
      * constructor
+     *
      * @param s custom message
      */
     public IllegalUserException(String s) {

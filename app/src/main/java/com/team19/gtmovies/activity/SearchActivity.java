@@ -56,6 +56,7 @@ public class SearchActivity extends AppCompatActivity {
 
     /**
      * Handles intents in order to fetch query and display results.
+     *
      * @param intent intent to manage
      */
     private void handleIntent(Intent intent) {
@@ -173,6 +174,7 @@ public class SearchActivity extends AppCompatActivity {
     // REFERENCE PURPOSES.          //
     //                   JINU JANG  //
     //////////////////////////////////
+
     /**
      * Grabs the JSONObject from the next Page
      *
@@ -234,7 +236,6 @@ public class SearchActivity extends AppCompatActivity {
     /**
      * Grabs the JSONObject from the previous Page
      *
-     * @return the JSONObject from the previous Page
      * @throws UnsupportedOperationException when no prevPage exists currently
      */
     public void grabPrevPage() throws UnsupportedOperationException {
