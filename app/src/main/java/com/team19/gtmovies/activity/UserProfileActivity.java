@@ -289,19 +289,6 @@ public class UserProfileActivity extends AppCompatActivity {
         eMajor.setOnItemSelectedListener(new MajorSpinnerListener());
     }
 
-    /**
-     * Class needed for spinner XML item
-     */
-    private class MajorSpinnerListener implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView parent, View view, int pos, long id) {
-            selectedMajor = parent.getItemAtPosition(pos).toString();
-        }
-        @Override
-        public void onNothingSelected(AdapterView parent) {
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -357,5 +344,17 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Class needed for spinner XML item
+     */
+    private class MajorSpinnerListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView parent, View view, int pos, long id) {
+            selectedMajor = parent.getItemAtPosition(pos).toString();
+        }
+        @Override
+        public void onNothingSelected(AdapterView parent) {
+        }
+    }
 
 }

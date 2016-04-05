@@ -424,35 +424,6 @@ public class MainActivity extends AppCompatActivity
         */
     }
 
-
-    private class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
-        private List<Movie> movieList;
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            switch (params[0]) {
-                case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                    getMoviesFromAPI(SingletonMagic.recommendations,
-                            recommendations);
-                    break;
-                default:
-            }
-            for (int i = 0; i < 1; i++) {
-                Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
-            }
-            for (int i = 0; i < 1; i++) {
-                Log.i("Useless", "Do Androids Dream of Electric Sheep?");
-            }
-            return params[0];
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            //super.onPostExecute(integer);
-        }
-
-    }
-
-
     /**
      * Updates user interface
      * @param page which tab to update
@@ -662,5 +633,32 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();
     }*/
+
+    private class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
+        private List<Movie> movieList;
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            switch (params[0]) {
+                case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
+                    getMoviesFromAPI(SingletonMagic.recommendations,
+                            recommendations);
+                    break;
+                default:
+            }
+            for (int i = 0; i < 1; i++) {
+                Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
+            }
+            for (int i = 0; i < 1; i++) {
+                Log.i("Useless", "Do Androids Dream of Electric Sheep?");
+            }
+            return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            //super.onPostExecute(integer);
+        }
+
+    }
 
 }

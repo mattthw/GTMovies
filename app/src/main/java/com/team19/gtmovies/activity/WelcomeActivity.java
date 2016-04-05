@@ -68,10 +68,15 @@ public class WelcomeActivity extends AppCompatActivity {
 
         Toast toast = null;
 
-        if (count == 4) toast = Toast.makeText(context, hi, duration);
-        else if (count == 7) toast = Toast.makeText(context, "Stop", duration);
-        else if (count == 10) toast = Toast.makeText(context, au, Toast.LENGTH_LONG);
-        if (toast != null) toast.show();
+        if (count == 4) {
+            toast = Toast.makeText(context, hi, duration);
+        } else if (count == 7) {
+                toast = Toast.makeText(context, "Stop", duration);
+        } else if (count == 10) toast = Toast.makeText(context, au, Toast.LENGTH_LONG);
+
+        if (toast != null){
+            toast.show();
+        }
         count += 1;
     }
 

@@ -351,6 +351,22 @@ public class SplashScreenActivity extends AppCompatActivity {
         finishedYourRecommendations = true;
     }
 
+    /**
+     * What to do after UI updated
+     */
+    private void finished() {
+        finish();
+    }
+    public void finish() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(SPLASH_SCREEN_VISITED, true);
+        //NEED THIS setFlags TO CLEAR OLD LOGINACTIVITY INTENTS
+        // WHICH MAY PREVENT NEW LOGINACTIVITY
+        //FROM BEING STARTED -Matt
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        super.finish();
+    }
 
     protected class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
         private List<Movie> movieList;
@@ -391,60 +407,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             //finished();
         }
     }
-
-
-
-    /**
-     * What to do after UI updated
-     */
-    private void finished() {
-        finish();
-    }
-    public void finish() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(SPLASH_SCREEN_VISITED, true);
-        //NEED THIS setFlags TO CLEAR OLD LOGINACTIVITY INTENTS
-        // WHICH MAY PREVENT NEW LOGINACTIVITY
-        //FROM BEING STARTED -Matt
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        super.finish();
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /*@Override
     protected void onPostCreate(Bundle savedInstanceState) {
