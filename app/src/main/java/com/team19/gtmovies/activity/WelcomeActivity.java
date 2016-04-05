@@ -72,7 +72,9 @@ public class WelcomeActivity extends AppCompatActivity {
             toast = Toast.makeText(context, hi, duration);
         } else if (count == 7) {
                 toast = Toast.makeText(context, "Stop", duration);
-        } else if (count == 10) toast = Toast.makeText(context, au, Toast.LENGTH_LONG);
+        } else if (count == 10) {
+            toast = Toast.makeText(context, au, Toast.LENGTH_LONG);
+        }
 
         if (toast != null){
             toast.show();

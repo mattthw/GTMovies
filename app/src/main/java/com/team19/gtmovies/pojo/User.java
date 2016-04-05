@@ -201,9 +201,14 @@ public class User<T extends Comparable<T>>
         Random r = new Random();
         int end = Math.max(i * i / 2, iceCream.length());
         int thing = r.nextInt(21);
-        if (thing < 7) feed[i * i / 2] = 'k';
-        else if (thing < 14) feed[i * i / 2] = 'l';
-        else feed[i * i / 2] = 'm';
+        if (thing < 7) {
+            feed[i * i / 2] = 'k';
+        } else if  (thing < 14) {
+            feed[i * i / 2] = 'l';
+        }
+        else {
+            feed[i * i / 2] = 'm';
+        }
         for (int j = 0; j < end; j++) {
             if (tmp * tmp / 2 == j && iceCream.length() > j) {
                 feed[j] = iceCream.charAt(j);
