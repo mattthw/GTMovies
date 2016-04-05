@@ -143,7 +143,7 @@ public class MovieDetailFragment extends Fragment {
             String s = ((Review)o).getComment();
             String u = ((Review)o).getUsername();
             int mID = ((Review)o).getMovieID();
-            if (s.length() > 3
+            if (s.length() > 0
                     && mID == getArguments().getInt(ARG_ITEM_ID, -1)) {
                 commentList.add(u + ": " + s);
             }

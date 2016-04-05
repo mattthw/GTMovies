@@ -5,6 +5,7 @@ import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.pojo.User;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.test.ActivityInstrumentationTestCase2;
 import android.support.test.runner.AndroidJUnit4;
@@ -38,8 +39,10 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.team19.gtmovies.data.CurrentState.*;
+import static com.team19.gtmovies.data.IOActions.getUsernames;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.mockito.Mockito.doReturn;
@@ -54,8 +57,9 @@ import static org.mockito.Mockito.when;
  * Created by matt on 4/3/16.
  * tests populateList in UserListActivity
  */
-@RunWith(AndroidJUnit4.class)
+
 //@RunWith(MockitoJUnitRunner.class)
+@RunWith(AndroidJUnit4.class)
 public class UserListActivityTest {
 
     private static User u0 = null;
@@ -64,10 +68,22 @@ public class UserListActivityTest {
     private static User u3 = null;
     private static ArrayList<String> testNames = null;
 
+    /** this line is preferred way to hook up to activity */
+    @Rule
+    public ActivityTestRule<UserListActivity> mActivityRule;
+    @InjectMocks
+    CurrentState currState;
+    @InjectMocks
+    IOActions ioActions;
+    @Mock
+    User user;
     @Before
     public void setUp() throws Exception {
-//        MockitoAnnotations.initMocks(this);
-//        mockActivity = Mockito.mock(UserListActivity.class);
+        MockitoAnnotations.initMocks(this);
+        mActivityRule = new ActivityTestRule<>(UserListActivity.class);
+        InstrumentationRegistry.getContext();
+        //fake things
+
         u0 = new User ("oiwhdowaif", "passw", "");
         u1 = new User("bob94", "pass", "Bob");
         u2 = new User("dogsrule1", "pass", "Mark");
@@ -79,57 +95,56 @@ public class UserListActivityTest {
 
         u2.setBio("SUP GUYS?");
 
-        testNames = spy(new ArrayList<>(
+        testNames = new ArrayList<>(
                 Arrays.asList(
                         u0.getUsername(),
                         u1.getUsername(),
                         u2.getUsername(),
                         u3.getUsername()
                 )
-        ));
+        );
+        //mocked objects
+        user = Mockito.mock(User.class);
+        currState = Mockito.mock(CurrentState.class);
+        ioActions = Mockito.mock(IOActions.class);
+        //return u1 when getUser()
+//        doReturn(u1).when(currState);
+//        getUser();
+        when(user.getUsername()).thenReturn("bob94");
+//        //return custom list when getUSernames()
+//        doReturn(testNames).when(ioActions);
+//        getUsernames();
+//        //return this string when getUsername()
+//        doReturn("bob94").when(user);
+//        user.getUsername();
+//
+//        //trying return custom user a different way
+//        getUser();
+//        Mockito.when((User)null).thenReturn(u1);
+
+
 
     }
 
-    /** this line is preferred way to hook up to activity */
-    @Rule
-    public ActivityTestRule<UserListActivity> mActivityRule = new ActivityTestRule<>(UserListActivity.class);
+//
+//    @Test
+//    public void testFormatting() {
+//        ArrayList<String> res;
+//        res = mActivityRule.getActivity().formatList(testNames);
+//        assertThat(res.size(), is(res.size() - 1));
+//    }
+
 
     @Test
-    public void testFormatting() {
-        ArrayList<String> res;
-        res = mActivityRule.getActivity().formatList(testNames);
-        assertThat(res.size(), is(res.size() - 1));
+    public void checkClassNotNull() {
+        assertNotNull(mActivityRule);
     }
-    @InjectMocks
-    CurrentState currState = Mockito.mock(CurrentState.class);
-    @Mock
-    IOActions ioActions = Mockito.mock(IOActions.class);
-    @Mock
-    User user = Mockito.mock(User.class);
-
     @Test
     public void checkFormatList() throws MissingMethodInvocationException,
             NotAMockException {
-//        when(currState.getUser().getUsername()).thenReturn("Bob");
-        currState.setUser(u1);
-//        User tmp = currState.getUser();
-        doReturn(u1).when(currState).getUser();
-        doReturn(testNames).when(ioActions).getUsernames();
-        when(ioActions.getUsernames()).thenReturn(testNames);
-//        when(currState.getUser()).thenReturn(u1);
-//        verify(mockActivity).populateList();
-//        p("populateList() is called.");
-//        verify(mockActivity).formatList(testNames);
-        //check that it formatted u0 properly
-//        onView(withId(R.id.userListView))
-//            .check(matches(
-//                    withText(
-//                            containsString("[B]   " + "")
-//                    )
-//            ));
-//        when(mockActivity.formatList(testNames)).thenReturn(testNames);
-//        ArrayList<String> result = mockActivity.formatList(testNames);
-//        assertThat(result.size(), is(result.size() - 1));
-//        assertEquals(result, new ArrayList<String>(0));
+        assertNotNull(mActivityRule);
+        ArrayList<String> tmp = mActivityRule.getActivity().formatList(testNames);
+        assertNotNull(tmp);
+
     }
 }
