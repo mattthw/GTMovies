@@ -434,7 +434,7 @@ public class IOActions extends Application {
      * @param comment comment given by user
      * @return true if success
      */
-    public static boolean SaveNewRating(int movieid, int score, String comment) {
+    public static boolean saveNewRating(int movieid, int score, String comment) {
         if(comment.equals("")) {
             comment = "no comment";
         }

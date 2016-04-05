@@ -118,16 +118,8 @@ public class SearchActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 Log.e("JSON ERROR", "Fail to get connected URLs in search");
                             }
-                            if (nextURL != null) {
-                                nextable = true;
-                            } else {
-                                nextable = false;
-                            }
-                            if (prevURL != null) {
-                                prevable = true;
-                            } else {
-                                prevable = false;
-                            }
+                            nextable = nextURL != null;
+                            prevable = prevURL != null;
 
                             // AUSTIN THING JUST CTRL C V-ed
                             Log.e("GTMovies", "TabsSearch");
@@ -224,16 +216,8 @@ public class SearchActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             Log.e("JSON ERROR", "Fail to get connected URLs in search");
                         }
-                        if (nextURL != null) {
-                            nextable = true;
-                        } else {
-                            nextable = false;
-                        }
-                        if (prevURL != null) {
-                            prevable = true;
-                        } else {
-                            prevable = false;
-                        }
+                        nextable = nextURL != null;
+                        prevable = prevURL != null;
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -291,16 +275,8 @@ public class SearchActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             Log.e("JSON ERROR", "Fail to get connected URLs in search");
                         }
-                        if (nextURL != null) {
-                            nextable = true;
-                        } else {
-                            nextable = false;
-                        }
-                        if (prevURL != null) {
-                            prevable = true;
-                        } else {
-                            prevable = false;
-                        }
+                        nextable = nextURL != null;
+                        prevable = prevURL != null;
                     }
                 }, new Response.ErrorListener() {
                     @Override

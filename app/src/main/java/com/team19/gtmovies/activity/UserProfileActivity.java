@@ -282,36 +282,6 @@ public class UserProfileActivity extends AppCompatActivity {
         t.schedule(task, 1000);
     }
 
-
-    /** inner class for alert that user doesn't currently have a profile.
-     * (asks if they want to create one)
-     * if yes: allow to edit
-     * if no: return to main
-     *
-     * @author anonymous
-     * @version 1.0
-     */
-    public static class CreateProfileDialogFragment extends DialogFragment {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(userProfInstance.cu.getUsername() + " does not have a profile.")
-                    .setPositiveButton("Create profile", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // allow edit.
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            userProfInstance.finish();
-                        }
-                    });
-            // Create the AlertDialog object and return it
-            return builder.create();
-        }
-    }
-
     /**
      * add listener to spinner item
      */
@@ -355,6 +325,35 @@ public class UserProfileActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /** inner class for alert that user doesn't currently have a profile.
+     * (asks if they want to create one)
+     * if yes: allow to edit
+     * if no: return to main
+     *
+     * @author anonymous
+     * @version 1.0
+     */
+    public static class CreateProfileDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(userProfInstance.cu.getUsername() + " does not have a profile.")
+                    .setPositiveButton("Create profile", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // allow edit.
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            userProfInstance.finish();
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
         }
     }
 

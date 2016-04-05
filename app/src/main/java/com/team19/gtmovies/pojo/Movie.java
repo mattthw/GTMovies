@@ -349,9 +349,7 @@ public class Movie implements Comparable<Movie>, Serializable {
     }
 
     private boolean isLocal() {
-        if (getTitle() == null || getTitle().equals(""))
-            return true;
-        return false;
+        return getTitle() == null || getTitle().equals("");
     }
 
     /**

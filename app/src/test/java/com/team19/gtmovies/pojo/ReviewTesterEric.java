@@ -1,5 +1,5 @@
 package com.team19.gtmovies.pojo;
-import com.ibm.icu.impl.IllegalIcuArgumentException;
+//import com.ibm.icu.impl.IllegalIcuArgumentException;
 import com.team19.gtmovies.pojo.Review;
 
 import org.junit.Assert;

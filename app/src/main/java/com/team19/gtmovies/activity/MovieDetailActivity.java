@@ -169,7 +169,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                             //Integer tempID = gotIntent.getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1);
                             //save the review
                             try {
-                                IOActions.SaveNewRating(tempID,score,comment);
+                                IOActions.saveNewRating(tempID,score,comment);
                             } catch (IllegalArgumentException e) {
                                 Log.println(Log.ERROR, "GTMovies", e.getMessage());
                                 Snackbar.make(rootView, "Movie already reviewed.", Snackbar.LENGTH_SHORT).show();
