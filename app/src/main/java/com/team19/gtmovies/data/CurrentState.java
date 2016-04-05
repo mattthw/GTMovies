@@ -5,6 +5,7 @@ import com.team19.gtmovies.pojo.User;
 /**
  * Created by Austin on 2/22/2016.
  * used by all other classes when requesting current user info
+ * rgtrgrgtrs
  */
 public class CurrentState {
 //    private static final CurrentState ourInstance = new CurrentState();

@@ -209,8 +209,7 @@ public class IOActions extends Application {
             } else {
                 HashSet<Movie> temp = new HashSet<Movie>();
                 int id = Integer.parseInt(result);
-                result = st.nextToken(); // to title
-                String title = new String(result);
+                String title = st.nextToken();
                 result = st.nextToken(); // to rating
                 int rating = Integer.parseInt(result);
                 Log.d("GTMovies Database", "GetMovies: " + new Movie(id, title, rating));
@@ -218,8 +217,7 @@ public class IOActions extends Application {
                 while(st.hasMoreTokens()) {
                     result = st.nextToken();
                     id = Integer.parseInt(result);
-                    result = st.nextToken(); // to title
-                    title = new String(result);
+                    title = st.nextToken(); // to title
                     result = st.nextToken(); // to rating
                     rating = Integer.parseInt(result);
                     Log.d("GTMovies Database", "GetMovies: " + result);
@@ -532,24 +530,21 @@ public class IOActions extends Application {
                 return new ArrayList<Review>();
             } else {
                 ArrayList<Review> temp = new ArrayList<Review>();
-                String uname = new String(result);
+                String uname = result;
                 result = st.nextToken(); // to movieid
                 int movid = Integer.parseInt(result);
                 result = st.nextToken(); // to score
                 int score = Integer.parseInt(result);
-                result = st.nextToken(); // to comment
-                String comm = new String(result);
+                String comm = st.nextToken(); // to comment
                 Log.d("GTMovies Database", "getListMovieReviews: " + new Review(score, comm, uname, movid));
                 temp.add(new Review(score, comm, uname, movid));
                 while(st.hasMoreTokens()) {
-                    result = st.nextToken(); // to uname
-                    uname = new String(result);
+                    uname = st.nextToken();
                     result = st.nextToken(); // to movieid
                     movid = Integer.parseInt(result);
                     result = st.nextToken(); // to score
                     score = Integer.parseInt(result);
-                    result = st.nextToken(); // to comment
-                    comm = new String(result);
+                    comm = st.nextToken();
                     Log.d("GTMovies Database", "getListMovieReviews: " + new Review(score, comm, uname, movid));
                     temp.add(new Review(score, comm, uname, movid));
                 }
