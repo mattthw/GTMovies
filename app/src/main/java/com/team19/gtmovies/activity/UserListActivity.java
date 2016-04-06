@@ -18,6 +18,7 @@ import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.pojo.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,22 +57,27 @@ public class UserListActivity extends AppCompatActivity {
      * @param usernameList ArrayList of users
      * @return formatted user list
      */
-    public List<String> formatList(List<String> usernameList) {
+    public static ArrayList<String> formatList(ArrayList<String> usernameList) {
         String hisRank = "";
         Log.d("GTMovies", "populatelist: " + usernameList);
         for (int i = 0; i < usernameList.size(); i++) {
             Log.d("GTMovies", "populatelist: " + usernameList.get(i));
-            int perm = IOActions.getUserByUsername(usernameList.get(i)).getPermission();
-            if (perm == 2) {
-                hisRank = "[A]";
-            } else if (perm == 1) {
-                hisRank = "[U]";
-            } else if (perm == 0) {
-                hisRank = "[L]";
-            } else if (perm == -1) {
-                hisRank = "[B]";
+            User u = IOActions.getUserByUsername(usernameList.get(i));
+            if (u == null) {
+                usernameList.remove(usernameList.get(i));
+            } else {
+                int perm = u.getPermission();
+                if (perm == 2) {
+                    hisRank = "[A]";
+                } else if (perm == 1) {
+                    hisRank = "[U]";
+                } else if (perm == 0) {
+                    hisRank = "[L]";
+                } else if (perm == -1) {
+                    hisRank = "[B]";
+                }
+                usernameList.set(i, hisRank + "   " + usernameList.get(i));
             }
-            usernameList.set(i, hisRank + "   " + usernameList.get(i));
         }
         return usernameList;
     }
@@ -86,7 +92,7 @@ public class UserListActivity extends AppCompatActivity {
         Collections.sort(usernameList);
         User tmp = CurrentState.getUser();
         usernameList.remove(tmp.getUsername());
-        usernameList = (ArrayList<String>) formatList(usernameList);
+        usernameList = formatList(usernameList);
         // Create ArrayAdapter using the usernames list.
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernameList);
         // Set the ArrayAdapter as the ListView's adapter.
