@@ -5,6 +5,7 @@ import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.pojo.User;
 
+import android.app.Activity;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.test.ActivityInstrumentationTestCase2;
@@ -28,6 +29,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 
 import android.support.test.rule.ActivityTestRule;
+import android.util.Log;
 
 
 import java.util.ArrayList;
@@ -70,24 +72,35 @@ public class UserListActivityTest {
 
     /** this line is preferred way to hook up to activity */
     @Rule
-    public ActivityTestRule<UserListActivity> mActivityRule;
+    public ActivityTestRule<UserListActivity> mActivityRule = null;
+    @Rule
+    public ActivityTestRule<CurrentState> mCSRule = null;
     @InjectMocks
     CurrentState currState;
     @InjectMocks
     IOActions ioActions;
     @Mock
     User user;
+    @Mock UserListActivity ula = null;
+
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        //rules
         mActivityRule = new ActivityTestRule<>(UserListActivity.class);
+        mCSRule = new ActivityTestRule<>(CurrentState.class);
         InstrumentationRegistry.getContext();
-        //fake things
+        //mocks
+        user = Mockito.mock(User.class);
+        currState = Mockito.mock(CurrentState.class);
+        ioActions = Mockito.mock(IOActions.class);
+        ula = Mockito.mock(UserListActivity.class);
+        MockitoAnnotations.initMocks(this);
 
-        u0 = new User ("oiwhdowaif", "passw", "");
-        u1 = new User("bob94", "pass", "Bob");
-        u2 = new User("dogsrule1", "pass", "Mark");
-        u3 = new User("NULL", "pass", "");
+        //fake things
+        u0 = new User ("clown", "passw", "");
+        u1 = new User("john", "pass", "Bob");
+        u2 = new User("kanye", "pass", "Mark");
+        u3 = new User("DOESNT_EXIST", "pass", "");
 
         u0.setPermission(-1);
         u1.setPermission(2);
@@ -103,10 +116,6 @@ public class UserListActivityTest {
                         u3.getUsername()
                 )
         );
-        //mocked objects
-        user = Mockito.mock(User.class);
-        currState = Mockito.mock(CurrentState.class);
-        ioActions = Mockito.mock(IOActions.class);
         //return u1 when getUser()
 //        doReturn(u1).when(currState);
 //        getUser();
@@ -136,15 +145,23 @@ public class UserListActivityTest {
 
 
     @Test
-    public void checkClassNotNull() {
-        assertNotNull(mActivityRule);
+    public void checkSetupSuccess() {
+        //make sure testing objects are  setup right
+        assertNotNull("UserListActivity is NULL",ula);
+        assertNotNull("Sample list is NULL", testNames);
+        assertEquals("Size is WRONG", testNames.size(), 4);
     }
     @Test
     public void checkFormatList() throws MissingMethodInvocationException,
             NotAMockException {
-        assertNotNull(mActivityRule);
-        ArrayList<String> tmp = (ArrayList<String>) mActivityRule.getActivity().formatList(testNames);
-        assertNotNull(tmp);
-
+        //check functions that formatList relies on
+        assertNotNull(IOActions.getUserByUsername("kanye"));
+        //get result of sample names
+        ArrayList<String> result = UserListActivity.formatList(testNames);
+        //check results
+        assertThat("Returned list is empty!", result.isEmpty(), is(false));
+        assertEquals("list length is WRONG", 3, result.size());
+//        Log.println(Log.INFO,"UserListActivityTest", testNames.toString()); //DEBUG
+        assertEquals(result.get(0), "[U]   clown");
     }
 }
