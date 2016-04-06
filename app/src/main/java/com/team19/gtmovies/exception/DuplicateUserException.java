@@ -9,12 +9,13 @@ public class DuplicateUserException extends Exception {
     /**
      * default constructor
      */
-    public DuplicateUserException () {
+    public DuplicateUserException() {
         super("An account with this username already exists!");
     }
 
     /**
      * constructor
+     *
      * @param message custom message
      */
     public DuplicateUserException(String message) {

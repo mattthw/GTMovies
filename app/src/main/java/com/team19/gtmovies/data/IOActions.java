@@ -2,7 +2,6 @@ package com.team19.gtmovies.data;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.StrictMode;
 import android.util.Log;
 
 import com.team19.gtmovies.exception.DuplicateUserException;
@@ -11,6 +10,11 @@ import com.team19.gtmovies.fragment.MovieListFragment;
 import com.team19.gtmovies.pojo.Movie;
 import com.team19.gtmovies.pojo.Review;
 import com.team19.gtmovies.pojo.User;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -22,15 +26,10 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 //import com.team19.gtmovies.pojo.User;
 
@@ -38,6 +37,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 /**
  * Created by matt on 2/8/16.
  * used for data retrieval etc
+ *
  * @author Matt McCoy
  * @version 2.0
  */
@@ -54,9 +54,10 @@ public class IOActions extends Application {
 
     /**
      * constructor for IOActions
+     *
      * @param c context passed by calling class
      */
-    public IOActions(Context c)  {
+    public IOActions(Context c) {
         if (ioa == null) {
             ioaContext = c;
             onStart();
@@ -81,23 +82,24 @@ public class IOActions extends Application {
             commit();
             Log.println(Log.INFO, "GTMovies", "Created new empty set for user accounts");
         } catch (IOException i) {
-            Log.e("GTMovies", "IOException: "+Log.getStackTraceString(i));
+            Log.e("GTMovies", "IOException: " + Log.getStackTraceString(i));
         } catch (Exception e) {
-            Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
+            Log.e("GTMovies", "Exception: " + Log.getStackTraceString(e));
         }
     }
 
     /**
      * gets object from serialized file
+     *
      * @throws ClassNotFoundException if error on readObject()
-     * @throws IOException if error opening file
+     * @throws IOException            if error opening file
      */
     protected static void loadUser()
             throws ClassNotFoundException, IOException {
         fileIn = ioaContext.openFileInput(UFILE);
         objectIn = new ObjectInputStream(fileIn);
         CurrentState.setUser((User) objectIn.readObject());
-        if(CurrentState.getUser() != null) {
+        if (CurrentState.getUser() != null) {
             CurrentState.setUser(IOActions.getUserByUsername(CurrentState.getUser().getUsername()));
         }
         Log.d("GTMovies", "loaduser: " + CurrentState.getUser().toString());
@@ -108,6 +110,7 @@ public class IOActions extends Application {
 
     /**
      * serializes and writes User object
+     *
      * @throws IOException if fails to write object
      */
     public static void saveUser()
@@ -123,25 +126,29 @@ public class IOActions extends Application {
 
     /**
      * save changes to USER and ACCOUNTS
+     * EDIT: After implementing database this only saves
+     * the currentUser to file.
+     * everything else is stored remotely.
      */
     protected static boolean commit() {
         try {
             saveUser();
         } catch (FileNotFoundException f) {
-            Log.e("GTMovies", "FileNotFoundException: "+Log.getStackTraceString(f));
+            Log.e("GTMovies", "FileNotFoundException: " + Log.getStackTraceString(f));
         } catch (IOException i) {
-            Log.e("GTMovies", "IOException: "+Log.getStackTraceString(i));
+            Log.e("GTMovies", "IOException: " + Log.getStackTraceString(i));
         } catch (Exception e) {
-            Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
+            Log.e("GTMovies", "Exception: " + Log.getStackTraceString(e));
         }
         return true;
     }
 
     /**
-     * gets accounts
-     * @return list of accounts
+     * gets accounts from mysql database on remote server
+     *
+     * @return list of usernames from database
      */
-    public static ArrayList<String> getUsernames() {
+    public static List<String> getUsernames() {
         String url = "http://45.55.175.68/test.php?mode=7";
         InputStream is = null;
         try {
@@ -154,17 +161,18 @@ public class IOActions extends Application {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             StringTokenizer st = new StringTokenizer(result, "\\", false);
             result = st.nextToken();
-            if(result.charAt(0) == '0') {
+            if (result.charAt(0) == '0') {
                 return new ArrayList<String>();
             } else {
                 ArrayList<String> temp = new ArrayList<String>();
                 Log.d("GTMovies Database", "GetUsernames: " + result);
                 temp.add(result);
-                while(st.hasMoreTokens()) {
+                while (st.hasMoreTokens()) {
                     result = st.nextToken();
                     Log.d("GTMovies Database", "GetUsernames: " + result);
                     temp.add(result);
@@ -174,16 +182,15 @@ public class IOActions extends Application {
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: getUsernames: error in decoding data: " + e.toString());
         }
+        //returned if exceptions prevent return of valid list
         return new ArrayList<String>();
-        //ArrayList<String> temp = new ArrayList<>(accounts.size());
-        //for (User u : accounts) {
-        //    temp.add(u.getUsername());
-        //}
-        //return temp;
     }
+
     /**
      * gets rated movies from database
-     * @return Set of movies
+     *
+     * @return Set of Movie objects created with information
+     * from the database.
      */
     public static Set<Movie> getMovies() {
         String url = "http://45.55.175.68/test.php?mode=8";
@@ -198,26 +205,25 @@ public class IOActions extends Application {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             StringTokenizer st = new StringTokenizer(result, "\\", false);
             result = st.nextToken();
-            if(result.charAt(0) == '0') {
+            if (result.charAt(0) == '0') {
                 return new HashSet<Movie>();
             } else {
                 HashSet<Movie> temp = new HashSet<Movie>();
                 int id = Integer.parseInt(result);
-                result = st.nextToken(); // to title
-                String title = new String(result);
+                String title = st.nextToken();
                 result = st.nextToken(); // to rating
                 int rating = Integer.parseInt(result);
                 Log.d("GTMovies Database", "GetMovies: " + new Movie(id, title, rating));
                 temp.add(new Movie(id, title, rating));
-                while(st.hasMoreTokens()) {
+                while (st.hasMoreTokens()) {
                     result = st.nextToken();
                     id = Integer.parseInt(result);
-                    result = st.nextToken(); // to title
-                    title = new String(result);
+                    title = st.nextToken(); // to title
                     result = st.nextToken(); // to rating
                     rating = Integer.parseInt(result);
                     Log.d("GTMovies Database", "GetMovies: " + result);
@@ -230,16 +236,18 @@ public class IOActions extends Application {
         }
         return new HashSet<Movie>();
     }
+
     /**
      * add new user to the database
+     *
      * @param user user object
-     * @throws DuplicateUserException
+     * @throws DuplicateUserException thrown when the user being added is a duplicate
+     * @throws NullUserException      thrown when user is null or username is null
      */
-
     public static void addUser(User user)
             throws DuplicateUserException, NullUserException {
-        if(user.getUsername().equals("null")) {
-            throw new DuplicateUserException();
+        if (user == null || user.getUsername().equals("null")) {
+            throw new NullUserException();
         }
         String url = "http://45.55.175.68/test.php?mode=1&uname='" + user.getUsername()
                 + "'&pword='" + user.getPassword()
@@ -259,9 +267,10 @@ public class IOActions extends Application {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
-            if(result.charAt(0) == '0') {
+            if (result.charAt(0) == '0') {
                 throw new DuplicateUserException();
             } else {
                 Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
@@ -269,29 +278,25 @@ public class IOActions extends Application {
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: adduser: error in decoding data: " + e.toString());
         }
-//        if (accounts.contains(user) || user.getUsername().equals("null")) {
-//            throw new DuplicateUserException();
-//        } else {
-//            accounts.add(user);
-//            commit();
-//            Log.println(Log.INFO, "GTMovies", "New user created! (" + user.getUsername() + ")");
-//        }
     }
 
     /**
      * remove user from database
+     *
      * @param user User Object
      * @throws NullUserException if DNE
      */
     public static void deleteUser(User user) throws NullUserException {
-        if (user == null)
+        if (user == null) {
             throw new NullUserException("User is null");
+        }
 
         String url = "http://45.55.175.68/test.php?mode=2&uname='" + user.getUsername() + "'";
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
-            HttpResponse response = httpclient.execute(httpget);
+//            HttpResponse response = httpclient.execute(httpget);
+            httpclient.execute(httpget);
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: deleteUser: error in server connection: " + e.toString());
         }
@@ -304,12 +309,13 @@ public class IOActions extends Application {
 
     /**
      * log user in and commit changes to current state
+     *
      * @param uname username
-     * @param p password
+     * @param p     password
      * @return true if success
      */
     public static boolean loginUser(String uname, String p)
-        throws NullUserException {
+            throws NullUserException {
         User temp = getUserByUsername(uname);
         if (temp == null) {
             throw new NullUserException();
@@ -329,8 +335,10 @@ public class IOActions extends Application {
             return false;
         }
     }
+
     /**
      * reset user to default null and commit changes to current state
+     *
      * @return true if CurrentState.getUser() set
      */
     public static boolean logoutUser() {
@@ -345,7 +353,8 @@ public class IOActions extends Application {
 
     /**
      * updates a user in the database
-     * @return
+     *
+     * @return true if completed without exception
      */
     public static boolean updateUser(User temp) {
 
@@ -360,23 +369,29 @@ public class IOActions extends Application {
             url = url.replace(" ", "%20");
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
-            HttpResponse response = httpclient.execute(httpget);
+//            HttpResponse response = httpclient.execute(httpget);
+            httpclient.execute(httpget);
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: updateUser: error in server connection: " + e.toString());
+            return false;
         }
 
         return true;
     }
+
     /**
      * gets sign in status
-     * @return  true if user is currently signed in
+     *
+     * @return true if user is currently signed in
      */
     public static boolean userSignedIn() {
         return !(CurrentState.getUser() == null);
     }
+
     /**
      * if a user exists in database, make and return a user object
      * else return null (it is expected that it will not fail)
+     *
      * @param un username
      * @return User
      */
@@ -393,11 +408,12 @@ public class IOActions extends Application {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             StringTokenizer st = new StringTokenizer(result, "\\", false);
             result = st.nextToken();
-            if(result.charAt(0) == '0') {
+            if (result.charAt(0) == '0') {
                 return null;
             } else {
                 User u = new User();
@@ -418,7 +434,7 @@ public class IOActions extends Application {
                 result = st.nextToken(); // change to permission
                 u.setPermission(Integer.parseInt(result));
                 result = st.nextToken(); // change to hasProfile
-                if(Integer.parseInt(result) == 1) {
+                if (Integer.parseInt(result) == 1) {
                     u.setHasProfile(true);
                 } else {
                     u.setHasProfile(false);
@@ -429,23 +445,21 @@ public class IOActions extends Application {
             Log.e("GTMovies", "IOActions: getUserByUsername: error in decoding data: " + e.toString());
         }
         return null;
-
-//        for (User u: accounts) {
-//            if (u.getUsername().equalsIgnoreCase(un))
-//                return u;
-//        }
-//        return null;
     }
 
 
     /**
      * Save a new rating to database
+     *
      * @param movieid ID from tomatoes
-     * @param score score given by user
+     * @param score   score given by user
      * @param comment comment given by user
      * @return true if success
      */
-    public static boolean SaveNewRating(int movieid, int score, String comment) {
+    public static boolean saveNewRating(int movieid, int score, String comment) {
+        if (comment.equals("")) {
+            comment = "no comment";
+        }
         String url = "http://45.55.175.68/test.php?mode=6&movid=" + movieid
                 + "&uname='" + CurrentState.getUser().getUsername()
                 + "'&score=" + score
@@ -459,35 +473,14 @@ public class IOActions extends Application {
             is = response.getEntity().getContent();
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: SaveNewRating: error in server connection: " + e.toString());
+            return false;
         }
-
-//        User ouruser = CurrentState.getUser();
-//        boolean success = true;
-//        Movie ourmovie = getMovieById(movieid);
-//        // Remove existing movie (if exists)
-//        if (ourmovie == null) {
-//            ourmovie = new Movie(movieid, 'c');
-//        } else {
-//            movies.remove(ourmovie);
-//        }
-//        // Add the new rating to each
-//        Review r = new Review(score, comment, ouruser.getUsername(), ourmovie.getID());
-//        try {
-//            ouruser.addReview(r);
-//            ourmovie.addReview(r);
-//        } catch (Exception e){
-//            Log.println(Log.ASSERT, "GTMovies", e.getMessage());
-//            success = false;
-//        }
-//        // Add movie back to hashset
-//        updateUser();
-//        movies.add(ourmovie);
-//        commit();
-//        return success;
         return true;
     }
+
     /**
      * return Movie object for given id from database
+     *
      * @param movieid id form tomato API
      * @return Movie object with matching ID
      */
@@ -504,11 +497,12 @@ public class IOActions extends Application {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             StringTokenizer st = new StringTokenizer(result, "\\", false);
             result = st.nextToken();
-            if(result.charAt(0) == '0') {
+            if (result.charAt(0) == '0') {
                 return null;
             } else {
                 Movie m = new Movie(0, '0');
@@ -520,34 +514,23 @@ public class IOActions extends Application {
                 result = st.nextToken(); // change to rating
                 m.setRating(Integer.parseInt(result));
                 Log.d("GTMovies Database", "GetMovieById: Movie Rating: " + result);
+                m.setReviews(); //set reviews form DB
                 return m;
             }
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: getMovieByID: error in decoding data: " + e.toString());
         }
+        //if failed
         return null;
-
-//        Movie ourmovie = null;
-//        // Find the movie for the given username;
-//        try {
-//            for(Movie m : movies) {
-//                if(m.getID() == movieid) {
-//                    ourmovie = m;
-//                    break;
-//                }
-//            }
-//        } catch(Exception e) {
-//            Log.println(Log.ERROR, "GTMovies", e.getMessage());
-//        }
-//        return ourmovie;
     }
 
     /**
      * get an arraylist of movie reviews for a given movie ID
+     *
      * @param movieid the movie ID to get reviews for
      * @return an arraylist of movie reviews corresponding to movieid
      */
-    public static ArrayList<Review> getListMovieReviews(int movieid) {
+    public static List<Review> getListMovieReviews(int movieid) {
         String url = "http://45.55.175.68/test.php?mode=10&movid=" + movieid;
         InputStream is = null;
         try {
@@ -560,32 +543,30 @@ public class IOActions extends Application {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
             String result = reader.readLine();
             StringTokenizer st = new StringTokenizer(result, "\\", false);
             result = st.nextToken();
-            if(result.charAt(0) == '0') {
+            if (result.charAt(0) == '0') {
                 return new ArrayList<Review>();
             } else {
                 ArrayList<Review> temp = new ArrayList<Review>();
-                String uname = new String(result);
+                String uname = result;
                 result = st.nextToken(); // to movieid
                 int movid = Integer.parseInt(result);
                 result = st.nextToken(); // to score
                 int score = Integer.parseInt(result);
-                result = st.nextToken(); // to comment
-                String comm = new String(result);
+                String comm = st.nextToken(); // to comment
                 Log.d("GTMovies Database", "getListMovieReviews: " + new Review(score, comm, uname, movid));
                 temp.add(new Review(score, comm, uname, movid));
-                while(st.hasMoreTokens()) {
-                    result = st.nextToken(); // to uname
-                    uname = new String(result);
+                while (st.hasMoreTokens()) {
+                    uname = st.nextToken();
                     result = st.nextToken(); // to movieid
                     movid = Integer.parseInt(result);
                     result = st.nextToken(); // to score
                     score = Integer.parseInt(result);
-                    result = st.nextToken(); // to comment
-                    comm = new String(result);
+                    comm = st.nextToken();
                     Log.d("GTMovies Database", "getListMovieReviews: " + new Review(score, comm, uname, movid));
                     temp.add(new Review(score, comm, uname, movid));
                 }
@@ -594,18 +575,22 @@ public class IOActions extends Application {
         } catch (Exception e) {
             Log.e("GTMovies", "IOActions: getListMovieReviews: error in decoding data: " + e.toString());
         }
+        //return empty if failed
         return new ArrayList<Review>();
     }
 
     /**
      * provides persistent MovieListFragment
+     *
      * @param newList MovieListFragment to set
      */
     public static void setMovieListFragment(MovieListFragment newList) {
         movieListFragment = newList;
     }
+
     /**
      * gets persistent MovieListFragment
+     *
      * @return the fragment
      */
     public static MovieListFragment getMovieListFragment() {
@@ -614,6 +599,7 @@ public class IOActions extends Application {
 
     /**
      * Getter for ioa actions
+     *
      * @return the current IOActions state
      */
     public static IOActions getIOActionsInstance() {

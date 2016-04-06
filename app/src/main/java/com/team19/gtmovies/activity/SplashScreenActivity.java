@@ -58,7 +58,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private View mContentView;
 
     public static boolean splashScreenVisited = false;
-    public static String SPLASH_SCREEN_VISITED = "Screen Visited";
+    public static final String SPLASH_SCREEN_VISITED = "Screen Visited";
 
     private boolean finishedNewMovies = false;
     private boolean finishedTopRentals = false;
@@ -102,6 +102,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             hide();
         }
     };*/
+
     /**
      * Touch listener to use for in-layout UI controls to delay hiding the
      * system UI. This is to prevent the jarring behavior of controls going away
@@ -116,7 +117,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             return false;
         }
     };*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +128,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         rootView = findViewById(R.id.splash_view);
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lobster-Regular.ttf");
-        TextView myTextView = (TextView)findViewById(R.id.splash_view);
+        TextView myTextView = (TextView) findViewById(R.id.splash_view);
         myTextView.setTypeface(myTypeface);
         splashScreenVisited = true;
         try {
@@ -168,8 +168,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     /**
      * Obtains the movies from the API
+     *
      * @param requestType differetiates new movies and top rental
-     * @param movieList list of movies to get details about for recommendations
+     * @param movieList   list of movies to get details about for recommendations
      */
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
@@ -184,8 +185,8 @@ public class SplashScreenActivity extends AppCompatActivity {
 //        }, 5000);
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
-        if (requestType.equals(SingletonMagic.recommendations)) {
-            Log.d("getMoviesFromAPI", "recommendations");
+        if (requestType.equals(SingletonMagic.RECOMMENDATIONS)) {
+            Log.d("getMoviesFromAPI", "RECOMMENDATIONS");
             if (movieList == null || movieList.size() <= 0) {
                 return;
             }
@@ -198,9 +199,9 @@ public class SplashScreenActivity extends AppCompatActivity {
             for (final Movie movie : movieList) {
 
                 //create the request
-                String movieID = SingletonMagic.search + "/" + movie.getID();
+                String movieID = SingletonMagic.SEARCH + "/" + movie.getID();
                 final String urlRaw = String.format(
-                        SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
+                        SingletonMagic.BASE_URL, movieID, "", SingletonMagic.PROF_KEY);
                 JsonObjectRequest recoRequest = new JsonObjectRequest(Request.Method.GET,
                         urlRaw, null, new Response.Listener<JSONObject>() {
 
@@ -244,7 +245,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 /*TimerTask task = new TimerTask() {
                     @Override
                     public void run() {*/
-                        SingletonMagic.getInstance(getBaseContext()).addToRequestQueue(recoRequest);
+                SingletonMagic.getInstance(getBaseContext()).addToRequestQueue(recoRequest);
                 /*    }
                 };*/
                 Log.d("Volley Timer", "Task Created");
@@ -253,7 +254,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
         } else {
             final String urlRaw = String.format(
-                    SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
+                    SingletonMagic.BASE_URL, requestType, "", SingletonMagic.PROF_KEY);
             final List<Movie> movieArray = new ArrayList<>();
 
             movieRequest = new JsonObjectRequest
@@ -286,7 +287,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                             //Create proper MovieListFragment
                             String tab;
-                            if (requestType.equals(SingletonMagic.newMovie)) {
+                            if (requestType.equals(SingletonMagic.NEW_MOVIE)) {
                                 Log.d("JinuMain", "newMovieFragment");
                                 MovieListFragment.setNewMoviesList(movieArray);
                                 tab = "newMovies";
@@ -297,7 +298,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                                     IOActions.setMovieListFragment(new MovieListFragment());
                                     finished();
                                 }
-                            } else if (requestType.equals(SingletonMagic.topRental)) {
+                            } else if (requestType.equals(SingletonMagic.TOP_RENTAL)) {
                                 Log.d("JinuMain", "topRentalFragment");
                                 MovieListFragment.setTopRentalsList(movieArray);
                                 tab = "topRentals";
@@ -351,6 +352,23 @@ public class SplashScreenActivity extends AppCompatActivity {
         finishedYourRecommendations = true;
     }
 
+    /**
+     * What to do after UI updated
+     */
+    private void finished() {
+        finish();
+    }
+
+    public void finish() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(SPLASH_SCREEN_VISITED, true);
+        //NEED THIS setFlags TO CLEAR OLD LOGINACTIVITY INTENTS
+        // WHICH MAY PREVENT NEW LOGINACTIVITY
+        //FROM BEING STARTED -Matt
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        super.finish();
+    }
 
     protected class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
         private List<Movie> movieList;
@@ -359,9 +377,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         protected Integer doInBackground(Integer... params) {
             switch (params[0]) {
                 case MovieListFragment.TOP_RENTALS_TAB:
-                    getMoviesFromAPI(SingletonMagic.newMovie, null);
-                    getMoviesFromAPI(SingletonMagic.topRental, null);
-                    getMoviesFromAPI(SingletonMagic.recommendations,
+                    getMoviesFromAPI(SingletonMagic.NEW_MOVIE, null);
+                    getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
+                    getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
                             ReviewController.getRecommendations());
                     /*for (int i = 0; i < 10; i++) {
                         for (int j = 0; j < 1000; j++) {
@@ -391,60 +409,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             //finished();
         }
     }
-
-
-
-    /**
-     * What to do after UI updated
-     */
-    private void finished() {
-        finish();
-    }
-    public void finish() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(SPLASH_SCREEN_VISITED, true);
-        //NEED THIS setFlags TO CLEAR OLD LOGINACTIVITY INTENTS
-        // WHICH MAY PREVENT NEW LOGINACTIVITY
-        //FROM BEING STARTED -Matt
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        super.finish();
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /*@Override
     protected void onPostCreate(Bundle savedInstanceState) {

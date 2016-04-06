@@ -1,16 +1,13 @@
 package com.team19.gtmovies.activity;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -53,6 +50,7 @@ import java.util.Map;
 
 /**
  * The Main Activity
+ *
  * @author Matt McCoy
  * @version 3.0
  */
@@ -69,6 +67,9 @@ public class MainActivity extends AppCompatActivity
     private static int currentPage;
     private List<Movie> recommendations;
     private boolean generalRecommendations = true;
+
+/*
+// Meant for NyanCat
     private boolean mIsBound = false;
     private MusicService mServ;
     private Intent musicthing;
@@ -101,10 +102,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // Put following in code
+
+        doBindService();
+        Intent music = new Intent();
+        music.setClass(this,MusicService.class);
+        startService(music);
+
+    // Do doUnbindService onDestroy
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // because screw async
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
@@ -126,7 +135,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         mainRootView = findViewById(R.id.main_view);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(),R.color.colorPrimaryDark));
+        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimaryDark));
         // Layout toolbar
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
@@ -148,9 +157,10 @@ public class MainActivity extends AppCompatActivity
         //new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
         currentPage = 0;
         findViewById(R.id.criteria_bar).setVisibility(View.GONE);
-        //getMoviesFromAPI(SingletonMagic.topRental, null);
-        //getMoviesFromAPI(SingletonMagic.newMovie, null);
-        //getMoviesFromAPI(SingletonMagic.topRental, null);
+        //getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
+        //getMoviesFromAPI(SingletonMagic.NEW_MOVIE, null);
+        //getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
+        // Setup tabs and SEARCH
         //fragmentManager = getSupportFragmentManager();
         //criteriaActivity = (CriteriaActivity) findViewById(R.id.criteria_bar);
 
@@ -165,25 +175,14 @@ public class MainActivity extends AppCompatActivity
         MovieListFragment.updateAdapter(MovieListFragment.NEW_MOVIES_TAB);
         MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
         MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
-
-        doBindService();
-        Intent music = new Intent();
-        music.setClass(this,MusicService.class);
-        Log.e("MUSIC", "Main Stuff Stuff");
-        startService(music);
     }
 
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        doUnbindService();
-//    }
-
     /**
-     * Do things depending on results from activities called.
+     * do things depending on results from activities called.
+     *
      * @param requestCode what we are checking
-     * @param resultCode value returned for what being checked
-     * @param data returned data
+     * @param resultCode  value returned for what being checked
+     * @param data        idk
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -221,7 +220,7 @@ public class MainActivity extends AppCompatActivity
      */
     public void updateNavName() {
         View header = navigationView.getHeaderView(0);
-        TextView name = (TextView)header.findViewById(R.id.headerName);
+        TextView name = (TextView) header.findViewById(R.id.headerName);
         if (CurrentState.getUser() != null) {
             name.setText(CurrentState.getUser().getName());
             Log.println(Log.DEBUG, "GTMovies", "header name updated to: " + name);
@@ -229,19 +228,6 @@ public class MainActivity extends AppCompatActivity
             Log.println(Log.INFO, "GTMovies", "header view null, couldn't update.");
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -254,20 +240,20 @@ public class MainActivity extends AppCompatActivity
         ((ViewPager) findViewById(R.id.view_pager)).setAdapter(movieFragmentPagerAdapter);
         ((ViewPager) findViewById(R.id.view_pager)).addOnPageChangeListener(
                 new ViewPager.OnPageChangeListener() {
-            LinearLayout criteriaBar = (LinearLayout) findViewById(R.id.criteria_bar);
-            //Sliding animations to use for the additional criteria bar in endations
+                    LinearLayout criteriaBar = (LinearLayout) findViewById(R.id.criteria_bar);
+                    //Sliding animations to use for the additional criteria bar in recommendations
             /*Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_down);
             Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_up);*/
 
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                                       int positionOffsetPixels) {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset,
+                                               int positionOffsetPixels) {
 //                switch (position) {
 //                    case MovieListFragment.TOP_RENTALS_TAB:
 //                        if (!MovieListFragment.hasTopRentalsList()) {
-//                            getMoviesFromAPI(SingletonMagic.topRental, null);
+//                            getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
 //                        } //otherwise fall through
 //                    case MovieListFragment.NEW_MOVIES_TAB:
 //                        //MovieListFragment has already been displayed. Display again.
@@ -279,7 +265,7 @@ public class MainActivity extends AppCompatActivity
 //                        scroller();
 //                        criteriaBar.setVisibility(View.VISIBLE);
 //                        if (!MovieListFragment.hasYourRecommendationsList()) {
-//                            getMoviesFromAPI(SingletonMagic.recommendations,
+//                            getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
 //                                    ReviewController.getRecommendations());
 //                        } else {
 //                            movieListFragment = MovieListFragment.newInstance(position);
@@ -290,14 +276,47 @@ public class MainActivity extends AppCompatActivity
 //                    default:
 //                        Log.e("GTMovies", "Incorrect int for tab.");
 //                }
-            }
+                    }
 
+                    @Override
+                    public void onPageSelected(int position) {
+                        currentPage = position;
+                        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+
+                        //set new height options
+                        if (CurrentState.getOpenHeight() == 0) {
+                            CurrentState.setOpenHeight(viewPager.getHeight());
+                            CurrentState.setClosedHeight(viewPager.getHeight() + toolbar.getHeight());
+                            Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
+                        }
+                        Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
             @Override
             public void onPageSelected(int position) {
                 currentPage = position;
                 ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
                 Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
 
+                        switch (position) {
+                            case MovieListFragment.NEW_MOVIES_TAB:
+                                criteriaBar.setVisibility(View.GONE);
+                                //new UpdateUITask().execute(position);
+                                break;
+                            case MovieListFragment.TOP_RENTALS_TAB:
+                                criteriaBar.setVisibility(View.GONE);
+                                //new UpdateUITask().execute(position);
+                                break;
+                            case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
+                                criteriaBar.setVisibility(View.VISIBLE);
+                                //viewPager.getLayoutParams().height = CurrentState.getOpenHeight()
+                                //        - R.dimen.text_margin;
+//                                List<Movie> newRecommendations;
+                                setupMajorButton();
+                                break;
+                            default:
+                                Log.e("GTMovies", "Incorrect int for tab.");
+                        }
+                        Log.e("CurrentState2", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
+                    }
                 switch (position) {
                     case MovieListFragment.NEW_MOVIES_TAB:
                         criteriaBar.setVisibility(View.GONE);
@@ -320,11 +339,11 @@ public class MainActivity extends AppCompatActivity
                 Log.d("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
             }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                Log.d("GTMovies", "Tabs this one called. State: " + state);
-            }
-        });
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+                        Log.d("GTMovies", "Tabs this one called. State: " + state);
+                    }
+                });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.scroll_tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -407,8 +426,8 @@ public class MainActivity extends AppCompatActivity
      */
     public void getMovies() {
         /*// Get the movies
-        List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.newMovie);
-        List<Movie> topRentals = getMoviesFromAPI(SingletonMagic.topRental);
+        List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.NEW_MOVIE);
+        List<Movie> topRentals = getMoviesFromAPI(SingletonMagic.TOP_RENTAL);
         List<Movie> recommendations = getRecommendations();
         // Set the View
         List<List<Movie>> listList = new ArrayList<>();
@@ -420,36 +439,9 @@ public class MainActivity extends AppCompatActivity
         */
     }
 
-
-    private class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {       //TODO: is this still used? could be problem
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            switch (params[0]) {
-                case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                    getMoviesFromAPI(SingletonMagic.recommendations,
-                            recommendations);
-                    break;
-                default:
-            }
-            for (int i = 0; i < 1; i++) {
-                Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
-            }
-            for (int i = 0; i < 1; i++) {
-                Log.i("Useless", "Do Androids Dream of Electric Sheep?");
-            }
-            return params[0];
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            //super.onPostExecute(integer);
-        }
-
-    }
-
-
     /**
      * Updates user interface
+     *
      * @param page which tab to update
      */
     public void updateUI(int page) {
@@ -467,8 +459,9 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Obtains the movies from the API
-     * @param requestType differetiates new movies and top rental
-     * @param movieList list of movies to get details about for recommendations
+     *
+     * @param requestType differentiates new movies and top rental
+     * @param movieList   list of movies to get details about for recommendations
      */
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
@@ -476,7 +469,7 @@ public class MainActivity extends AppCompatActivity
 
         // Creating the JSONRequest
         JsonObjectRequest movieRequest = null;
-        if (requestType.equals(SingletonMagic.recommendations)) {
+        if (requestType.equals(SingletonMagic.RECOMMENDATIONS)) {
             Log.d("getMoviesFromAPI", "recommendations");
             if (movieList == null || movieList.size() <= 0) {
                 return;
@@ -488,9 +481,9 @@ public class MainActivity extends AppCompatActivity
             for (final Movie movie : movieList) {
 
                 //create the request
-                String movieID = SingletonMagic.search + "/" + movie.getID();
+                String movieID = SingletonMagic.SEARCH + "/" + movie.getID();
                 final String urlRaw = String.format(
-                        SingletonMagic.baseURL, movieID, "", SingletonMagic.profKey);
+                        SingletonMagic.BASE_URL, movieID, "", SingletonMagic.PROF_KEY);
                 movieRequest = new JsonObjectRequest(Request.Method.GET,
                         urlRaw, null, new Response.Listener<JSONObject>() {
 
@@ -526,7 +519,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             final List<Movie> movieArray = new ArrayList<>();
             final String urlRaw = String.format(
-                    SingletonMagic.baseURL, requestType, "", SingletonMagic.profKey);
+                    SingletonMagic.BASE_URL, requestType, "", SingletonMagic.PROF_KEY);
 
             movieRequest = new JsonObjectRequest
                     (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
@@ -556,7 +549,7 @@ public class MainActivity extends AppCompatActivity
 
                             //Create proper MovieListFragment
                             String tab;
-                            if (requestType.equals(SingletonMagic.newMovie)) {
+                            if (requestType.equals(SingletonMagic.NEW_MOVIE)) {
                                 Log.d("JinuMain", "newMovieFragment");
 
                                 MovieListFragment.setNewMoviesList(movieArray);
@@ -566,7 +559,7 @@ public class MainActivity extends AppCompatActivity
                                 MovieListFragment.NEW_MOVIES_TAB);)*/
 
                                 tab = "newMovies";
-                            } else if (requestType.equals(SingletonMagic.topRental)) {
+                            } else if (requestType.equals(SingletonMagic.TOP_RENTAL)) {
                                 Log.d("JinuMain", "topRentalFragment");
                                 MovieListFragment.setTopRentalsList(movieArray);
                                 updateUI(MovieListFragment.TOP_RENTALS_TAB);
@@ -596,7 +589,6 @@ public class MainActivity extends AppCompatActivity
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
     }
-
 
 
     /**
@@ -657,5 +649,33 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
                 MovieListFragment.newInstance(0)).commit();
     }*/
+
+    private class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
+        private List<Movie> movieList;
+
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            switch (params[0]) {
+                case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
+                    getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
+                            recommendations);
+                    break;
+                default:
+            }
+            for (int i = 0; i < 1; i++) {
+                Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
+            }
+            for (int i = 0; i < 1; i++) {
+                Log.i("Useless", "Do Androids Dream of Electric Sheep?");
+            }
+            return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            //super.onPostExecute(integer);
+        }
+
+    }
 
 }

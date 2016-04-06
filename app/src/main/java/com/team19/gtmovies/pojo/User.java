@@ -1,7 +1,6 @@
 package com.team19.gtmovies.pojo;
 
 import com.team19.gtmovies.exception.IllegalUserException;
-import com.team19.gtmovies.exception.NullUserException;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -38,7 +37,7 @@ public class User<T extends Comparable<T>>
     /**
      * constructor used when creating blank user
      */
-    public User () {
+    public User() {
         username = "null";
         password = "null";
         name = "logged_out";
@@ -50,16 +49,17 @@ public class User<T extends Comparable<T>>
 
     /**
      * USE THIS CONSTRUCTOR WHEN CREATING A USER
+     *
      * @param u username
      * @param p password
      * @param n name
-     * @throws IllegalUserException if try to create with invalid parameters
-     * @throws NullUserException if parameters null
+     * @throws IllegalUserException     if try to create with invalid parameters
+     * @throws IllegalArgumentException if parameters null
      */
-    public User (String u, String p, String n)
-            throws IllegalUserException, NullPointerException {
+    public User(String u, String p, String n)
+            throws IllegalUserException, IllegalArgumentException {
         if (u == null || p == null || n == null) {
-            throw new NullPointerException("Tried creating a user using null parameters.");
+            throw new IllegalArgumentException("Tried creating a user using null parameters.");
         }
         if (u.length() < 4 || p.length() < 4) {
             throw new IllegalUserException("Username and Password must be >= 4 chars");
@@ -76,6 +76,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * Add a review to this user's hashmap
+     *
      * @param rev the review object to add
      */
     public void addReview(Review rev) {
@@ -90,12 +91,13 @@ public class User<T extends Comparable<T>>
 
     /**
      * Remove a review from this user's hashmap
+     *
      * @param movieID the movie ID to remove
      */
     public void removeReview(int movieID) {
-        if(!myReviews.containsKey(movieID)) {
+        if (!myReviews.containsKey(movieID)) {
             throw new IllegalArgumentException(username + " has NOT reviewed movieID " +
-                                               movieID);
+                    movieID);
         } else {
             myReviews.remove(movieID);
         }
@@ -103,11 +105,12 @@ public class User<T extends Comparable<T>>
 
     /**
      * Get a movie review from this user's hashmap
+     *
      * @param movieID the movie ID of the review to get
      * @return the review corresponding to this movieID
      */
     public Review getReview(int movieID) {
-        if(!myReviews.containsKey(movieID)) {
+        if (!myReviews.containsKey(movieID)) {
             throw new IllegalArgumentException(username + " has NOT reviewed movieID " +
                     movieID);
         } else {
@@ -117,41 +120,52 @@ public class User<T extends Comparable<T>>
 
     /**
      * get map of all reviews for user
+     *
      * @return hashmap of reviews
      */
-    public HashMap<Integer, Review> getReviews() {
-        return (HashMap)myReviews;
+    public Map<Integer, Review> getReviews() {
+        return (HashMap) myReviews;
     }
+
     /**
      * getter for username
+     *
      * @return username
      */
     public String getUsername() {
         return username;
     }
+
     /**
      * getter for password
+     *
      * @return password
      */
     public String getPassword() {
         return this.password;
     }
+
     /**
      * getter for identity name
+     *
      * @return name
      */
     public String getName() {
         return name;
     }
+
     /**
      * getter for bio
+     *
      * @return bio
      */
     public String getBio() {
         return bio;
     }
+
     /**
      * getter for major
+     *
      * @return major
      */
     public String getMajor() {
@@ -160,21 +174,24 @@ public class User<T extends Comparable<T>>
 
     /**
      * returns the user's rank tpo callee
+     *
      * @return rank
-     *
-     *  PERMISSION:
-     *  2: admin
-     *  1: active
-     *  0: locked
+     * <p/>
+     * PERMISSION:
+     * 2: admin
+     * 1: active
+     * 0: locked
      * -1: banned
-     *
-     *  default: 1/active
+     * <p/>
+     * default: 1/active
      */
     public int getPermission() {
         return permission;
     }
+
     /**
      * does user have a profile
+     *
      * @return boolean hasProfile
      */
     public boolean getHasProfile() {
@@ -183,6 +200,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * verifies if password correct for class
+     *
      * @param tryPassword String password to try
      * @return boolean if password matches
      */
@@ -191,8 +209,10 @@ public class User<T extends Comparable<T>>
     }
 
     /**
-     * TODO: JINU WTF IS THIS CAN I REMOVE IT WTF?
-     * @param i TODO: WTF IDK??
+     * //TODO: Actually use this lol
+     * Used to check a certain achievement as unlocked
+     *
+     * @param i the unlocked achievement
      */
     public void foundIt(int i) {
         char[] feed = new char[i * i / 2];
@@ -200,20 +220,26 @@ public class User<T extends Comparable<T>>
         Random r = new Random();
         int end = Math.max(i * i / 2, iceCream.length());
         int thing = r.nextInt(21);
-        if (thing < 7) feed[i * i / 2] = 'k';
-        else if (thing < 14) feed[i * i / 2] = 'l';
-        else feed[i * i / 2] = 'm';
+        if (thing < 7) {
+            feed[i * i / 2] = 'k';
+        } else if (thing < 14) {
+            feed[i * i / 2] = 'l';
+        } else {
+            feed[i * i / 2] = 'm';
+        }
         for (int j = 0; j < end; j++) {
             if (tmp * tmp / 2 == j && iceCream.length() > j) {
                 feed[j] = iceCream.charAt(j);
                 tmp += 1;
             }
-            feed[j] = (char)(r.nextInt(26) + 'a');
+            feed[j] = (char) (r.nextInt(26) + 'a');
         }
         iceCream = new String(feed);
     }
+
     /**
      * setter for username
+     *
      * @param u username
      */
     public void setUsername(String u) {
@@ -222,6 +248,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * setter for password
+     *
      * @param p password
      */
     public void setPassword(String p) {
@@ -230,6 +257,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * setter for name
+     *
      * @param n name
      */
     public void setName(String n) {
@@ -238,6 +266,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * setter for bio
+     *
      * @param b bio
      */
     public void setBio(String b) {
@@ -246,6 +275,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * set rank
+     *
      * @param p int code for permission
      */
     public void setPermission(int p) {
@@ -254,6 +284,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * setter for boolean hasprofile
+     *
      * @param h hasProfile
      */
     public void setHasProfile(boolean h) {
@@ -262,6 +293,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * setter for major
+     *
      * @param m major
      */
     public void setMajor(String m) {
@@ -270,6 +302,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * compareTo from Comparable
+     *
      * @param user other User object
      * @return 0 if equals, else -1
      */
@@ -283,6 +316,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * equals function
+     *
      * @param obj other Obj (User)
      * @return true/false
      */
@@ -295,6 +329,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * hashcode for User
+     *
      * @return hashcode of username
      */
     public int hashCode() {
@@ -303,6 +338,7 @@ public class User<T extends Comparable<T>>
 
     /**
      * tostring
+     *
      * @return username, password, and identity name
      */
     public String toString() {
@@ -313,8 +349,6 @@ public class User<T extends Comparable<T>>
                 + ", " + this.getMajor()
         );
     }
-
-
 
 
 }

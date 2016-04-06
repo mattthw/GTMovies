@@ -3,10 +3,12 @@ package com.team19.gtmovies.data;
 import com.team19.gtmovies.pojo.User;
 
 /**
- * Created by a on 2/22/2016.
+ * Created by Austin on 2/22/2016.
+ * used by all other classes when requesting current user info
+ * rgtrgrgtrs
  */
 public class CurrentState {
-//    private static final CurrentState ourInstance = new CurrentState();
+    //    private static final CurrentState ourInstance = new CurrentState();
     private static User currentUser;
     private static int openHeight = 0;
     private static int closedHeight = 0;
@@ -16,7 +18,11 @@ public class CurrentState {
 //    }
 
     /**
-     * private CurrentState constructor
+     * default constructor for CurrentState
+     *
+     * @param u require the correct user as parameter as form of
+     *          DEPENDENCY INJECTION. replaces singleton implementation.
+     * @Matt 3/April/2016
      */
     public CurrentState(User u) {
         currentUser = u;
@@ -24,6 +30,7 @@ public class CurrentState {
 
     /**
      * current user getter
+     *
      * @return returns current user
      */
     public static User getUser() {
@@ -32,6 +39,7 @@ public class CurrentState {
 
     /**
      * current user setter
+     *
      * @param user new user
      * @return if successful
      */
@@ -43,6 +51,7 @@ public class CurrentState {
 
     /**
      * Getter for height of viewpager with toolbar open
+     *
      * @return open height
      */
     public static int getOpenHeight() {
@@ -51,6 +60,7 @@ public class CurrentState {
 
     /**
      * Getter for height of viewpager with toolbar closed
+     *
      * @return closed height
      */
     public static int getClosedHeight() {
@@ -59,6 +69,7 @@ public class CurrentState {
 
     /**
      * Setter for height of viewpager with toolbar open
+     *
      * @param height open height
      */
     public static void setOpenHeight(int height) {
@@ -67,6 +78,7 @@ public class CurrentState {
 
     /**
      * Setter for height of viewpager with toolbar closed
+     *
      * @param height closed height
      */
     public static void setClosedHeight(int height) {

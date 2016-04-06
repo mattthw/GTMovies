@@ -13,24 +13,24 @@ import com.android.volley.toolbox.Volley;
 /**
  * Created by Jim Jang on 2016-02-22.
  */
-public class SingletonMagic {
+public final class SingletonMagic {
     // Basic URL for the Tomato API
-    // Has three %s placeholders in the middle of baseURL
-    public static final String baseURL =
+    // Has three %s placeholders in the middle of BASE_URL
+    public static final String BASE_URL =
             "http://api.rottentomatoes.com/api/public/v1.0%s.json?%s&apikey=%s";
-    public static final String boxOffice = "/lists/movies/box_office";
-    public static final String newMovie = "/lists/movies/opening";
-    public static final String newDVD = "/lists/dvds/new_releases";
-    public static final String topRental = "/lists/dvds/top_rentals";
-    public static final String search = "/movies";
-    public static final String recommendations = "recommendations";
+    public static final String BOX_OFFICE = "/lists/movies/box_office";
+    public static final String NEW_MOVIE = "/lists/movies/opening";
+    public static final String NEW_DVD = "/lists/dvds/new_releases";
+    public static final String TOP_RENTAL = "/lists/dvds/top_rentals";
+    public static final String SEARCH = "/movies";
+    public static final String RECOMMENDATIONS = "RECOMMENDATIONS";
 
     //Setting strings for URL
-    public static final String numMovies = "limit=%d";
-    public static final String country = "country=%s";
-    public static final String perPage = "page_limit=%d";
-    public static final String numPage = "page=%d";
-    public static final String profKey = "yedukp76ffytfuy24zsqk7f5";
+    public static final String NUM_MOVIES = "limit=%d";
+    public static final String COUNTRY = "country=%s";
+    public static final String PER_PAGE = "page_limit=%d";
+    public static final String NUM_PAGE = "page=%d";
+    public static final String PROF_KEY = "yedukp76ffytfuy24zsqk7f5";
 
     private static SingletonMagic ourInstance;
     private RequestQueue mRequestQueue;
@@ -39,6 +39,7 @@ public class SingletonMagic {
 
     /**
      * Constructor for Singleton. Takes the Application Context as parameter
+     *
      * @param context Context of the Singleton. Recommended to be ApplicationContext
      */
     private SingletonMagic(Context context) {
@@ -46,9 +47,11 @@ public class SingletonMagic {
         mRequestQueue = getRequestQueue();
         mImageLoader = new ImageLoader(this.mRequestQueue, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap> mCache = new LruCache<String, Bitmap>(10);
+
             public void putBitmap(String url, Bitmap bitmap) {
                 mCache.put(url, bitmap);
             }
+
             public Bitmap getBitmap(String url) {
                 return mCache.get(url);
             }
@@ -58,6 +61,7 @@ public class SingletonMagic {
     /**
      * Returns the instance for the Singleton
      * Creates a new one if instance does not exist
+     *
      * @param context Context of the Singleton. Recommended to be ApplicationContext
      * @return the instance of the Singleton
      */
@@ -70,6 +74,7 @@ public class SingletonMagic {
 
     /**
      * Returns the Singleton RequestQueue
+     *
      * @return the Singleton RequestQueue
      */
     public RequestQueue getRequestQueue() {
@@ -83,6 +88,7 @@ public class SingletonMagic {
 
     /**
      * Returns the Singleton ImageLoader
+     *
      * @return the Singleton ImageLoader
      */
     public ImageLoader getImageLoader() {
@@ -94,6 +100,7 @@ public class SingletonMagic {
 
     /**
      * Adds a Volley.Request to the RequestQueue
+     *
      * @param req the Request to add
      * @param <T> the expected response type of the Request
      */

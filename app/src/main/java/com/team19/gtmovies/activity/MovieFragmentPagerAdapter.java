@@ -13,14 +13,15 @@ import java.util.Arrays;
 
 /**
  * Created by Austin Leal on 2/23/2016.
+ *
  * @author Austin Leal
  * @version 1.0
  */
 public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     private static final int PAGE_COUNT = 3;
-    private static String tabTitles[] = new String[] {"New Movies",
+    private static String tabTitles[] = new String[]{"New Movies",
             "Top Rentals", "Your Recommendations"};
-    private MovieListFragment[] movieListFragments = new MovieListFragment[3];
+    private MovieListFragment[] movieListFragments = new MovieListFragment[PAGE_COUNT];
     private static boolean change;
     private Context context;
 
@@ -32,12 +33,13 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
 
     /**
      * Constructor for MovieFragmentPagerAdapter
+     *
      * @param fragmentManager Fragment manager
-     * @param context context
+     * @param context1        context
      */
-    public MovieFragmentPagerAdapter(FragmentManager fragmentManager, Context context) {
+    public MovieFragmentPagerAdapter(FragmentManager fragmentManager, Context context1) {
         super(fragmentManager);
-        this.context = context;
+        this.context = context1;
 
 //        for (int i = 0; i < 1; i++) {
 //            for (int j = 0; j < 1000; j++) {
@@ -62,7 +64,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
         Log.i("GTMovies", "getItem position=" + position);
         Log.i("GTMovies", "Tabs3");
         MovieListFragment fragment;
-        if (position < 3) {
+        if (position < PAGE_COUNT) {
             MovieListFragment newFragment = MovieListFragment.newInstance(position);
             Bundle arguments = new Bundle();
             arguments.putInt(ARG_ITEM_ID, position);
@@ -86,7 +88,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        Log.d("Jinu MFragPagerAdapt",  Arrays.toString(Thread.currentThread().getStackTrace()));
+        Log.d("Jinu MFragPagerAdapt", Arrays.toString(Thread.currentThread().getStackTrace()));
         //way of returning each title to populate tabs
         Log.i("GTMovies", "getPageTitle " + tabTitles);
         return tabTitles[position];
@@ -95,9 +97,9 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getItemPosition(Object object) {
         //if (!change) {
-            //return super.getItemPosition(object);
+        //return super.getItemPosition(object);
         //} else {
-            return POSITION_NONE;
+        return POSITION_NONE;
         //}
     }
 

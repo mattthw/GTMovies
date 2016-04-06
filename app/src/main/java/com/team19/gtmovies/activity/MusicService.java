@@ -1,4 +1,5 @@
 package com.team19.gtmovies.activity;
+
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -13,19 +14,13 @@ import com.team19.gtmovies.R;
 /**
  * Created by Jim Jang on 2016-03-29.
  */
-public class MusicService extends Service  implements MediaPlayer.OnErrorListener {
+public class MusicService extends Service implements MediaPlayer.OnErrorListener {
 
     private final IBinder mBinder = new ServiceBinder();
     MediaPlayer mPlayer;
     private int length = 0;
 
     public MusicService() {
-    }
-
-    public class ServiceBinder extends Binder {
-        MusicService getService() {
-            return MusicService.this;
-        }
     }
 
     @Override
@@ -63,6 +58,9 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
         return START_STICKY;
     }
 
+    /**
+     * Pauses the music playing
+     */
     public void pauseMusic() {
         if (mPlayer.isPlaying()) {
             mPlayer.pause();
@@ -71,13 +69,19 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
         }
     }
 
+    /**
+     * Resumes the music
+     */
     public void resumeMusic() {
-        if (mPlayer.isPlaying() == false) {
+        if (!mPlayer.isPlaying()) {
             mPlayer.seekTo(length);
             mPlayer.start();
         }
     }
 
+    /**
+     * Stops the music and calls release on MediaPlayer
+     */
     public void stopMusic() {
         mPlayer.stop();
         mPlayer.release();
@@ -97,6 +101,7 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
         }
     }
 
+    @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
 
         Toast.makeText(this, "music player failed", Toast.LENGTH_SHORT).show();
@@ -109,5 +114,11 @@ public class MusicService extends Service  implements MediaPlayer.OnErrorListene
             }
         }
         return false;
+    }
+
+    public class ServiceBinder extends Binder {
+        MusicService getService() {
+            return MusicService.this;
+        }
     }
 }

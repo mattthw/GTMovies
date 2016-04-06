@@ -42,7 +42,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        Log.d("GTMovies", "Got to search");
+        Log.d("GTMovies", "Got to SEARCH");
         fragmentManager = getSupportFragmentManager();
 
         handleIntent(getIntent());
@@ -56,6 +56,7 @@ public class SearchActivity extends AppCompatActivity {
 
     /**
      * Handles intents in order to fetch query and display results.
+     *
      * @param intent intent to manage
      */
     private void handleIntent(Intent intent) {
@@ -82,7 +83,7 @@ public class SearchActivity extends AppCompatActivity {
             }
             // Creating the JSONRequest
             String urlRaw = String.format(
-                    SingletonMagic.baseURL, SingletonMagic.search, "q=" + queryURI, SingletonMagic.profKey);
+                    SingletonMagic.BASE_URL, SingletonMagic.SEARCH, "q=" + queryURI, SingletonMagic.PROF_KEY);
 
             JsonObjectRequest searchRequest = new JsonObjectRequest
                     (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
@@ -116,18 +117,10 @@ public class SearchActivity extends AppCompatActivity {
                                 nextURL = tmpJ.getString("next");
                                 prevURL = tmpJ.getString("prev");
                             } catch (JSONException e) {
-                                Log.e("JSON ERROR", "Fail to get connected URLs in search");
+                                Log.e("JSON ERROR", "Fail to get connected URLs in SEARCH");
                             }
-                            if (nextURL != null) {
-                                nextable = true;
-                            } else {
-                                nextable = false;
-                            }
-                            if (prevURL != null) {
-                                prevable = true;
-                            } else {
-                                prevable = false;
-                            }
+                            nextable = nextURL != null;
+                            prevable = prevURL != null;
 
                             // AUSTIN THING JUST CTRL C V-ed
                             Log.e("GTMovies", "TabsSearch");
@@ -181,6 +174,7 @@ public class SearchActivity extends AppCompatActivity {
     // REFERENCE PURPOSES.          //
     //                   JINU JANG  //
     //////////////////////////////////
+
     /**
      * Grabs the JSONObject from the next Page
      *
@@ -222,18 +216,10 @@ public class SearchActivity extends AppCompatActivity {
                             nextURL = tmpJ.getString("next");
                             prevURL = tmpJ.getString("prev");
                         } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Fail to get connected URLs in search");
+                            Log.e("JSON ERROR", "Fail to get connected URLs in SEARCH");
                         }
-                        if (nextURL != null) {
-                            nextable = true;
-                        } else {
-                            nextable = false;
-                        }
-                        if (prevURL != null) {
-                            prevable = true;
-                        } else {
-                            prevable = false;
-                        }
+                        nextable = nextURL != null;
+                        prevable = prevURL != null;
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -250,7 +236,6 @@ public class SearchActivity extends AppCompatActivity {
     /**
      * Grabs the JSONObject from the previous Page
      *
-     * @return the JSONObject from the previous Page
      * @throws UnsupportedOperationException when no prevPage exists currently
      */
     public void grabPrevPage() throws UnsupportedOperationException {
@@ -289,18 +274,10 @@ public class SearchActivity extends AppCompatActivity {
                             nextURL = tmpJ.getString("next");
                             prevURL = tmpJ.getString("prev");
                         } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Fail to get connected URLs in search");
+                            Log.e("JSON ERROR", "Fail to get connected URLs in SEARCH");
                         }
-                        if (nextURL != null) {
-                            nextable = true;
-                        } else {
-                            nextable = false;
-                        }
-                        if (prevURL != null) {
-                            prevable = true;
-                        } else {
-                            prevable = false;
-                        }
+                        nextable = nextURL != null;
+                        prevable = prevURL != null;
                     }
                 }, new Response.ErrorListener() {
                     @Override

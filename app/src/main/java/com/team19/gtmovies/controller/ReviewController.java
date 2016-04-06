@@ -12,20 +12,22 @@ import java.util.Set;
 
 /**
  * Created by a on 3/8/2016.
+ * used to get recommended movies for current user
  */
 public class ReviewController {
-    //Constants for how to obtain recommendations
+    //Constants for how to obtain RECOMMENDATIONS
     public static final int BY_MAJOR = 1;
     public static final int BY_GENRE = 2;
     public static final int BY_RATING = 3;
 
     /**
-     * Obtains list of recommendations by parameter
+     * Obtains list of RECOMMENDATIONS by parameter
+     *
      * @param code filter for list
      *             1: MAJOR
      *             2: GENRE
      *             3: RATING (default)
-     * @return list of movie recommendations
+     * @return list of movie RECOMMENDATIONS
      */
     public static List<Movie> getRecommendations(int code) {
         //TODO: implement using switch
@@ -42,10 +44,11 @@ public class ReviewController {
     }
 
     /**
-     * Obtains default list of recommendations
+     * Obtains default list of RECOMMENDATIONS
      * (requires user average rating greater than
-     *      specified amount)
-     * @return default list of recommendations
+     * specified amount)
+     *
+     * @return default list of RECOMMENDATIONS
      */
     public static List<Movie> getRecommendations() {
         List<Movie> list = new ArrayList<>();
@@ -65,6 +68,7 @@ public class ReviewController {
 
     /**
      * Recommends Movies depending on the Movies liked by the User's major
+     *
      * @return List of recommended Movies
      */
     private static List getRecommendationsByMajor() {

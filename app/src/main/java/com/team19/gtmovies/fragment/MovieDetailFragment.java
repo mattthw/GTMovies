@@ -15,9 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.team19.gtmovies.R;
-import com.team19.gtmovies.activity.MovieDetailActivity;
-import com.team19.gtmovies.activity.MovieListActivity;
-import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.pojo.Movie;
 import com.team19.gtmovies.pojo.Review;
@@ -30,6 +27,7 @@ import java.util.Arrays;
  * This fragment is either contained in a {@link MovieListActivity}
  * in two-pane mode (on tablets) or a {@link MovieDetailActivity}
  * on handsets.
+ *
  * @author Austin Leal
  * @version 1.0
  */
@@ -44,9 +42,9 @@ public class MovieDetailFragment extends Fragment {
     public static final String ARG_ITEM_RATE = "item_rating";
 
     private TextView userRatingView;
-//    private static ListView commentsList;
-    private ListView mainListView ;
-    private ArrayAdapter<String> listAdapter ;
+    //    private static ListView commentsList;
+    private ListView mainListView;
+    private ArrayAdapter<String> listAdapter;
     private Intent userIntent = null;
     /**
      * The dummy content this fragment is presenting.
@@ -62,6 +60,7 @@ public class MovieDetailFragment extends Fragment {
 
     /**
      * creates new MovieDetailFragment instance
+     *
      * @return new MovieDetailFragment instance
      */
     public static MovieDetailFragment newInstance() {
@@ -123,7 +122,6 @@ public class MovieDetailFragment extends Fragment {
         return rootView;
     }
 
-
     private void populateList() {
         // Find the ListView resource.
 //        mainListView = (ListView) getActivity().findViewById( R.id.commentListView );
@@ -139,29 +137,29 @@ public class MovieDetailFragment extends Fragment {
         int userCount = 0;
         for (Object o : reviewList) {
             //average user score
-            total += ((Review)o).getScore();
+            total += ((Review) o).getScore();
             userCount++;
             //review coments
-            String s = ((Review)o).getComment();
-            String u = ((Review)o).getUsername();
-            int mID = ((Review)o).getMovieID();
-            if (s.length() > 3
+            String s = ((Review) o).getComment();
+            String u = ((Review) o).getUsername();
+            int mID = ((Review) o).getMovieID();
+            if (s.length() > 0
                     && mID == getArguments().getInt(ARG_ITEM_ID, -1)) {
                 commentList.add(u + ": " + s);
             }
         }
 
-        if(userCount == 0) { // in case of divide by zero
+        if (userCount == 0) { // in case of divide by zero
             userRatingView.setText("N/A");
         } else {
-            int tempScore = ((int)((total/((double)userCount)) * 20));
+            int tempScore = ((int) ((total / ((double) userCount)) * 20));
             userRatingView.setText(tempScore + "");
         }
         Log.println(Log.DEBUG, "GTMovies", commentList.toString());
         // Create ArrayAdapter using the comments list.
         listAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, commentList);
         // Set the ArrayAdapter as the ListView's adapter.
-        mainListView.setAdapter( listAdapter );
+        mainListView.setAdapter(listAdapter);
 
         setListViewHeightBasedOnChildren(mainListView);
     }
@@ -170,30 +168,32 @@ public class MovieDetailFragment extends Fragment {
      * public code used to update listView height after dynamically adding items to it.
      * source: http://stackoverflow.com/questions/29512281
      * /how-to-make-listviews-height-to-grow-after-adding-items-to-it
+     *
      * @param listView list in question
      */
     private void setListViewHeightBasedOnChildren(ListView listView) {
         Log.e("Listview Size ", "" + listView.getCount());
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
+        ListAdapter listAdapter1 = listView.getAdapter();
+        if (listAdapter1 == null) {
 
             return;
         }
 
         int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
+        for (int i = 0; i < listAdapter1.getCount(); i++) {
+            View listItem = listAdapter1.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
         }
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+                + (listView.getDividerHeight() * (listAdapter1.getCount() - 1));
         listView.setLayoutParams(params);
         listView.requestLayout();
 
     }
+
     public boolean updateFrag() {
         //update user rating
         mItem = IOActions.getMovieById(getArguments().getInt(ARG_ITEM_ID, -1));
