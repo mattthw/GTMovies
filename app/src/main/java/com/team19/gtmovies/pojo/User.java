@@ -43,6 +43,7 @@ public class User<T extends Comparable<T>>
         name = "logged_out";
         bio = "none";
         major = "none";
+        permission = 1;
         hasProfile = false;
         myReviews = new HashMap<Integer, Review>();
     }
@@ -277,9 +278,19 @@ public class User<T extends Comparable<T>>
      * set rank
      *
      * @param p int code for permission
+     *
+     *  PERMISSION:
+     *  2: admin
+     *  1: active
+     *  0: locked
+     * -1: banned
+     *
+     *  default: 1/active
      */
     public void setPermission(int p) {
-        permission = p;
+        if (p >= -1 && p <= 2) {
+            permission = p;
+        }
     }
 
     /**

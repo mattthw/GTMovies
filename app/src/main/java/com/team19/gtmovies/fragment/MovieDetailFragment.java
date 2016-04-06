@@ -165,7 +165,7 @@ public class MovieDetailFragment extends Fragment {
     }
 
     /**
-     * public code used to update listView height after dynamically adding items to it.
+     *  code used to update listView height after dynamically adding items to it.
      * source: http://stackoverflow.com/questions/29512281
      * /how-to-make-listviews-height-to-grow-after-adding-items-to-it
      *

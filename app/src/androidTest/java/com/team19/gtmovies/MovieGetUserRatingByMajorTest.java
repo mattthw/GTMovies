@@ -2,7 +2,6 @@ package com.team19.gtmovies;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.team19.gtmovies.exception.IllegalUserException;
 import com.team19.gtmovies.pojo.Movie;
 import com.team19.gtmovies.pojo.Review;
 
@@ -28,45 +27,45 @@ public class MovieGetUserRatingByMajorTest extends TestCase {
         super.setUp();
         // EnvE major "clown"
         Review correct01 = new Review(
-                100, "I leave ze comment", "clown", 9999);
+                5, "I leave ze comment", "clown", 9999);
         // CE major "john"
         Review correct02 = new Review(
-                20, "Zis is comment iz zis not", "john", 9999);
+                1, "Zis is comment iz zis not", "john", 9999);
         // Econ major "willy"
         Review correct03 = new Review(
-                60, "I like little children covered in chocolate", "willy", 9999);
+                3, "I like little children covered in chocolate", "willy", 9999);
 
         // CS majors
         Review correctCS01 = new Review (
-                80, "Honolulu, Hawaii", "JinuSexy123", 9999);
+                4, "Honolulu, Hawaii", "JinuSexy123", 9999);
         Review correctCS02 = new Review (
-                55, "CSTest02", "test2", 9999);
+                3, "CSTest02", "test2", 9999);
         Review correctCS03 = new Review (
-                100, "CSTest03", "test3", 9999);
+                5, "CSTest03", "test3", 9999);
 
         // No majors
         Review otherMajorNull = new Review (
-                80, "I'm a NeeGaa in Paris", "kayne", 9999);
+                4, "I'm a NeeGaa in Paris", "kayne", 9999);
 
         // null User
         Review nullUser = new Review (
-                40, "This should break everything", null, 9999);
+                2, "This should break everything", null, 9999);
 
-        nullUserReview = new Movie(9999, "NullUserMovie", 76);
+        nullUserReview = new Movie(9999, "NullUserMovie", 4);
         nullUserReview.addReview(nullUser);
 
-        nullOtherMajor = new Movie(9999, "nullOtherMajorMovie", 75);
+        nullOtherMajor = new Movie(9999, "nullOtherMajorMovie", 4);
         nullOtherMajor.addReview(otherMajorNull);
         nullOtherMajor.addReview(correct01);
 
-        noReview = new Movie(9999, "No Reviews Made", 100);
+        noReview = new Movie(9999, "No Reviews Made", 5);
 
-        allCorrect = new Movie(9999, "Everything is Correct", 84);
+        allCorrect = new Movie(9999, "Everything is Correct", 4);
         allCorrect.addReview(correctCS01);
         allCorrect.addReview(correctCS02);
         allCorrect.addReview(correctCS03);
 
-        allCorrectZero = new Movie(9999, "UserCount: Zero", 53);
+        allCorrectZero = new Movie(9999, "UserCount: Zero", 3);
         allCorrectZero.addReview(correct01);
         allCorrectZero.addReview(correct02);
         allCorrectZero.addReview(correct03);

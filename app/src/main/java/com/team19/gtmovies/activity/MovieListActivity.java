@@ -34,6 +34,7 @@ import java.util.List;
  */
 public class MovieListActivity extends AppCompatActivity {
 
+    //TODO: Is this class even used?
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.

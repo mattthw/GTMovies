@@ -244,6 +244,8 @@ public class MainActivity extends AppCompatActivity
                     //Sliding animations to use for the additional criteria bar in recommendations
             /*Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_down);
+
+
             Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_up);*/
 
@@ -286,58 +288,11 @@ public class MainActivity extends AppCompatActivity
                         //set new height options
                         if (CurrentState.getOpenHeight() == 0) {
                             CurrentState.setOpenHeight(viewPager.getHeight());
-                            CurrentState.setClosedHeight(viewPager.getHeight() + toolbar.getHeight());
+                            CurrentState.setClosedHeight(viewPager.getHeight() + mToolbar.getHeight());
                             Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
                         }
                         Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
-            @Override
-            public void onPageSelected(int position) {
-                currentPage = position;
-                ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-                Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
-
-                        switch (position) {
-                            case MovieListFragment.NEW_MOVIES_TAB:
-                                criteriaBar.setVisibility(View.GONE);
-                                //new UpdateUITask().execute(position);
-                                break;
-                            case MovieListFragment.TOP_RENTALS_TAB:
-                                criteriaBar.setVisibility(View.GONE);
-                                //new UpdateUITask().execute(position);
-                                break;
-                            case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                                criteriaBar.setVisibility(View.VISIBLE);
-                                //viewPager.getLayoutParams().height = CurrentState.getOpenHeight()
-                                //        - R.dimen.text_margin;
-//                                List<Movie> newRecommendations;
-                                setupMajorButton();
-                                break;
-                            default:
-                                Log.e("GTMovies", "Incorrect int for tab.");
-                        }
-                        Log.e("CurrentState2", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
                     }
-                switch (position) {
-                    case MovieListFragment.NEW_MOVIES_TAB:
-                        criteriaBar.setVisibility(View.GONE);
-                        //new UpdateUITask().execute(position);
-                        break;
-                    case MovieListFragment.TOP_RENTALS_TAB:
-                        criteriaBar.setVisibility(View.GONE);
-                        //new UpdateUITask().execute(position);
-                        break;
-                    case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                        criteriaBar.setVisibility(View.VISIBLE);
-                        //viewPager.getLayoutParams().height = CurrentState.getOpenHeight()
-                        //        - R.dimen.text_margin;
-                        List<Movie> newRecommendations;
-                        setupMajorButton();
-                        break;
-                    default:
-                        Log.e("GTMovies", "Incorrect int for tab.");
-                }
-                Log.d("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
-            }
 
                     @Override
                     public void onPageScrollStateChanged(int state) {
@@ -388,9 +343,9 @@ public class MainActivity extends AppCompatActivity
 
 
         if (majorButton.getElevation() == R.dimen.raised_elevation) {
-            recommendations = ReviewController.getRecommendations(ReviewController.BY_MAJOR);
+            //recommendations = ReviewController.getRecommendations(ReviewController.BY_MAJOR);
         } else {
-            recommendations = ReviewController.getRecommendations();
+            //recommendations = ReviewController.getRecommendations();
         }
         new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
 
@@ -620,8 +575,12 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_logout) {
             IOActions.logoutUser();
-            //recreate this class. leave this. tested and true works.
-            recreate();
+            //recreate this class. leave this. tested and true works. //TODO: check if I broke it so that I don't suffer the wrath of Supreme Leader's rage
+            startActivity(new Intent(this, SplashScreenActivity.class));
+            //recreate();
+            finish();
+        } else {
+            return false;
         }
 
         drawer.closeDrawer(GravityCompat.START);

@@ -73,7 +73,7 @@ public class ReviewController {
      */
     private static List getRecommendationsByMajor() {
         List<Movie> list = new ArrayList<>();
-        Set<Movie> movieSet = IOActions.getMovies();  //note the shallow copy
+        Set<Movie> movieSet = IOActions.getMovies();
         String major = CurrentState.getUser().getMajor();
         for (Movie movie : movieSet) {
             int score = movie.getUserRatingByMajor(major);

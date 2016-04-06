@@ -57,7 +57,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
 
-    public static boolean splashScreenVisited = false;
+    private static boolean splashScreenVisited = false;
     public static final String SPLASH_SCREEN_VISITED = "Screen Visited";
 
     private boolean finishedNewMovies = false;

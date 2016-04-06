@@ -211,11 +211,7 @@ public class Movie implements Comparable<Movie>, Serializable {
         return this.compareTo((Movie) obj) == 0;
     }
 
-    /**
-     * Special hashcode function overriden for Movie
-     *
-     * @return the hashcode (id)
-     */
+    @Override
     public int hashCode() {
         return id;
     }

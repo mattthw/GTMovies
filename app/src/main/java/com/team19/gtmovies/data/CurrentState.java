@@ -1,5 +1,7 @@
 package com.team19.gtmovies.data;
 
+import android.app.Activity;
+
 import com.team19.gtmovies.pojo.User;
 
 /**
@@ -7,7 +9,7 @@ import com.team19.gtmovies.pojo.User;
  * used by all other classes when requesting current user info
  * rgtrgrgtrs
  */
-public class CurrentState {
+public class CurrentState extends Activity {
     //    private static final CurrentState ourInstance = new CurrentState();
     private static User currentUser;
     private static int openHeight = 0;

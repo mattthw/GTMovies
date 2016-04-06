@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
+import com.team19.gtmovies.exception.IllegalUserException;
 import com.team19.gtmovies.exception.NullUserException;
 import com.team19.gtmovies.pojo.Review;
 import com.team19.gtmovies.pojo.User;
@@ -43,7 +44,7 @@ import java.util.TimerTask;
 public class UserProfileActivity extends AppCompatActivity {
     protected View rootView;
     private static UserProfileActivity userProfInstance = null;
-    private User cu = CurrentState.getUser();
+    private User currentUser = CurrentState.getUser();
 
     private Spinner eMajor;
     private String selectedMajor = "";
@@ -74,7 +75,7 @@ public class UserProfileActivity extends AppCompatActivity {
             this.setTitle("Edit Profile");
         } else {
             receiveName = extras.getString("UNAME");
-            cu = IOActions.getUserByUsername(receiveName);
+            currentUser = IOActions.getUserByUsername(receiveName);
             findViewById(R.id.reviewsModule).setVisibility(View.VISIBLE);
             if (CurrentState.getUser().getPermission() == 2) {
                 findViewById(R.id.buttonRank).setVisibility(View.VISIBLE);
@@ -91,12 +92,12 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         ((TextView) findViewById(R.id.unameView))
-                .setText(cu.getUsername());
+                .setText(currentUser.getUsername());
         updateRank();
         // Grab the user's pre-existing information
-        eName.setText(cu.getName());
-        eBio.setText(cu.getBio());
-        selectedMajor = cu.getMajor();
+        eName.setText(currentUser.getName());
+        eBio.setText(currentUser.getBio());
+        selectedMajor = currentUser.getMajor();
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.profMajors, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         eMajor.setAdapter(adapter);
@@ -107,7 +108,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         // If the user doesn't already have a profile, make sure to let them know.
-        if (!cu.getHasProfile()) {
+        if (!currentUser.getHasProfile()) {
             //CharSequence text = ((TextView)findViewById(R.id.textViewUserProfileTitle)).getText();
             CreateProfileDialogFragment alert = new CreateProfileDialogFragment();
             alert.setCancelable(false);
@@ -140,7 +141,7 @@ public class UserProfileActivity extends AppCompatActivity {
      */
     private void updateRank() {
         String hisRank = null;
-        int perm = cu.getPermission();
+        int perm = currentUser.getPermission();
         if (perm == 2) {
             hisRank = "admin";
         } else if (perm == 1) {
@@ -161,12 +162,12 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param view view
      */
     public void changeRank(View view) {
-        int perm = cu.getPermission();
+        int perm = currentUser.getPermission();
         if (perm == 2) {
-            cu.setPermission(-1);
+            currentUser.setPermission(-1);
         } else {
             perm += 1;
-            cu.setPermission(perm);
+            currentUser.setPermission(perm);
         }
         updateRank();
         Toast.makeText(UserProfileActivity.this, "RANK CHANGED", Toast.LENGTH_SHORT).show();
@@ -178,7 +179,7 @@ public class UserProfileActivity extends AppCompatActivity {
      */
     public void changeDelete() {
         try {
-            IOActions.deleteUser(IOActions.getUserByUsername(cu.getUsername()));
+            IOActions.deleteUser(IOActions.getUserByUsername(currentUser.getUsername()));
         } catch (NullUserException e) {
             e.printStackTrace();
         }
@@ -190,7 +191,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private void populateList() {
         // Find the ListView resource.
 //        mainListView = (ListView) getActivity().findViewById( R.id.commentListView );
-        Object[] reviewList = cu.getReviews().values().toArray();
+        Object[] reviewList = currentUser.getReviews().values().toArray();
         ArrayList<String> commentList = new ArrayList<>(reviewList.length);
         for (Object o : reviewList) {
             String s = ((Review) o).getComment();
@@ -248,15 +249,16 @@ public class UserProfileActivity extends AppCompatActivity {
         // IOActions.getAccounts().remove(cu);
 
         // Store the current hasProfile variable (will come in handy for the snackbar)
-        boolean hasprofileback = cu.getHasProfile();
+        boolean hasprofileback = currentUser.getHasProfile();
 
         // Save everything to the currentuser object
-        cu.setName(eName.getText().toString());
-        cu.setMajor(selectedMajor);
-        cu.setBio(eBio.getText().toString());
-        cu.setHasProfile(true); // They saved their new info, so profile is made automatically for them.
+        currentUser.setName(eName.getText().toString());
+        currentUser.setMajor(selectedMajor);
+        currentUser.setBio(eBio.getText().toString());
+        currentUser.setHasProfile(true); // They saved their new info, so profile is made automatically for them.
 
-        IOActions.updateUser(cu); //save users new information to DB
+        IOActions.updateUser(currentUser); //save users new information to DB
+
 
         // Disable text fields and make snackbar for visual confirmation
         eName.setEnabled(false);
@@ -283,7 +285,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * add listener to spinner item
+     * Add listener to spinner item.
      */
     public void addListenerOnSpinnerItemSelection() {
         eMajor.setOnItemSelectedListener(new MajorSpinnerListener());
@@ -316,7 +318,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * inner class for alert that user doesn't currently have a profile.
+     * Inner class for alert that user doesn't currently have a profile.
      * (asks if they want to create one)
      * if yes: allow to edit
      * if no: return to main
@@ -329,7 +331,7 @@ public class UserProfileActivity extends AppCompatActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(userProfInstance.cu.getUsername() + " does not have a profile.")
+            builder.setMessage(userProfInstance.currentUser.getUsername() + " does not have a profile.")
                     .setPositiveButton("Create profile", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // allow edit.
@@ -359,4 +361,68 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Setter for currentUser.
+     *
+     * @param newUser user to set as
+     */
+    public void setCurrentUser(User newUser) {
+        currentUser = newUser;
+    }
+
+    /**
+     * Getter for currentUser.
+     *
+     * @return current user
+     */
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+
+    /**
+     * Method used for testing purposes to gain a functioning UserProfileActvity
+     *
+     * @return instance of userProfileActivity
+     */
+    public static UserProfileActivity getStaticInstance() {
+        String result;
+        User mUser;
+        try {
+            mUser = new User("AUSINTEST", "pass", "Austin test");
+        } catch (IllegalUserException e) {
+            mUser = null;
+        }
+
+        CurrentState.setUser(mUser);
+        UserProfileActivity mUserProfileActivity = new UserProfileActivity();
+        return mUserProfileActivity;
+    }
+
+    /**
+     * Class for Austin's test of the updateRank method.
+     *
+     * @return string for testing
+     */
+    public static String testSomethingStatic(View view, UserProfileActivity activity) {
+        String result;
+        User mUser = activity.currentUser;
+        result = "" + mUser.getPermission();    //original = 1
+        //activity.onCreate(new Bundle());
+
+        activity.changeRank(view);
+        result += "/" + mUser.getPermission();  //second = 2
+        activity.changeRank(view);
+        result += "/" + mUser.getPermission();  //third = -1
+        activity.changeRank(view);
+        result += "/" + mUser.getPermission();  //fourth = 0
+        activity.changeRank(view);
+        result += "/" + mUser.getPermission();  //fifth = 1
+        mUser.setPermission(5);
+        activity.changeRank(view);
+        result += "/" + mUser.getPermission();  //since setPermission(5) should
+                                                //be ineffective, this should
+                                                //be one above fifth, so = 2
+        return result + "/";
+    }
 }
