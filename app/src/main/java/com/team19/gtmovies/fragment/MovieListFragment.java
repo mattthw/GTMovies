@@ -774,20 +774,20 @@ public class MovieListFragment extends Fragment {
             /**
              * public constructor for viewholder
              *
-             * @param itemView current view
+             * @param mItemView current view
              */
-            public MovieViewHolder(View itemView) {
-                super(itemView);
+            public MovieViewHolder(View mItemView) {
+                super(mItemView);
 
                 Log.d("MLFrag", "create new MovieViewHolder");
 
-                mView = itemView;
-                mMoviePosterView = (NetworkImageView) itemView.findViewById(R.id.movie_poster);
+                mView = mItemView;
+                mMoviePosterView = (NetworkImageView) mItemView.findViewById(R.id.movie_poster);
                 mMoviePosterView.setDefaultImageResId(R.mipmap.slowpoke);
                 mMoviePosterView.setErrorImageResId(R.mipmap.load_error3);
-                mMovieTitleView = (TextView) itemView.findViewById(R.id.movie_title);
-                mMovieRatingView = (TextView) itemView.findViewById(R.id.movie_rating);
-                mMovieDescriptionView = (TextView) itemView.findViewById(R.id.movie_description);
+                mMovieTitleView = (TextView) mItemView.findViewById(R.id.movie_title);
+                mMovieRatingView = (TextView) mItemView.findViewById(R.id.movie_rating);
+                mMovieDescriptionView = (TextView) mItemView.findViewById(R.id.movie_description);
             }
 
             @Override

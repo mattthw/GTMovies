@@ -1,5 +1,7 @@
 package com.team19.gtmovies.pojo;
 
+import com.team19.gtmovies.data.IOActions;
+
 import java.io.Serializable;
 
 /**
@@ -14,7 +16,7 @@ public class Review implements Serializable {
     private String comment;
     private String username;
     private int movieID;
-    private static final long serialVersionUID = 1L;
+    private static final long SERIAL_VERSION_UID = 1L;
 
     /**
      * Constructor for the Review Class.
@@ -120,6 +122,59 @@ public class Review implements Serializable {
      */
     public void setMovieID(int movieID1) {
         this.movieID = movieID1;
+    }
+
+    /**
+     * Checks if review is valid
+     * Codes:
+     * 1 - valid
+     * -1 - null
+     * -2 - movieID bad
+     * -3 - movie bad
+     * -4 - username bad
+     * -5 - user bad
+     * -6 - score bad
+     *
+     *
+     * @param review review to check
+     * @return 1 if good, negative integer code if bad.
+     */
+    public static int reviewIsValid(Review review) {
+        if (review == null) {
+            return -1;
+        }
+
+        //Check attached Movie
+        if (review.movieID < 0) {
+            return -2;
+        } else {
+            Movie mMovie = IOActions.getMovieById(review.movieID);
+            if (mMovie == null
+                || mMovie.getID() != review.movieID
+                || mMovie.getTitle() == null
+                || mMovie.getTitle().equals("")) {
+                return -3;
+            }
+        }
+
+        //Check attached user
+        if (review.username == null || review.username.equals("")) {
+            return -4;
+        } else {
+            User mUser = IOActions.getUserByUsername(review.username);
+            if (mUser == null
+                    || mUser.getUsername() == null
+                    || mUser.getUsername().equals("")
+                    || !mUser.getUsername().equals(review.username)) {
+                return -5;
+            }
+        }
+
+        //Check score
+        if (review.score < 0 || review.score > 5) {
+            return -6;
+        }
+        return 1;
     }
 
 }

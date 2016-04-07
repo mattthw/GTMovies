@@ -315,53 +315,7 @@ public class UserProfileActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    /**
-     * Inner class for alert that user doesn't currently have a profile.
-     * (asks if they want to create one)
-     * if yes: allow to edit
-     * if no: return to main
-     *
-     * @author anonymous
-     * @version 1.0
-     */
-    public static class CreateProfileDialogFragment extends DialogFragment {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(userProfInstance.currentUser.getUsername() + " does not have a profile.")
-                    .setPositiveButton("Create profile", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // allow edit.
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            userProfInstance.finish();
-                        }
-                    });
-            // Create the AlertDialog object and return it
-            return builder.create();
-        }
-    }
-
-    /**
-     * Class needed for spinner XML item
-     */
-    private class MajorSpinnerListener implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView parent, View view, int pos, long id) {
-            selectedMajor = parent.getItemAtPosition(pos).toString();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView parent) {
-        }
-    }
-
-    /**
+    }/**
      * Setter for currentUser.
      *
      * @param newUser user to set as
@@ -424,5 +378,51 @@ public class UserProfileActivity extends AppCompatActivity {
                                                 //be ineffective, this should
                                                 //be one above fifth, so = 2
         return result + "/";
+    }
+
+
+
+    /**
+     * Inner class for alert that user doesn't currently have a profile.
+     * (asks if they want to create one)
+     * if yes: allow to edit
+     * if no: return to main
+     *
+     * @author anonymous
+     * @version 1.0
+     */
+    public static class CreateProfileDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(userProfInstance.currentUser.getUsername() + " does not have a profile.")
+                    .setPositiveButton("Create profile", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // allow edit.
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            userProfInstance.finish();
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
+
+    /**
+     * Class needed for spinner XML item
+     */
+    private class MajorSpinnerListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView parent, View view, int pos, long id) {
+            selectedMajor = parent.getItemAtPosition(pos).toString();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView parent) {
+        }
     }
 }
