@@ -44,7 +44,7 @@ import java.util.TimerTask;
 public class UserProfileActivity extends AppCompatActivity {
     protected View rootView;
     private static UserProfileActivity userProfInstance = null;
-    private User currentUser = CurrentState.getUser();
+    private User currentUser;
 
     private Spinner eMajor;
     private String selectedMajor = "";
@@ -55,6 +55,19 @@ public class UserProfileActivity extends AppCompatActivity {
     private ArrayAdapter<String> listAdapter;
     public static final int HEADER_NAME_UPDATED = 4;
     public static final int PROFILE_VIEWED = 5;
+
+
+    /**
+     * Default constructor for UserProfileActivity
+     */
+    public UserProfileActivity() {
+        super();
+        if (CurrentState.getUser() == null) {
+            currentUser = new User();
+            CurrentState.setUser(currentUser);
+        }
+            currentUser = CurrentState.getUser();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +164,13 @@ public class UserProfileActivity extends AppCompatActivity {
         } else if (perm == -1) {
             hisRank = "banned";
         }
-        ((TextView) findViewById(R.id.rankView)).setText(hisRank);
+        final String herRank = hisRank;   //
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((TextView) findViewById(R.id.rankView)).setText(herRank);
+            }
+        });
     }
 
     /**
@@ -315,7 +334,9 @@ public class UserProfileActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }/**
+    }
+
+    /**
      * Setter for currentUser.
      *
      * @param newUser user to set as

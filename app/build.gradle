@@ -23,6 +23,11 @@ android {
             jniDebuggable true
         }
     }
+    sourceSets {
+        defaultConfig {
+            testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        }
+    }
 }
 
 
