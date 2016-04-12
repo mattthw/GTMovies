@@ -32,6 +32,7 @@ import com.team19.gtmovies.pojo.Review;
 import com.team19.gtmovies.pojo.User;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -200,7 +201,7 @@ public class UserProfileActivity extends AppCompatActivity {
         try {
             IOActions.deleteUser(IOActions.getUserByUsername(currentUser.getUsername()));
         } catch (NullUserException e) {
-            e.printStackTrace();
+            e.getMessage();
         }
     }
 
@@ -210,14 +211,15 @@ public class UserProfileActivity extends AppCompatActivity {
     private void populateList() {
         // Find the ListView resource.
 //        mainListView = (ListView) getActivity().findViewById( R.id.commentListView );
-        Object[] reviewList = currentUser.getReviews().values().toArray();
-        ArrayList<String> commentList = new ArrayList<>(reviewList.length);
-        for (Object o : reviewList) {
-            String s = ((Review) o).getComment();
-            int mID = ((Review) o).getMovieID();
-            if (s.length() > 3) {
-                commentList.add("Movie " + mID + ": " + s);
-            }
+//        Object[] reviewList = currentUser.getReviews().values().toArray();
+        List<Review> reviewList = IOActions.getListUserReviews(currentUser.getUsername());
+        ArrayList<String> commentList = new ArrayList<>(reviewList.size());
+        for (Review r : reviewList) {
+            String s = r.getComment();
+            int mID = r.getMovieID();
+//            if (!s.equalsIgnoreCase("no comment")) {
+//            }
+            commentList.add("Movie " + mID + ": " + s);
         }
         Log.println(Log.ASSERT, "GTMovies", commentList.toString());
         // Create ArrayAdapter using the comments list.
