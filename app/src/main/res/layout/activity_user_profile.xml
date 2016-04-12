@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/scrollView"
         android:layout_alignParentTop="true"
-        android:scrollIndicators="bottom"
         android:layout_alignParentBottom="true"
         android:measureAllChildren="true">
 

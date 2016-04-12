@@ -423,6 +423,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     .setPositiveButton("Create profile", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // allow edit.
+                            userProfInstance.currentUser.setHasProfile(true);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
