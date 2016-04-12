@@ -581,6 +581,61 @@ public class IOActions extends Application {
     }
 
     /**
+     * get an arraylist of movie reviews for a given username
+     *
+     * @param username the movie ID to get reviews for
+     * @return an arraylist of movie reviews corresponding to movieid
+     */
+    public static List<Review> getListUserReviews(String username) {
+        String url = "http://45.55.175.68/test.php?mode=11&uname='" + username + "'";
+        InputStream is = null;
+        try {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            is = response.getEntity().getContent();
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: getListUserReviews: error in server connection: " + e.toString());
+        }
+
+        try {
+            final int junk = 8;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), junk);
+            String result = reader.readLine();
+            StringTokenizer st = new StringTokenizer(result, "\\", false);
+            result = st.nextToken();
+            if (result.charAt(0) == '0') {
+                return new ArrayList<Review>();
+            } else {
+                ArrayList<Review> temp = new ArrayList<Review>();
+                String uname = result;
+                result = st.nextToken(); // to movieid
+                int movid = Integer.parseInt(result);
+                result = st.nextToken(); // to score
+                int score = Integer.parseInt(result);
+                String comm = st.nextToken(); // to comment
+                Log.d("GTMovies Database", "getListUserReviews: " + new Review(score, comm, uname, movid));
+                temp.add(new Review(score, comm, uname, movid));
+                while (st.hasMoreTokens()) {
+                    uname = st.nextToken();
+                    result = st.nextToken(); // to movieid
+                    movid = Integer.parseInt(result);
+                    result = st.nextToken(); // to score
+                    score = Integer.parseInt(result);
+                    comm = st.nextToken();
+                    Log.d("GTMovies Database", "getListUserReviews: " + new Review(score, comm, uname, movid));
+                    temp.add(new Review(score, comm, uname, movid));
+                }
+                return temp;
+            }
+        } catch (Exception e) {
+            Log.e("GTMovies", "IOActions: getListUserReviews: error in decoding data: " + e.toString());
+        }
+        //return empty if failed
+        return new ArrayList<Review>();
+    }
+
+    /**
      * provides persistent MovieListFragment
      *
      * @param newList MovieListFragment to set
