@@ -1,5 +1,7 @@
 package com.team19.gtmovies.pojo;
 
+import com.team19.gtmovies.data.IOActions;
+
 import java.io.Serializable;
 
 /**
@@ -14,7 +16,7 @@ public class Review implements Serializable {
     private String comment;
     private String username;
     private int movieID;
-    private static final long serialVersionUID = 1L;
+    private static final long SERIAL_VERSION_UID = 1L;
 
     /**
      * Constructor for the Review Class.
@@ -31,10 +33,10 @@ public class Review implements Serializable {
      * Creates a review for the Customer with a complete score and a complete
      * comment.
      *
-     * @param score   the score the Customer gave the movie
-     * @param comment the "review/comment" the user gave the movie.
+     * @param score1   the score the Customer gave the movie
+     * @param comment1 the "review/comment" the user gave the movie.
      * @throws IllegalArgumentException if score > 5 or <0, if comment is
-     *          null, or if username is null.
+     *                                  null, or if username is null.
      */
     public Review(int score1, String comment1, String username1, int movieID1) {
         if (score1 < 0 || score1 > 5) {
@@ -107,7 +109,7 @@ public class Review implements Serializable {
     /**
      * Method updates the username associated with this review.
      *
-     * @param username the new username to associate with this rating.
+     * @param username1 the new username to associate with this rating.
      */
     public void setUsername(String username1) {
         this.username = username1;
@@ -116,10 +118,63 @@ public class Review implements Serializable {
     /**
      * Method updates the movie ID associated with this review.
      *
-     * @param movieID the new movie ID to associate with this rating.
+     * @param movieID1 the new movie ID to associate with this rating.
      */
     public void setMovieID(int movieID1) {
         this.movieID = movieID1;
+    }
+
+    /**
+     * Checks if review is valid
+     * Codes:
+     * 1 - valid
+     * -1 - null
+     * -2 - movieID bad
+     * -3 - movie bad
+     * -4 - username bad
+     * -5 - user bad
+     * -6 - score bad
+     *
+     *
+     * @param review review to check
+     * @return 1 if good, negative integer code if bad.
+     */
+    public static int reviewIsValid(Review review) {
+        if (review == null) {
+            return -1;
+        }
+
+        //Check attached Movie
+        if (review.movieID < 0) {
+            return -2;
+        } else {
+            Movie mMovie = IOActions.getMovieById(review.movieID);
+            if (mMovie == null
+                || mMovie.getID() != review.movieID
+                || mMovie.getTitle() == null
+                || mMovie.getTitle().equals("")) {
+                return -3;
+            }
+        }
+
+        //Check attached user
+        if (review.username == null || review.username.equals("")) {
+            return -4;
+        } else {
+            User mUser = IOActions.getUserByUsername(review.username);
+            if (mUser == null
+                    || mUser.getUsername() == null
+                    || mUser.getUsername().equals("")
+                    || !mUser.getUsername().equals(review.username)) {
+                return -5;
+            }
+        }
+
+        //Check score
+        if (review.score < 0 || review.score > 5) {
+            return -6;
+        }
+        return 1;
     }
 
 }

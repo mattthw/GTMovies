@@ -9,58 +9,42 @@ public enum Genre {
 
     @Override
     public String toString() {
-        if (this == ACT_ADV) {
-            return "Action & Adventure";
+        switch (this) {
+            case ACT_ADV:
+                return "Action & Adventure";
+            case ANIM:
+                return "Animation";
+            case CLASSIC:
+                return "Classics";
+            case COMD:
+                return "Comedy";
+            case DOCU:
+                return "Documentary";
+            case DRAMA:
+                return "Drama";
+            case HORROR:
+                return "Horror";
+            case KIDS_FAM:
+                return "Kids & Family";
+            case MUSIC:
+                return "Musical & Performing Arts";
+            case MYST:
+                return "Mystery & Suspense";
+            case ROMANCE:
+                return "Romance";
+            case SCIFI:
+                return "Science Fiction & Fantasy";
+            case SPECIAL:
+                return "Special Interest";
+            case SPORTS:
+                return "Sports & Fitness";
+            case TV:
+                return "Television";
+            case WEST:
+                return "Western";
+            default:
+                return "Hail Jinu";
         }
-        if (this == ANIM) {
-            return "Animation";
-        }
-        if (this == ART) {
-            return "Art House & International";
-        }
-        if (this == CLASSIC) {
-            return "Classics";
-        }
-        if (this == COMD) {
-            return "Comedy";
-        }
-        if (this == DOCU) {
-            return "Documentary";
-        }
-        if (this == DRAMA) {
-            return "Drama";
-        }
-        if (this == HORROR) {
-            return "Horror";
-        }
-        if (this == KIDS_FAM) {
-            return "Kids & Family";
-        }
-        if (this == MUSIC) {
-            return "Musical & Performing Arts";
-        }
-        if (this == MYST) {
-            return "Mystery & Suspense";
-        }
-        if (this == ROMANCE) {
-            return "Romance";
-        }
-        if (this == SCIFI) {
-            return "Science Fiction & Fantasy";
-        }
-        if (this == SPECIAL) {
-            return "Special Interest";
-        }
-        if (this == SPORTS) {
-            return "Sports & Fitness";
-        }
-        if (this == TV) {
-            return "Television";
-        }
-        if (this == WEST) {
-            return "Western";
-        }
-        return "Hail Jinu";
     }
 
     /**

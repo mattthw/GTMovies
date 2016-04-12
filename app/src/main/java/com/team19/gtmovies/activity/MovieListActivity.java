@@ -28,11 +28,13 @@ import java.util.List;
  * lead to a {@link MovieDetailActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
+ *
  * @author Austin Leal
  * @version 1.0
  */
 public class MovieListActivity extends AppCompatActivity {
 
+    //TODO: Is this class even used?
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -51,8 +53,10 @@ public class MovieListActivity extends AppCompatActivity {
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
+        int i = 1;
         if (findViewById(R.id.movie_detail_container) != null) {
             //TODO: check if twoPane
+            i = 2;
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
@@ -80,6 +84,7 @@ public class MovieListActivity extends AppCompatActivity {
 
     /**
      * Sets up the recyclerview
+     *
      * @param recyclerView to setup
      */
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -97,6 +102,7 @@ public class MovieListActivity extends AppCompatActivity {
 
         /**
          * Public SimpleItemRecyclerViewAdapter constructer
+         *
          * @param items List of items for adapter
          */
         public SimpleItemRecyclerViewAdapter(List<Movie> items) {
@@ -132,7 +138,6 @@ public class MovieListActivity extends AppCompatActivity {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
                         Log.e("TWO PANE", "2PANE");
-                        //arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
                         MovieDetailFragment fragment = new MovieDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -142,8 +147,6 @@ public class MovieListActivity extends AppCompatActivity {
                         Log.e("ONE PANE", "1PANE");
                         Context context = v.getContext();
                         Intent intent = new Intent(context, MovieDetailActivity.class);
-                        //intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-
                         context.startActivity(intent);
                     }
                 }
@@ -168,6 +171,7 @@ public class MovieListActivity extends AppCompatActivity {
 
             /**
              * Public constructor for ViewHolder
+             *
              * @param view view to be held
              */
             public ViewHolder(View view) {

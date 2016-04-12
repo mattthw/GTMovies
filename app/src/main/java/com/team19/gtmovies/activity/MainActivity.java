@@ -50,6 +50,7 @@ import java.util.Map;
 
 /**
  * The Main Activity
+ *
  * @author Matt McCoy
  * @version 3.0
  */
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity
     //protected static IOActions ioa;
     protected static View mainRootView;
     protected static NavigationView navigationView;
-    protected static Toolbar toolbar;
+    protected static Toolbar mToolbar;
     protected static DrawerLayout drawer;
     protected static MovieFragmentPagerAdapter movieFragmentPagerAdapter;
     protected static CriteriaActivity criteriaActivity;
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         if (IOActions.getIOActionsInstance() == null) {
             Log.e("GTMovies", "IOActions.getIOActionsInstance == null !");
+            // Go back to SplashScreenActivity
             startActivity(new Intent(this, SplashScreenActivity.class));
             finish();
             return;
@@ -133,14 +135,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         mainRootView = findViewById(R.id.main_view);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(),R.color.colorPrimaryDark));
+        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimaryDark));
         // Layout toolbar
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(mToolbar);
         // Layout drawer
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         // Layout navigation
@@ -161,6 +163,8 @@ public class MainActivity extends AppCompatActivity
         // Setup tabs and SEARCH
         //fragmentManager = getSupportFragmentManager();
         //criteriaActivity = (CriteriaActivity) findViewById(R.id.criteria_bar);
+
+        // Setup tabs and search
         setupTabs();
         setupSearch();
 
@@ -175,9 +179,10 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * do things depending on results from activities called.
+     *
      * @param requestCode what we are checking
-     * @param resultCode value returned for what being checked
-     * @param data idk
+     * @param resultCode  value returned for what being checked
+     * @param data        idk
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -197,6 +202,7 @@ public class MainActivity extends AppCompatActivity
             } else if (resultCode == -1) {
                 Log.e("GTMovies", "login cancelled, quitting app.");
                 finish();
+                return;
             }
 
             //debug code from @austin
@@ -214,27 +220,14 @@ public class MainActivity extends AppCompatActivity
      */
     public void updateNavName() {
         View header = navigationView.getHeaderView(0);
-        TextView name = (TextView)header.findViewById(R.id.headerName);
+        TextView name = (TextView) header.findViewById(R.id.headerName);
         if (CurrentState.getUser() != null) {
             name.setText(CurrentState.getUser().getName());
             Log.println(Log.DEBUG, "GTMovies", "header name updated to: " + name);
         } else {
-            Log.println(Log.INFO,"GTMovies", "header view null, couldn't update.");
+            Log.println(Log.INFO, "GTMovies", "header view null, couldn't update.");
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -247,16 +240,18 @@ public class MainActivity extends AppCompatActivity
         ((ViewPager) findViewById(R.id.view_pager)).setAdapter(movieFragmentPagerAdapter);
         ((ViewPager) findViewById(R.id.view_pager)).addOnPageChangeListener(
                 new ViewPager.OnPageChangeListener() {
-            LinearLayout criteriaBar = (LinearLayout) findViewById(R.id.criteria_bar);
-            //Sliding animations to use for the additional criteria bar in recommendations
+                    LinearLayout criteriaBar = (LinearLayout) findViewById(R.id.criteria_bar);
+                    //Sliding animations to use for the additional criteria bar in recommendations
             /*Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_down);
+
+
             Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_up);*/
 
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                                       int positionOffsetPixels) {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset,
+                                               int positionOffsetPixels) {
 //                switch (position) {
 //                    case MovieListFragment.TOP_RENTALS_TAB:
 //                        if (!MovieListFragment.hasTopRentalsList()) {
@@ -283,48 +278,27 @@ public class MainActivity extends AppCompatActivity
 //                    default:
 //                        Log.e("GTMovies", "Incorrect int for tab.");
 //                }
-            }
+                    }
 
-            @Override
-            public void onPageSelected(int position) {
-                currentPage = position;
-                ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+                    @Override
+                    public void onPageSelected(int position) {
+                        currentPage = position;
+                        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
 
-                //set new height options
-                if (CurrentState.getOpenHeight() == 0) {
-                    CurrentState.setOpenHeight(viewPager.getHeight());
-                    CurrentState.setClosedHeight(viewPager.getHeight() + toolbar.getHeight());
-                    Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
-                }
-                Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
+                        //set new height options
+                        if (CurrentState.getOpenHeight() == 0) {
+                            CurrentState.setOpenHeight(viewPager.getHeight());
+                            CurrentState.setClosedHeight(viewPager.getHeight() + mToolbar.getHeight());
+                            Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
+                        }
+                        Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
+                    }
 
-                switch (position) {
-                    case MovieListFragment.NEW_MOVIES_TAB:
-                        criteriaBar.setVisibility(View.GONE);
-                        //new UpdateUITask().execute(position);
-                        break;
-                    case MovieListFragment.TOP_RENTALS_TAB:
-                        criteriaBar.setVisibility(View.GONE);
-                        //new UpdateUITask().execute(position);
-                        break;
-                    case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                        criteriaBar.setVisibility(View.VISIBLE);
-                        //viewPager.getLayoutParams().height = CurrentState.getOpenHeight()
-                        //        - R.dimen.text_margin;
-                        List<Movie> newRecommendations;
-                        setupMajorButton();
-                        break;
-                    default:
-                        Log.e("GTMovies", "Incorrect int for tab.");
-                }
-                Log.e("CurrentState2", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                Log.d("GTMovies", "Tabs this one called. State: " + state);
-            }
-        });
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+                        Log.d("GTMovies", "Tabs this one called. State: " + state);
+                    }
+                });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.scroll_tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -362,7 +336,6 @@ public class MainActivity extends AppCompatActivity
      * Sets up listener for major button
      */
     public void setupMajorButton() {
-        boolean selected = false;
         Log.d("main", "major button");
         final RelativeLayout majorButton = (RelativeLayout) findViewById(R.id.major_button);
         final TextView majorText = (TextView) findViewById(R.id.major_text);
@@ -370,9 +343,9 @@ public class MainActivity extends AppCompatActivity
 
 
         if (majorButton.getElevation() == R.dimen.raised_elevation) {
-            recommendations = ReviewController.getRecommendations(ReviewController.BY_MAJOR);
+            //recommendations = ReviewController.getRecommendations(ReviewController.BY_MAJOR);
         } else {
-            recommendations = ReviewController.getRecommendations();
+            //recommendations = ReviewController.getRecommendations();
         }
         new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
 
@@ -423,6 +396,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Updates user interface
+     *
      * @param page which tab to update
      */
     public void updateUI(int page) {
@@ -440,8 +414,9 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Obtains the movies from the API
+     *
      * @param requestType differentiates new movies and top rental
-     * @param movieList list of movies to get details about for recommendations
+     * @param movieList   list of movies to get details about for recommendations
      */
     private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
         //initializing new movieArray to return
@@ -534,7 +509,7 @@ public class MainActivity extends AppCompatActivity
 
                                 MovieListFragment.setNewMoviesList(movieArray);
                                 updateUI(MovieListFragment.NEW_MOVIES_TAB);
-                                //MovieListFragment.setTopRentalsList(movieArray);        //TODO:Remove
+                                //MovieListFragment.setTopRentalsList(movieArray);        //TODO: Remove
                                 /*movieListFragment = MovieListFragment.newInstance(
                                 MovieListFragment.NEW_MOVIES_TAB);)*/
 
@@ -571,7 +546,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     /**
      * close drawer if open
      */
@@ -591,7 +565,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         Log.d("GTMovies", "Item selected");
         int id = item.getItemId();
-        // Change John Smith to username
 
         if (id == R.id.nav_manage_profile) {
             Intent intent = new Intent(this, UserProfileActivity.class);
@@ -602,8 +575,12 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_logout) {
             IOActions.logoutUser();
-            //recreate this class. leave this. tested and true works.
-            recreate();
+            //recreate this class. leave this. tested and true works. //TODO: check if I broke it so that I don't suffer the wrath of Supreme Leader's rage
+            startActivity(new Intent(this, SplashScreenActivity.class));
+            //recreate();
+            finish();
+        } else {
+            return false;
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -615,6 +592,7 @@ public class MainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle bundle) {
         //nothing
     }
+
     /*@Override
     protected void onStart() {
         super.onStart();
@@ -633,6 +611,7 @@ public class MainActivity extends AppCompatActivity
 
     private class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
         private List<Movie> movieList;
+
         @Override
         protected Integer doInBackground(Integer... params) {
             switch (params[0]) {

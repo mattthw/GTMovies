@@ -18,18 +18,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.team19.gtmovies.R;
-import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.fragment.MovieDetailFragment;
-import com.team19.gtmovies.pojo.Review;
 
-import java.io.ObjectInputStream;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -37,6 +31,7 @@ import java.util.Arrays;
  * activity is only used narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
  * in a {@link MovieListActivity}.
+ *
  * @author Austin Leal
  * @version 1.0
  */
@@ -48,7 +43,6 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static String comment = "null";
     private static Intent gotIntent;
     private static View rootView;
-
 
 
     @Override
@@ -129,7 +123,6 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * inner class for dialog. This Dialog is presented when user
      * clicks button to leave a new review
      */
@@ -144,7 +137,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             //setup Spinner for user rating
             View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_review, null);
-            scoreSpin = (Spinner)view.findViewById(R.id.spinnerScore);
+            scoreSpin = (Spinner) view.findViewById(R.id.spinnerScore);
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                     R.array.scores, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -166,22 +159,18 @@ public class MovieDetailActivity extends AppCompatActivity {
                             Log.println(Log.INFO, "GTMovies", "COMMENT: " + comment);
                             //get movie id
                             Integer tempID = gotIntent.getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1);
-                            //Integer tempID = gotIntent.getIntExtra(MovieDetailFragment.ARG_ITEM_ID, -1);
                             //save the review
                             try {
-                                IOActions.saveNewRating(tempID,score,comment);
+                                IOActions.saveNewRating(tempID, score, comment);
                             } catch (IllegalArgumentException e) {
                                 Log.println(Log.ERROR, "GTMovies", e.getMessage());
                                 Snackbar.make(rootView, "Movie already reviewed.", Snackbar.LENGTH_SHORT).show();
                             }
-                            Log.println(Log.DEBUG, "GTMovies", "Movies: " + IOActions.getMovies());
                             MovieDetailFragment frag = (MovieDetailFragment) getFragmentManager()
                                     .findFragmentById(R.id.movie_detail_container);
                             frag.updateFrag();
-
                         }
                     })
-                    //close dialog
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             ReviewDialogFragment.this.getDialog().cancel();
@@ -197,17 +186,19 @@ public class MovieDetailActivity extends AppCompatActivity {
         public void addListenerOnSpinnerItemSelection() {
             scoreSpin.setOnItemSelectedListener(new ScoreSpinnerListener());
         }
+
         private class ScoreSpinnerListener implements AdapterView.OnItemSelectedListener {
             @Override
             public void onItemSelected(AdapterView parent, View view, int pos, long id) {
                 try {
-                    tempScore = Integer.parseInt((String)parent.getItemAtPosition(pos));
+                    tempScore = Integer.parseInt((String) parent.getItemAtPosition(pos));
                 } catch (Exception e) {
                     Log.println(Log.ERROR, "GTMovies", "Couldint parse selected score as Integer");
                     tempScore = 0;
                 }
                 Log.println(Log.DEBUG, "GTMovies", "selected: " + tempScore.toString());
             }
+
             @Override
             public void onNothingSelected(AdapterView parent) {
             }

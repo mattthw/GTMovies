@@ -1,12 +1,10 @@
 package com.team19.gtmovies.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -29,7 +27,7 @@ import com.team19.gtmovies.exception.NullUserException;
 import com.team19.gtmovies.pojo.User;
 
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private String password = null;
     private String passwordCheck = null;
     private String name = null;
-    private HashMap<String, Integer> attempts = new HashMap<>();
+    private Map<String, Integer> attempts = new HashMap<>();
     private View rootView;
     private static boolean verified = false;
 
@@ -79,11 +77,12 @@ public class LoginActivity extends AppCompatActivity {
         //start welcome screen
         startActivityForResult(new Intent(this, WelcomeActivity.class), 1);
         //load existing users
-        try {
-            //accounts = IOActions.getAccounts();
-        } catch (Exception e) {
-            Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
-        }
+//        try {
+//            int i = 1;
+//            //accounts = IOActions.getAccounts();
+//        } catch (Exception e) {
+//            Log.e("GTMovies", "Exception: "+Log.getStackTraceString(e));
+//        }
 
         //remove up button
         ActionBar actionBar = getSupportActionBar();
@@ -114,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                    attemptLogin();
+                attemptLogin();
             }
         });
         Button mRegisterButton = (Button) findViewById(R.id.register_button);
@@ -130,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data != null && !data.getBooleanExtra("login", true)) {
-                onRegisterPressed();
+            onRegisterPressed();
         } else if (resultCode != 1) {
             finish();
         }
@@ -157,6 +156,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * XML/UI function to change layout from registering back to just
      * signing in
+     *
      * @param view current view
      */
     public void cancel(View view) {
@@ -183,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
     private void attemptLogin() {
         //hide keyboard
         if (rootView != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
         }
         // Reset errors.
@@ -200,14 +200,14 @@ public class LoginActivity extends AppCompatActivity {
         //check if should cancel
         if (mAuthTask != null) {
             return;
-        } else if ( null != attempts.get(email) && attempts.get(email) >= maxLOGINATTEMPTS) {
+        } else if (null != attempts.get(email) && attempts.get(email) >= maxLOGINATTEMPTS) {
             Snackbar.make(rootView,
-                    "ACCOUNT '" + email + "' LOCKED!" , Snackbar.LENGTH_SHORT).show();
+                    "ACCOUNT '" + email + "' LOCKED!", Snackbar.LENGTH_SHORT).show();
             return;
-        } else if ( null != IOActions.getUserByUsername(email)
+        } else if (null != IOActions.getUserByUsername(email)
                 && IOActions.getUserByUsername(email).getPermission() == -1) {
             Snackbar.make(rootView,
-                    "ACCOUNT '" + email + "' IS BANNED" , Snackbar.LENGTH_SHORT).show();
+                    "ACCOUNT '" + email + "' IS BANNED", Snackbar.LENGTH_SHORT).show();
             return;
         }
         boolean cancel = false;
@@ -291,8 +291,7 @@ public class LoginActivity extends AppCompatActivity {
         if (verified) {
             if (getParent() == null) {
                 setResult(1);
-            }
-            else {
+            } else {
                 getParent().setResult(1);
             }
         }
@@ -350,13 +349,12 @@ public class LoginActivity extends AppCompatActivity {
                 verified = true;
                 if (getParent() == null) {
                     setResult(1);
-                }
-                else {
+                } else {
                     getParent().setResult(1);
                 }
                 Snackbar.make(findViewById(R.id.login_root),
                         "'" + CurrentState.getUser().getUsername()
-                                + "' signed in." , Snackbar.LENGTH_LONG).show();
+                                + "' signed in.", Snackbar.LENGTH_LONG).show();
                 // We are done. Go back to MainActivity, after a set delay.
                 TimerTask task = new TimerTask() {
                     @Override
@@ -369,7 +367,7 @@ public class LoginActivity extends AppCompatActivity {
                 Timer t = new Timer();
                 t.schedule(task, timeTOPAUSE);
             } else {
-                if ( null != attempts.get(email) && attempts.get(email) >= 2) {
+                if (null != attempts.get(email) && attempts.get(email) >= 2) {
                     Snackbar.make(rootView, "ACCOUNT '" + email + "' LOCKED!",
                             Snackbar.LENGTH_SHORT).show();
                     IOActions.getUserByUsername(email).setPermission(0);
@@ -379,7 +377,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (attempts.get(email) != null) {
                         attempts.put(email, attempts.get(email) + 1);
                         Snackbar.make(rootView,
-                                (minLENGTH-attempts.get(email))
+                                (minLENGTH - attempts.get(email))
                                         + " attempts remaining for " + email,
                                 Snackbar.LENGTH_SHORT).show();
                     } else {
