@@ -100,8 +100,9 @@ public class MovieDetailFragment extends Fragment {
         //set tomato rating
         if (getArguments().containsKey(ARG_ITEM_RATE)) {
             if (!getArguments().getString(ARG_ITEM_RATE).contains("-1")) {
+                String rating =  getArguments().getString(ARG_ITEM_RATE) + "%";
                 ((TextView) rootView.findViewById(R.id.ratingView))
-                        .setText(getArguments().getString(ARG_ITEM_RATE));
+                        .setText(rating);
             }
         } else {
             Log.println(Log.ERROR, "GTMovie", "No rating for movie");

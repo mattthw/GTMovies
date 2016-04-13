@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -136,9 +137,13 @@ public class MainActivity extends AppCompatActivity
         mainRootView = findViewById(R.id.main_view);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimaryDark));
+
         // Layout toolbar
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
+        findViewById(R.id.app_bar).animate().translationY(0).setInterpolator(
+                new DecelerateInterpolator(2));
+
         // Layout drawer
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -284,14 +289,6 @@ public class MainActivity extends AppCompatActivity
                     public void onPageSelected(int position) {
                         currentPage = position;
                         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-
-                        //set new height options
-                        if (CurrentState.getOpenHeight() == 0) {
-                            CurrentState.setOpenHeight(viewPager.getHeight());
-                            CurrentState.setClosedHeight(viewPager.getHeight() + mToolbar.getHeight());
-                            Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
-                        }
-                        Log.e("CurrentState", "height=" + CurrentState.getOpenHeight() + " height=" + CurrentState.getClosedHeight());
                     }
 
                     @Override

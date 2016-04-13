@@ -86,7 +86,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container, fragment)
+                    .add(R.id.movie_detail_container, fragment)     //TODO: AUSTINHERE
                     .commit();
         }
 
