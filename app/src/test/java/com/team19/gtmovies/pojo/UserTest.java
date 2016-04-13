@@ -22,17 +22,17 @@ public class UserTest {
         assertEquals(false, u.getHasProfile());
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void testNullValues1() throws Exception {
         User u = new User(null, "password", "Johnny");
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void testNullValues2() throws Exception {
         User u = new User("johnson", null, "Johnny");
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void testNullValues3() throws Exception {
         User u = new User("johnson", "password", null);
     }

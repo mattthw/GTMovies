@@ -58,6 +58,9 @@ public class UserListActivity extends AppCompatActivity {
      * @return formatted user list
      */
     public static ArrayList<String> formatList(ArrayList<String> usernameList) {
+        if (usernameList == null) {
+            return new ArrayList<>(0);
+        }
         String hisRank = "";
         Log.d("GTMovies", "populatelist: " + usernameList);
         for (int i = 0; i < usernameList.size(); i++) {
@@ -75,6 +78,8 @@ public class UserListActivity extends AppCompatActivity {
                     hisRank = "[L]";
                 } else if (perm == -1) {
                     hisRank = "[B]";
+                } else {
+                    hisRank = "[U]";
                 }
                 usernameList.set(i, hisRank + "   " + usernameList.get(i));
             }
