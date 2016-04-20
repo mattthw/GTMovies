@@ -123,6 +123,14 @@ public class LoginActivity extends AppCompatActivity {
                 onRegisterPressed();
             }
         });
+
+        Button nyanStartButton = (Button) findViewById(R.id.nyanTestButton);
+        nyanStartButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, NyanActivity.class));
+            }
+        });
     }
 
 

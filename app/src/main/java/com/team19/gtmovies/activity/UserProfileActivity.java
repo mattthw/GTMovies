@@ -1,8 +1,14 @@
 package com.team19.gtmovies.activity;
 
 import android.app.Dialog;
+import android.app.IntentService;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
@@ -57,6 +63,36 @@ public class UserProfileActivity extends AppCompatActivity {
     public static final int HEADER_NAME_UPDATED = 4;
     public static final int PROFILE_VIEWED = 5;
 
+    private MusicService mServ;
+    private boolean mIsBound = false;
+    private Intent musicthing;
+    private ServiceConnection sCon =new ServiceConnection(){
+
+        public void onServiceConnected(ComponentName name, IBinder
+                binder) {
+            mServ = ((MusicService.ServiceBinder) binder).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            mServ = null;
+        }
+    };
+    // Nyan Stuff
+    void doBindService(){
+        musicthing = new Intent(this,MusicService.class);
+        bindService(musicthing,
+                sCon,Context.BIND_AUTO_CREATE);
+        mIsBound = true;
+    }
+    void doUnbindService()
+    {
+        if(mIsBound)
+        {
+            stopService(musicthing);
+            unbindService(sCon);
+            mIsBound = false;
+        }
+    }
 
     /**
      * Default constructor for UserProfileActivity
@@ -291,6 +327,14 @@ public class UserProfileActivity extends AppCompatActivity {
             Snackbar.make(rootView, "Profile has been updated!", Snackbar.LENGTH_SHORT).show();
         }
 
+        if(eBio.getText().toString().equals("Nyan")
+                || eBio.getText().toString().equals("Nyan Cat")) {
+            Log.d("Nyan", "Nyan Received");
+            nyan();
+        } else if (eBio.getText().toString().equals("shut up")) {
+            killNyan();
+        }
+
         if (!eName.getText().toString().equals(CurrentState.getUser().getName())) {
             setResult(1);
         }
@@ -303,6 +347,25 @@ public class UserProfileActivity extends AppCompatActivity {
         };
         Timer t = new Timer();
         t.schedule(task, 1000);
+    }
+
+    private void nyan() {
+//        if(!mIsBound) {
+//            doBindService();
+//            Intent music = new Intent();
+//            music.setClass(this,MusicService.class);
+//            startService(music);
+//            mIsBound = true;
+//        }
+        musicthing = new Intent(getApplicationContext(), MusicService.class);
+        startService(musicthing);
+    }
+
+    private void killNyan() {
+//        if(mIsBound) {
+//            doUnbindService();
+//        }
+        stopService(musicthing);
     }
 
     /**
