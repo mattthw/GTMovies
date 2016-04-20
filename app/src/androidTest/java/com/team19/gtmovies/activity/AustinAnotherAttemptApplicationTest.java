@@ -1,3 +1,4 @@
+/*
 package com.team19.gtmovies.activity;
 
 import android.app.Application;
@@ -16,10 +17,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 
+*/
 /**
  * @author Austin Leal
  * @version 1.0
- */
+ *//*
+
 @RunWith(AndroidJUnit4.class)
 public class AustinAnotherAttemptApplicationTest
         extends ApplicationTestCase<Application> {
@@ -150,4 +153,4 @@ public class AustinAnotherAttemptApplicationTest
         assertEquals("Proper review with no comment is not returning correct"
                 + "code", 1, Review.reviewIsValid(validNoCommentReview));
     }
-}
+}*/

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     protected static MovieFragmentPagerAdapter movieFragmentPagerAdapter;
     protected static CriteriaActivity criteriaActivity;
 
+    private static FragmentManager fragmentManager;
     private static int currentPage;
     private List<Movie> recommendations;
     private boolean generalRecommendations = true;
@@ -166,7 +168,7 @@ public class MainActivity extends AppCompatActivity
         //getMoviesFromAPI(SingletonMagic.NEW_MOVIE, null);
         //getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
         // Setup tabs and SEARCH
-        //fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         //criteriaActivity = (CriteriaActivity) findViewById(R.id.criteria_bar);
 
         // Setup tabs and search
@@ -254,35 +256,36 @@ public class MainActivity extends AppCompatActivity
             Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_up);*/
 
+
                     @Override
                     public void onPageScrolled(int position, float positionOffset,
                                                int positionOffsetPixels) {
-//                switch (position) {
-//                    case MovieListFragment.TOP_RENTALS_TAB:
-//                        if (!MovieListFragment.hasTopRentalsList()) {
-//                            getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
-//                        } //otherwise fall through
-//                    case MovieListFragment.NEW_MOVIES_TAB:
-//                        //MovieListFragment has already been displayed. Display again.
-//                        MovieListFragment movieListFragment = MovieListFragment.newInstance(position);
-//                        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-//                                movieListFragment).commit();
-//                        break;
-//                    case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-//                        scroller();
-//                        criteriaBar.setVisibility(View.VISIBLE);
-//                        if (!MovieListFragment.hasYourRecommendationsList()) {
-//                            getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
-//                                    ReviewController.getRecommendations());
-//                        } else {
-//                            movieListFragment = MovieListFragment.newInstance(position);
-//                            fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-//                                    movieListFragment).commit();
-//                        }
-//                        break;
-//                    default:
-//                        Log.e("GTMovies", "Incorrect int for tab.");
-//                }
+                        if (position == MovieListFragment.YOUR_RECOMMENDATIONS_TAB) {
+                            criteriaBar.setVisibility(View.VISIBLE);
+                            setupMajorButton();
+                        } else {
+                            criteriaBar.setVisibility(View.GONE);
+                        }
+                        /*if (position == MovieListFragment.TOP_RENTALS_TAB) {
+                            if (!MovieListFragment.hasTopRentalsList()) {
+                                getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
+                            }
+                        } else if (position == MovieListFragment.NEW_MOVIES_TAB) {// MovieListFragment.NEW_MOVIES_TAB:
+                                //MovieListFragment has already been displayed. Display again.
+                            case MovieListFragment.YOUR_RECOMMENDATIONS_TAB
+                                criteriaBar.setVisibility(View.VISIBLE);
+                                if (!MovieListFragment.hasYourRecommendationsList()) {
+                                    getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
+                                            ReviewController.getRecommendations());
+                                } else {
+                                    movieListFragment = MovieListFragment.newInstance(position);
+                                    fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
+                                            movieListFragment).commit();
+                                }
+                                break;
+                            default:
+                                Log.e("GTMovies", "Incorrect int for tab.");
+                        }*/
                     }
 
                     @Override

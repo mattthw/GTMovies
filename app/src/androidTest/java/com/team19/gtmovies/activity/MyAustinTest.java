@@ -1,3 +1,4 @@
+/*
 package com.team19.gtmovies.activity;
 
 import android.os.Looper;
@@ -10,9 +11,11 @@ import com.team19.gtmovies.pojo.User;
 import org.junit.Before;
 import org.junit.Test;
 
+*/
 /**
  * Created by a on 4/7/2016.
- */
+ *//*
+
 public class MyAustinTest
         extends ActivityInstrumentationTestCase2<UserProfileActivity> {
     ////////////////////////////////////////////////////////////////////////////
@@ -70,3 +73,4 @@ public class MyAustinTest
                 + " other cases, but do not", 1, mUser.getPermission());
     }
 }
+*/

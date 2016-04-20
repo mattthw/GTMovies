@@ -15,7 +15,8 @@ import com.team19.gtmovies.pojo.Movie;
  * @author Austin Leal
  * @version 2.0
  */
-public class MovieViewHolder extends RecyclerView.ViewHolder {
+public class
+MovieViewHolder extends RecyclerView.ViewHolder {
     public final View mView;
     public final NetworkImageView mMoviePosterView;
     public final TextView mMovieTitleView;

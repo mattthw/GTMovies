@@ -1,3 +1,4 @@
+/*
 package com.team19.gtmovies;
 
 import android.support.test.runner.AndroidJUnit4;
@@ -14,9 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.matchers.Null;
 
+*/
 /**
  * Created by Jim Jang on 2016-04-04.
- */
+ *//*
+
 @RunWith(AndroidJUnit4.class)
 public class MovieGetUserRatingByMajorTest extends TestCase {
     private Movie noReview;
@@ -126,3 +129,4 @@ public class MovieGetUserRatingByMajorTest extends TestCase {
         assertEquals(-1, zeroCount);
     }
 }
+*/

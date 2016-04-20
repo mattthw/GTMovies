@@ -1,4 +1,4 @@
-package com.team19.gtmovies.Animations;
+package com.team19.gtmovies.animations;
 
 import android.view.View;
 import android.view.animation.Animation;

@@ -13,12 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.activity.MovieDetailActivity;
+import com.team19.gtmovies.activity.MovieListActivity;
+import com.team19.gtmovies.animations.AnimateRecyclerHeight;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.pojo.Movie;
@@ -511,18 +514,18 @@ public class MovieListFragment extends Fragment {
      */
     public void hideToolbar() {
         if (mAdapter != searchAdapter) {
-            /*if (CurrentState.getOpenHeight() == 0) {
+            if (CurrentState.getOpenHeight() == 0) {
                 setHeights();
-            }*/
+            }
 
             Log.e("MovieLFrag", "Hiding search");
             getActivity().findViewById(R.id.app_bar).animate().translationY(-mToolbar.getHeight()).setInterpolator(
                     new AccelerateInterpolator(2));
-
-            /*final View mView = getActivity().findViewById(R.id.movie_list_view);*/
-            /*Animation expandAnimate = AnimateRecyclerHeight.getInstance(mView,
-                    CurrentState.getClosedHeight(), true);
-            mView.startAnimation(expandAnimate);*/
+            //getActivity().findViewById(R.id.toolbar).setVisibility(View.GONE);
+            final View mView = getActivity().findViewById(R.id.movie_list_view);
+            Animation expandAnimate = AnimateRecyclerHeight.getInstance(mView,
+                    CurrentState.getOpenHeight(), true);
+            mView.startAnimation(expandAnimate);
             /*final int initialHeight = CurrentState.getClosedHeight();
 
             Animation expandAnimation = new Animation()
@@ -569,6 +572,7 @@ public class MovieListFragment extends Fragment {
      */
     public void showToolbar() {
         if (mAdapter != searchAdapter) {
+            //getActivity().findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.app_bar).animate().translationY(0).setInterpolator(
                     new DecelerateInterpolator(2));
             /*getActivity().findViewById(R.id.main_frame_layout).animate().y(
@@ -637,11 +641,11 @@ public class MovieListFragment extends Fragment {
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             Context context = parent.getContext();
             oldPosition = 0;
-            if (viewType == ITEM_TYPE) {
+            //if (viewType == ITEM_TYPE) {                          //TODO: uncomment all this
                 itemView = LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.movie_list_content, parent, false);
                 return new MovieViewHolder(itemView);
-            } else if (viewType == HEADER_TYPE) {
+            /*} else if (viewType == HEADER_TYPE) {
                 itemView = LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.movie_list_content, parent, false);
                 Log.e("MLF", "header type");
@@ -650,14 +654,14 @@ public class MovieListFragment extends Fragment {
                 Log.e("MLF", "other type    ");
             }
             throw new RuntimeException("There is not type that matches this"
-                    + "viewtype, " + viewType);
+                    + "viewtype, " + viewType); */
         }
 
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder mHolder, int position) {
-            if (!isPositionHeader(position)) {
+            //if (!isPositionHeader(position)) {                    //TODO: uncomment
                 final MovieViewHolder holder = (MovieViewHolder) mHolder;
-                holder.mMovieInfo = movieList.get(position - 1);
+                holder.mMovieInfo = movieList.get(position);        //TODO: subtract 1
 
                 Log.d("MLFrag", "onBindViewHolder");
 
@@ -721,7 +725,7 @@ public class MovieListFragment extends Fragment {
                         }
                     }
                 });
-            }
+            //}
         }
 
         /**
@@ -740,8 +744,8 @@ public class MovieListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return getBasicItemCount() + 1;
-        }
+            return getBasicItemCount();
+        } //TODO add 1
 
         @Override
         public int getItemViewType(int position) {

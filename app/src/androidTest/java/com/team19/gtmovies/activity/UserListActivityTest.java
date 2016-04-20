@@ -1,3 +1,4 @@
+/*
 package com.team19.gtmovies.activity;
 
 import com.team19.gtmovies.R;
@@ -58,10 +59,12 @@ import static org.mockito.Mockito.validateMockitoUsage;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+*/
 /**
  * Created by matt on 4/3/16.
  * tests populateList in UserListActivity
- */
+ *//*
+
 
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(AndroidJUnit4.class)
@@ -73,7 +76,9 @@ public class UserListActivityTest {
     private static User u3 = null;
     private static ArrayList<String> testNames = null;
 
-    /** this line is preferred way to hook up to activity */
+    */
+/** this line is preferred way to hook up to activity *//*
+
     @Rule
     public ActivityTestRule<UserListActivity> mActivityRule = null;
     @Rule
@@ -114,10 +119,12 @@ public class UserListActivityTest {
         }
         //return custom badperm user
 //        when(ioActions.getUserByUsername("badperm1")).thenReturn(badPerm);
-        /*
+        */
+/*
         cannot do anything with fake users objects, method calls IOActions.getUserByUsername()
         to build new User with onfo form database.
-         */
+         *//*
+
 
         testNames = new ArrayList<>(
                 Arrays.asList(
@@ -192,9 +199,11 @@ public class UserListActivityTest {
         assertNotNull(result);
         //check formatting
         assertEquals("User with invalid permission should have '[U]' TAG!", true, result.get(0).contains("[U]"));
-        /*
+        */
+/*
         invalid permissions should have [U] tag to keep formatting consistancy and presentation
          for end users. We can see bad data in our sql tables directly
-         */
+         *//*
+
     }
-}
+}*/

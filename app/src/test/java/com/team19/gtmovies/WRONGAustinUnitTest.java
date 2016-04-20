@@ -1,3 +1,4 @@
+/*
 package com.team19.gtmovies;
 
 import com.team19.gtmovies.data.IOActions;
@@ -11,10 +12,12 @@ import org.mockito.Mockito;
 //import org.junit.Test;
 
 
+*/
 /**
  * @author Austin Leal
  * @version 1.0
- */
+ *//*
+
 public class WRONGAustinUnitTest{
 
     ////////////////////////////////////////////////////////////////////////////
@@ -81,10 +84,12 @@ public class WRONGAustinUnitTest{
 
     int movie2Total;
 
-    /**
+    */
+/**
      * Setup things needed for Navigation
      * @throws Exception
-     */
+     *//*
+
     //@Before
     public void setUp() throws Exception {
         Mockito context = new Mockito();
@@ -157,6 +162,7 @@ public class WRONGAustinUnitTest{
         invalidReview = new Review(0, "AUSTINTESTREVIEW12",
                 major2User.getUsername(), 123);
 
+*/
 /*        movie1.addReview(movie1NoMajorReview);
         movie1.addReview(movie1Major1GoodUser1Review);
         movie1.addReview(movie1Major1GoodUser2Review);
@@ -169,18 +175,22 @@ public class WRONGAustinUnitTest{
         movie2.addReview(movie2Major1GoodUser2Review);
         movie2.addReview(movie2Major1BadUserReview);
         movie2.addReview(movie2Major2Review);
-        movie2.addReview(movie2InvalidUserReview);*/
+        movie2.addReview(movie2InvalidUserReview);*//*
+
 
         //IOActions
     }
 
-    /**
+    */
+/**
      * Test selecting an item from the application navigation drawer.
      * @throws Exception
-     */
+     *//*
+
     //@Test
     public void testGetUserReviewsByMajor() throws Exception {
-        /*assertEquals("Movie1 no major not correct",
+        */
+/*assertEquals("Movie1 no major not correct",
                 movie1.getUserRatingByMajor(""), movie1NoMajorTotal);
         assertEquals("Movie1 Major1 not correct",
                 movie1.getUserRatingByMajor(major1), movie1Major1Total);
@@ -197,6 +207,7 @@ public class WRONGAustinUnitTest{
         assertEquals("Movie2 Major2 not correct",
                 movie1.getUserRatingByMajor(major2), movie2Total);
         assertEquals("Movie2 invalid major",
-                movie1.getUserRatingByMajor(invalidMajor), -1);*/
+                movie1.getUserRatingByMajor(invalidMajor), -1);*//*
+
     }
-}
+}*/
