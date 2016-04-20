@@ -129,7 +129,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         rootView = findViewById(R.id.splash_view);
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lobster-Regular.ttf");
         TextView myTextView = (TextView) findViewById(R.id.splash_view);
-        myTextView.setTypeface(myTypeface);
+        if (myTypeface != null) {
+            myTextView.setTypeface(myTypeface);
+        }
         splashScreenVisited = true;
         try {
             //MainActivity.setIOA(new IOActions(this));

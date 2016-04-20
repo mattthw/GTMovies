@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.team19.gtmovies.R;
@@ -31,6 +32,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("Nyan", "Creation of MusicService");
 
         mPlayer = MediaPlayer.create(this, R.raw.nyan);
         mPlayer.setOnErrorListener(this);
