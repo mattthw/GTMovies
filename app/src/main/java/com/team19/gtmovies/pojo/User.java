@@ -16,6 +16,7 @@ public class User<T extends Comparable<T>>
 
     private String username;
     private String password;
+    private String email;
     private String name;
     private String bio;
     private String major;
@@ -40,6 +41,7 @@ public class User<T extends Comparable<T>>
     public User() {
         username = "null";
         password = "null";
+        email = "null";
         name = "logged_out";
         bio = "none";
         major = "none";
@@ -57,7 +59,7 @@ public class User<T extends Comparable<T>>
      * @throws IllegalUserException     if try to create with invalid parameters
      * @throws IllegalArgumentException if parameters null
      */
-    public User(String u, String p, String n)
+    public User(String u, String p, String e, String n)
             throws IllegalUserException, IllegalArgumentException {
         if (u == null || p == null || n == null) {
             throw new IllegalArgumentException("Tried creating a user using null parameters.");
@@ -67,6 +69,7 @@ public class User<T extends Comparable<T>>
         }
         username = u;
         password = p;
+        email = e;
         name = n;
         bio = "none";
         major = "none";
@@ -143,7 +146,16 @@ public class User<T extends Comparable<T>>
      * @return password
      */
     public String getPassword() {
-        return this.password;
+        return password;
+    }
+
+    /**
+     * getter for email
+     *
+     * @return email
+     */
+    public String getEmail() {
+        return email;
     }
 
     /**
@@ -254,6 +266,15 @@ public class User<T extends Comparable<T>>
      */
     public void setPassword(String p) {
         password = p;
+    }
+
+    /**
+     * setter for email
+     *
+     * @param e email
+     */
+    public void setEmail(String e) {
+        email = e;
     }
 
     /**

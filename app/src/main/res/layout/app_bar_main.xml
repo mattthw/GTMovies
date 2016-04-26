@@ -3,18 +3,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@id/app_bar"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:id="@+id/app_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_y="?attr/actionBarSize"
     tools:context=".activity.MainActivity"
     android:theme="@style/AppTheme">
 
-
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/main_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:foregroundGravity="clip_vertical"
+            android:paddingBottom="0dp">
 
             <LinearLayout
                 android:id="@+id/main_view"
@@ -28,7 +34,11 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/colorPrimary"
                     app:popupTheme="@style/AppTheme.PopupOverlay"
-                    android:foregroundGravity="right">
+                    android:paddingBottom="0dp"
+                    android:showDividers="none"
+                    android:foregroundGravity="clip_vertical"
+                    android:layout_marginBottom="0dp"
+                    android:weightSum="1">
 
                     <!--<android.support.v7.view.menu.ActionMenuItemView
                         xmlns:appcompat="http://schemas.android.com/apk/res-auto"
@@ -40,42 +50,52 @@
                             appcompat:showAsAction="always"/>
                     </android.support.v7.view.menu.ActionMenuItemView>-->
 
-                    <RelativeLayout
+                    <!--<RelativeLayout
                         android:layout_height="wrap_content"
-                        android:layout_width="match_parent">
+                        android:layout_width="match_parent">-->
 
-                        <android.support.v7.widget.SearchView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/main_search_bar"
-                            android:gravity="center_vertical"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentEnd="true"/>
-                    </RelativeLayout>
+                    <android.support.v7.widget.SearchView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/main_search_bar"
+                        android:iconifiedByDefault="true"
+                        android:queryHint="@string/search"
+                        android:layout_gravity="end"
+                        android:layout_weight="0.98" />
+                    <!--</RelativeLayout>-->
 
                 </android.support.v7.widget.Toolbar>
 
 
 
                 <android.support.design.widget.CollapsingToolbarLayout
+                    android:id="@+id/scroll_layout"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent">
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="0dp"
+                    android:foregroundGravity="clip_vertical"
+                    android:paddingBottom="0dp">
 
                     <android.support.design.widget.TabLayout
                         android:id="@+id/scroll_tabs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="0dp"
-                        app:tabMode="scrollable"/>
+                        app:tabMode="scrollable"
+                        android:fillViewport="true"
+                        android:paddingBottom="0dp"/>
 
 
                 </android.support.design.widget.CollapsingToolbarLayout>
 
             </LinearLayout>
 
+        </android.support.design.widget.AppBarLayout>
 
-    </android.support.design.widget.AppBarLayout>
-
-    <include layout="@layout/content_main" />
+        <include
+            layout="@layout/criteria_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

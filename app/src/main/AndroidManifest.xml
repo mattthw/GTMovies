@@ -112,6 +112,15 @@
                 android:value=".activity.MainActivity" />
         </activity>
         <activity
+            android:name=".activity.GenresListActivity"
+            android:label="Genres:"
+            android:parentActivityName=".activity.MainActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
+        </activity>
+        <activity
             android:name=".activity.NyanActivity"
             android:theme="@style/AppTheme.CustomTheme">
         </activity>

@@ -24,8 +24,6 @@ import java.util.Arrays;
 
 /**
  * A fragment representing a single Movie detail screen.
- * This fragment is either contained in a {@link MovieListActivity}
- * in two-pane mode (on tablets) or a {@link MovieDetailActivity}
  * on handsets.
  *
  * @author Austin Leal
@@ -100,14 +98,14 @@ public class MovieDetailFragment extends Fragment {
         //set tomato rating
         if (getArguments().containsKey(ARG_ITEM_RATE)) {
             if (!getArguments().getString(ARG_ITEM_RATE).contains("-1")) {
-                String rating =  getArguments().getString(ARG_ITEM_RATE) + "%";
+                String rating =  getArguments().getString(ARG_ITEM_RATE);
                 ((TextView) rootView.findViewById(R.id.ratingView))
                         .setText(rating);
             }
         } else {
             Log.println(Log.ERROR, "GTMovie", "No rating for movie");
         }
-        userRatingView = ((TextView) rootView.findViewById(R.id.userRatingView));
+        userRatingView = ((TextView) rootView.findViewById(R.id.user_rating_contents));
         mainListView = (ListView) rootView.findViewById(R.id.commentListView);
         //if users have review this movie then it will exist
         //and we will get their averaged scores.

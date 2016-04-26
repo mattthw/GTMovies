@@ -100,9 +100,9 @@ public class IOActions extends Application {
         objectIn = new ObjectInputStream(fileIn);
         CurrentState.setUser((User) objectIn.readObject());
         if (CurrentState.getUser() != null) {
+            Log.d("GTMovies", "loaduser: " + CurrentState.getUser().toString());
             CurrentState.setUser(IOActions.getUserByUsername(CurrentState.getUser().getUsername()));
         }
-        Log.d("GTMovies", "loaduser: " + CurrentState.getUser().toString());
         commit();
         objectIn.close();
         Log.println(Log.DEBUG, "GTMovies", "USER loaded with: " + CurrentState.getUser());
@@ -251,7 +251,7 @@ public class IOActions extends Application {
             throw new NullUserException();
         }
         String url = "http://45.55.175.68/test.php?mode=1&uname='" + user.getUsername()
-                + "'&pword='" + user.getPassword()
+                + "'&pword='" + user.getPassword()      //Add user.getEmail() below here.
                 + "'&name='" + user.getName()
                 + "'&bio='" + user.getBio()
                 + "'&major='" + user.getMajor()
@@ -259,7 +259,7 @@ public class IOActions extends Application {
                 + "&hasp=" + (user.getHasProfile() ? 1 : 0);
         InputStream is = null;
         try {
-            HttpClient httpclient = new DefaultHttpClient();
+            HttpClient httpclient = new DefaultHttpClient();        //TODO: fix deprecated stuff
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
             is = response.getEntity().getContent();
@@ -360,7 +360,7 @@ public class IOActions extends Application {
     public static boolean updateUser(User temp) {
 
         String url = "http://45.55.175.68/test.php?mode=3&uname='" + temp.getUsername()
-                + "'&pword='" + temp.getPassword()
+                + "'&pword='" + temp.getPassword()      //todo add temp.getEmail() below
                 + "'&name='" + temp.getName()
                 + "'&bio='" + temp.getBio()
                 + "'&major='" + temp.getMajor()
@@ -421,7 +421,7 @@ public class IOActions extends Application {
                 u.setUsername(result);
                 Log.d("GTMovies Database", "GetUserByUsername: Username: " + result);
                 result = st.nextToken(); // change to password
-                u.setPassword(result);
+                u.setPassword(result);                                              //TODO: add result then u.setEmail(result);
                 Log.d("GTMovies Database", "GetUserByUsername: Password: " + result);
                 result = st.nextToken(); // change to name
                 u.setName(result);
