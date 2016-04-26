@@ -1,6 +1,7 @@
 package com.team19.gtmovies.data;
 
 import android.app.Activity;
+import android.util.DisplayMetrics;
 
 import com.team19.gtmovies.pojo.User;
 
@@ -9,9 +10,10 @@ import com.team19.gtmovies.pojo.User;
  * used by all other classes when requesting current user info
  * rgtrgrgtrs
  */
-public class CurrentState extends Activity {
+public class CurrentState {
     //    private static final CurrentState ourInstance = new CurrentState();
     private static User currentUser;
+    private static DisplayMetrics displayMetrics;
     private static int openHeight = 0;
     private static int closedHeight = 0;
 
@@ -22,8 +24,8 @@ public class CurrentState extends Activity {
     /**
      * default constructor for CurrentState
      *
-     * @param u require the correct user as parameter as form of
-     *          DEPENDENCY INJECTION. replaces singleton implementation.
+     * @param u Require the correct user as parameter as form of
+     *          DEPENDENCY INJECTION. Replaces singleton implementation.
      * @Matt 3/April/2016
      */
     public CurrentState(User u) {
@@ -70,12 +72,37 @@ public class CurrentState extends Activity {
     }
 
     /**
+     * Sets display metrics to use for heights.
+     *
+     * @param mMetrics current application displaymetrics
+     */
+    public static void setDisplayMetrics(DisplayMetrics mMetrics) {
+        displayMetrics = mMetrics;
+    }
+
+    /**
+     * Sets heights of MainActivity's movie lists with toolbar opened and closed.
+     *
+     * @param pxToolbarHeight height of toolbar in px
+     */
+    public static void setHeights(int pxToolbarHeight) {
+        if (displayMetrics == null || pxToolbarHeight <= 0) {
+            return;
+        }
+        int dpHeight = convertPxtoDp(displayMetrics.heightPixels);
+        int dpToolbarHeight = convertPxtoDp(pxToolbarHeight);
+        setOpenHeight(dpHeight, dpToolbarHeight);
+        setClosedHeight(dpHeight);
+    }
+
+    /**
      * Setter for height of viewpager with toolbar open
      *
      * @param height open height
+     * @param toolbarHeight height of toolbar in dp
      */
-    public static void setOpenHeight(int height) {
-        openHeight = height;
+    private static void setOpenHeight(int height, int toolbarHeight) {
+        openHeight = height - toolbarHeight;
     }
 
     /**
@@ -83,8 +110,18 @@ public class CurrentState extends Activity {
      *
      * @param height closed height
      */
-    public static void setClosedHeight(int height) {
+    private static void setClosedHeight(int height) {
         closedHeight = height;
+    }
+
+    /**
+     * Pixel to display independent pixel (dp) converter.
+     *
+     * @param pixels int of pixels to convert
+     * @return int of dp conversion
+     */
+    private static int convertPxtoDp(int pixels) {
+        return (int) (pixels / ((float) displayMetrics.density / DisplayMetrics.DENSITY_DEFAULT));
     }
 }
 

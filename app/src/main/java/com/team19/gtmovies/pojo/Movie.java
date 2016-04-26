@@ -33,6 +33,8 @@ public class Movie implements Comparable<Movie>, Serializable {
     private int rating = 0;
     private String description;
     private JSONObject posterURLs;
+    private Genre[] genres;
+    private Rating mpaa_rating;
     private JSONObject fullInfo;
     private Map<String, Review> myReviews = new HashMap<>();
     private static final long serialVersionUID = 1L;
@@ -110,11 +112,14 @@ public class Movie implements Comparable<Movie>, Serializable {
             description = fullInfo.getString("synopsis");
             rating = fullInfo.getJSONObject("ratings").getInt("critics_score");
             posterURLs = fullInfo.getJSONObject("posters");
+            mpaa_rating = Rating.toRating(fullInfo.getString("mpaa_rating"));
             posterURL = posterURLs.getString("thumbnail");
-            //tmpJArray = fullInfo.getJSONArray("genres");
-            //for (int i = 0; i < tmpJArray.length(); i++) {
-            //genres.add(Genre.toGenre(tmpJArray.getString(i)));
-            //}
+            tmpJArray = fullInfo.getJSONArray("genres");
+
+            genres = new Genre[tmpJArray.length()];
+            for (int i = 0; i < tmpJArray.length(); i++) {
+                genres[i] = Genre.toGenre(tmpJArray.getString(i));
+            }
         } catch (JSONException e) {
             Log.e("JSON Error", "JSONException while parsing single movie" + e.toString());
         }
@@ -349,6 +354,24 @@ public class Movie implements Comparable<Movie>, Serializable {
      */
     public String getPosterURL() {
         return posterURL;
+    }
+
+    /**
+     * Returns Genre array of genres
+     *
+     * @return Genre array of genres
+     */
+    public Genre[] getGenres() {
+        return genres;
+    }
+
+    /**
+     * Returns Rating of MPAA rating
+     *
+     * @return Rating MPAA rating
+     */
+    public Rating getMPAARating() {
+        return mpaa_rating;
     }
 
     /**

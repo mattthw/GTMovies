@@ -6,48 +6,43 @@
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_below="@id/app_bar"
     tools:context=".activity.MainActivity"
-    tools:showIn="@layout/app_bar_main"
     android:clipToPadding="false">
+    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+    <!--tools:showIn="@layout/app_bar_main" -->
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/main_view2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_bar"
         android:orientation="vertical"
         android:clipToPadding="false"
         android:fillViewport="true">
         <LinearLayout
             android:id="@+id/main_linear_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:clipToPadding="false">
-            <ScrollView
-                android:id="@+id/main_view2_inner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false">
+            android:background="@android:color/transparent">
                 <!--<com.team19.gtmovies.activity.CriteriaActivity
                     android:id="@+id/criteria_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"/>-->
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="38dp"
-                    android:orientation="horizontal"
                     android:id="@+id/criteria_bar"
-                    android:layout_marginTop="9dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
                     android:layout_gravity="center"
                     android:animateLayoutChanges="true"
-                    android:clipToPadding="false">
+                    android:clipToPadding="true"
+                    android:background="@android:color/transparent">
                     <RelativeLayout
-                        xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/major_button"
                         android:orientation="vertical"
                         android:layout_width="wrap_content"
@@ -119,7 +114,6 @@
                             android:text="@string/criteria_rating"/>
                     </RelativeLayout>
                 </LinearLayout>
-            </ScrollView>
 
 
             <android.support.v4.view.ViewPager
@@ -129,7 +123,7 @@
                 <FrameLayout
                     android:id="@+id/main_frame_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1.2"/>
             </android.support.v4.view.ViewPager>
         </LinearLayout>

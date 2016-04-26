@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -16,6 +17,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.actions.SearchIntents;
 import com.team19.gtmovies.R;
+import com.team19.gtmovies.abstractClasses.MovieControlActivity;
+import com.team19.gtmovies.controller.MovieControllerTask;
 import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.fragment.MovieListFragment;
 import com.team19.gtmovies.pojo.Movie;
@@ -30,8 +33,8 @@ import java.util.List;
 /**
  * Activity to be searched
  */
-public class SearchActivity extends AppCompatActivity {
-    private List<Movie> list = new ArrayList<>();
+public class SearchActivity extends MovieControlActivity {
+    private String query = "";
     private boolean nextable = true;
     private boolean prevable = false;
     private String nextURL = null;
@@ -41,8 +44,11 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MovieListFragment movieListFragment = MovieListFragment.newInstance(
+                MovieListFragment.SEARCH);
         setContentView(R.layout.activity_search);
 
+        //findViewById(R.id.searchProgressBar).setVisibility(View.VISIBLE);
         Log.d("GTMovies", "Got to SEARCH");
         fragmentManager = getSupportFragmentManager();
 
@@ -68,9 +74,9 @@ public class SearchActivity extends AppCompatActivity {
      * @param intent intent to manage
      */
     private void handleIntent(Intent intent) {
+        //findViewById(R.id.searchProgressBar).setVisibility(View.VISIBLE);
         Log.d("GTMovies", "Got to handleIntent");
-        String query = "";
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        /*if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             Log.d("Search", "Old Route");
             query = intent.getStringExtra(SearchManager.QUERY);
         } else if (SearchIntents.ACTION_SEARCH.equals(intent.getAction())) {
@@ -79,20 +85,25 @@ public class SearchActivity extends AppCompatActivity {
         } else {
             // something is wrong just return
             return;
-        }
+        }*/
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             //Log.d("GTMovies", "Hitting actionBar in handleIntent with query:- " +  query);
             actionBar.setTitle(query);
         }
-        String queryURI = Uri.encode(query);
-        if (query.equals("Matt McCoy")) {
-            list.add(new Movie(-1));
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Achievement Unlocked!!!",
-                    Toast.LENGTH_LONG).show();
-        }
+
+        Log.e("GTMovies", "TabsSearch");
+        Log.d("GTMovies", "line1");
+        //fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
+        //        movieListFragment).commit();
+        Log.d("GTMovies", "line2");
+        /*String queryURI = Uri.encode(query);
+
+        //(new MovieControllerTask()).execute(this, MovieControllerTask.SEARCH_MOVIES,
+        //        "q=" + queryURI, null, null);
+        final List<Movie> list = new ArrayList<>();
+
         // Creating the JSONRequest
         String urlRaw = String.format(
                 SingletonMagic.BASE_URL, SingletonMagic.SEARCH, "q=" + queryURI, SingletonMagic.PROF_KEY);
@@ -102,57 +113,74 @@ public class SearchActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject resp) {
-                        if (resp == null) {
-                            Log.e("JSONRequest ERROR", "Null Response Received");
-                        }
-
-                        // put movies into a JSONArray
-                        JSONArray tmpMovies = null;
-                        try {
-                            tmpMovies = resp.getJSONArray("movies");
-                        } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Error when getting movies in Search.");
-                        }
-                        if (tmpMovies == null) {
-                            Log.e("Movie Error", "movies JSONArray is null!");
-                        }
-                        Log.e("WHEE", Integer.toString(tmpMovies.length()));
-                        for (int i = 0; i < tmpMovies.length(); i++) {
-                            try {
-                                list.add(new Movie(tmpMovies.getJSONObject(i)));
-                            } catch (JSONException e) {
-                                Log.e("Movie Error", "Couldn't make Movie" + i + "in Search");
-                            }
-                        }
-                        try {
-                            JSONObject tmpJ = resp.getJSONObject("links");
-                            nextURL = tmpJ.getString("next");
-                            prevURL = tmpJ.getString("prev");
-                        } catch (JSONException e) {
-                            Log.e("JSON ERROR", "Fail to get connected URLs in SEARCH");
-                        }
-                        nextable = nextURL != null;
-                        prevable = prevURL != null;
-
-                        // AUSTIN THING JUST CTRL C V-ed
-                        Log.e("GTMovies", "TabsSearch");
-                        MovieListFragment.setSearchMovieList(list);
-                        MovieListFragment movieListFragment = MovieListFragment.newInstance(
-                                MovieListFragment.SEARCH);
-                        Log.d("GTMovies", "line1");
-                        fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
-                                movieListFragment).commit();
-                        Log.d("GTMovies", "line2");
-
+                if (resp == null) {
+                    Log.e("JSONRequest ERROR", "Null Response Received");
+                }
+                // put movies into a JSONArray
+                JSONArray tmpMovies = null;
+                try {
+                    tmpMovies = resp.getJSONArray("movies");
+                } catch (JSONException e) {
+                    Log.e("JSON ERROR", "Error when getting movies in Search.");
+                }
+                if (tmpMovies == null) {
+                    Log.e("Movie Error", "movies JSONArray is null!");
+                }
+                Log.e("WHEE", Integer.toString(tmpMovies.length()));
+                for (int i = 0; i < tmpMovies.length(); i++) {
+                    try {
+                        list.add(new Movie(tmpMovies.getJSONObject(i)));
+                    } catch (JSONException e) {
+                        Log.e("Movie Error", "Couldn't make Movie" + i + "in Search");
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("VOLLEY FAIL", "Couldn't getJSON");
-                    }
-                });
-        SingletonMagic.getInstance(this).addToRequestQueue(searchRequest);
+                }
+                try {
+                    JSONObject tmpJ = resp.getJSONObject("links");
+                    nextURL = tmpJ.getString("next");
+                    prevURL = tmpJ.getString("prev");
+                } catch (JSONException e) {
+                    Log.e("JSON ERROR", "Fail to get connected URLs in SEARCH");
+                }
+                nextable = nextURL != null;
+                prevable = prevURL != null;
+
+                // AUSTIN THING JUST CTRL C V-ed
+                Log.e("GTMovies", "TabsSearch");
+                MovieListFragment.setSearchMovieList(list);
+                MovieListFragment movieListFragment = MovieListFragment.newInstance(
+                        MovieListFragment.SEARCH);
+                Log.d("GTMovies", "line1");
+                fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
+                        movieListFragment).commit();
+                Log.d("GTMovies", "line2");
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VOLLEY FAIL", "Couldn't getJSON");
+            }
+        });
+        SingletonMagic.getInstance(this).addToRequestQueue(searchRequest);*/
     }
+
+    @Override
+    public void finishedGettingMovies(int requestType) {
+        /*if (query.equals("Matt McCoy")) {
+            List<Movie> list = MovieListFragment.getSearchMovieList();
+            list.add(new Movie(-1));
+            MovieListFragment.setSearchMovieList(list);
+        }*/
+        //MovieListFragment movieListFragment = MovieListFragment.newInstance(
+        //        MovieListFragment.SEARCH);
+        Log.d("GTMovies", "line1");
+        //fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
+        //        movieListFragment).commit();
+        Log.d("GTMovies", "line2");
+        //findViewById(R.id.searchProgressBar).setVisibility(View.GONE);
+
+    }
+
 
     /*public void setupSearch() {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -192,6 +220,7 @@ public class SearchActivity extends AppCompatActivity {
         if (!nextable) {
             throw new UnsupportedOperationException("No next page found");
         }
+        /*
         list = new ArrayList<Movie>();
         JsonObjectRequest newMovieRequest = new JsonObjectRequest
                 (Request.Method.GET, nextURL, null, new Response.Listener<JSONObject>() {
@@ -239,6 +268,7 @@ public class SearchActivity extends AppCompatActivity {
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(newMovieRequest);
+        */
     }
 
     /**
@@ -250,6 +280,7 @@ public class SearchActivity extends AppCompatActivity {
         if (!prevable) {
             throw new UnsupportedOperationException("No previous page found");
         }
+        /*
         list = new ArrayList<Movie>();
         JsonObjectRequest newMovieRequest = new JsonObjectRequest
                 (Request.Method.GET, prevURL, null, new Response.Listener<JSONObject>() {
@@ -297,6 +328,7 @@ public class SearchActivity extends AppCompatActivity {
         // Access the RequestQueue through singleton class.
         // Add Requests to RequestQueue
         SingletonMagic.getInstance(this).addToRequestQueue(newMovieRequest);
+        */
     }
 
 }

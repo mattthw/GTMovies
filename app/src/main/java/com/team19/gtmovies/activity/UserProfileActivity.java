@@ -429,7 +429,7 @@ public class UserProfileActivity extends AppCompatActivity {
         String result;
         User mUser;
         try {
-            mUser = new User("AUSINTEST", "pass", "Austin test");
+            mUser = new User("AUSINTEST", "pass", "bat@so.co", "Austin test");
         } catch (IllegalUserException e) {
             mUser = null;
         }

@@ -40,7 +40,30 @@
             android:layout_marginTop="5dp">
 
             <FrameLayout
-                android:id="@+id/nameLayout"
+                android:id="@+id/email_layout"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/user_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:lines="1"
+                    android:background="@android:drawable/editbox_background"
+                    android:nestedScrollingEnabled="false"
+                    android:foregroundTint="@color/colorAccent"
+                    android:foregroundTintMode="src_over" />
+
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:id="@+id/name_layout"
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -73,11 +96,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/email"
+                    android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_username"
-                    android:inputType="textEmailAddress"
+                    android:inputType="textCapWords"
                     android:maxLines="1"
                     android:singleLine="true"
                     android:lines="1"
@@ -89,13 +112,13 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/pwRegister"
+                android:id="@+id/password_confirmation_layout"
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/passwordConfirm"
+                    android:id="@+id/password_confirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
@@ -166,7 +189,7 @@
 
                 <Button
                     android:visibility="visible"
-                    android:id="@+id/email_sign_in_button"
+                    android:id="@+id/username_sign_in_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/action_sign_in"

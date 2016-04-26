@@ -3,6 +3,7 @@ package com.team19.gtmovies.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,15 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.team19.gtmovies.R;
 import com.team19.gtmovies.activity.MovieDetailActivity;
 import com.team19.gtmovies.activity.MovieListActivity;
-import com.team19.gtmovies.animations.AnimateRecyclerHeight;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.pojo.Movie;
@@ -55,19 +56,20 @@ public class MovieListFragment extends Fragment {
     private static boolean mTwoPane = false;
     private static boolean tabs = false;
     private boolean search = false;
-
-    private static View mTopBar;
-    private static Toolbar mToolbar;
-    private static ViewPager mViewPager;
     private static MovieRecyclerViewAdapter newMoviesAdapter;
     private static MovieRecyclerViewAdapter topRentalsAdapter;
     private static MovieRecyclerViewAdapter yourRecommendationsAdapter;
     private static MovieRecyclerViewAdapter searchAdapter;
     //private static final MovieListFragment searchFragment = new MovieListFragment(3);
 
-    private RecyclerView mRecyclerView;
-    private MovieRecyclerViewAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private CoordinatorLayout mAppBar = null;
+    private Toolbar mToolbar = null;
+    private ViewPager mViewPager = null;
+    private LinearLayout recyclerBox = null;
+
+    private RecyclerView mRecyclerView = null;
+    private MovieRecyclerViewAdapter mAdapter = null;
+    private RecyclerView.LayoutManager mLayoutManager = null;
 
     /**
      * The fragment argument representing the item ID that this fragment
@@ -182,9 +184,10 @@ public class MovieListFragment extends Fragment {
             }
         }
         View rootView = inflater.inflate(R.layout.movie_list, container, false);
-        mTopBar =  getActivity().findViewById(R.id.app_bar);
+        mAppBar = (CoordinatorLayout) getActivity().findViewById(R.id.app_bar_main_id);
         mToolbar = (Toolbar) getActivity().findViewById(R.id.main_toolbar);
         mViewPager = (ViewPager) getActivity().findViewById(R.id.view_pager);
+        recyclerBox = (LinearLayout) getActivity().findViewById(R.id.main_view2);
         Log.d("MLFrag", "popping into onCreateView");
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list_view);
         if (rootView.findViewById(R.id.movie_list_view) == null) {
@@ -195,11 +198,13 @@ public class MovieListFragment extends Fragment {
         mRecyclerView.addOnScrollListener(new HidingScrollListener(0) {
             @Override
             public void onHide() {
-               hideToolbar();
+                Log.d("MovieListFrag", "hide");
+                hideToolbar();
             }
 
             @Override
             public void onShow() {
+                Log.d("MovieListFrag", "show");
                 showToolbar();
             }
         });
@@ -234,6 +239,10 @@ public class MovieListFragment extends Fragment {
                     }
                     newMoviesAdapter = new MovieRecyclerViewAdapter(newMoviesList);
                     mAdapter = newMoviesAdapter;
+                    if (getView() != null) {
+                        getView().findViewById(R.id.movie_list_view).setPadding(
+                                0, R.attr.actionBarSize, 0, 0);
+                    }
                     Log.d("MLFrag", "newMoviesList " + mAdapter);
                     break;
                 case TOP_RENTALS_TAB:
@@ -245,6 +254,10 @@ public class MovieListFragment extends Fragment {
                     }
                     topRentalsAdapter = new MovieRecyclerViewAdapter(topRentalsList);
                     mAdapter = topRentalsAdapter;
+                    if (getView() != null) {
+                        getView().findViewById(R.id.movie_list_view).setPadding(
+                                0, R.attr.actionBarSize, 0, 0);
+                    }
                     Log.d("MLFrag", "topRentalsList " + mAdapter);
                     break;
                 case YOUR_RECOMMENDATIONS_TAB:
@@ -256,6 +269,10 @@ public class MovieListFragment extends Fragment {
                     }
                     yourRecommendationsAdapter = new MovieRecyclerViewAdapter(yourRecommendationsList);
                     mAdapter = yourRecommendationsAdapter;
+                    if (getView() != null) {
+                        getView().findViewById(R.id.movie_list_view).setPadding(
+                                0, R.attr.actionBarSize, 0, 0);
+                    }
                     Log.d("MLFrag", "yourRecList " + mAdapter);
                     break;
                 case SEARCH:
@@ -267,6 +284,9 @@ public class MovieListFragment extends Fragment {
                     }
                     searchAdapter = new MovieRecyclerViewAdapter(searchMovieList);
                     mAdapter = searchAdapter;
+                    if (getView() != null) {
+                        getView().findViewById(R.id.movie_list_view).setPadding(0, 0, 0, 0);
+                    }
                     Log.d("MLFrag", "searchMovieList " + mAdapter);
                     break;
                 default:
@@ -288,6 +308,16 @@ public class MovieListFragment extends Fragment {
             mTwoPane = true;                        //TODO: implement twopane check for extra credit
         }
 
+        if (getActivity().findViewById(R.id.content_main) != null) {
+            Log.d("MovieListFrag", "content main found");
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+            params.setMargins(0, R.attr.actionBarSize - 1, 0,0);
+            ((RelativeLayout) getActivity().findViewById(R.id.content_main)).setLayoutParams(
+                    params);
+        }
         return rootView;
     }
 
@@ -416,8 +446,17 @@ public class MovieListFragment extends Fragment {
      *
      * @return current newMovieList
      */
-    public static List getNewMovieList() {
+    public static List<Movie> getNewMovieList() {
         return newMoviesList;
+    }
+
+    /**
+     * public getter for yourRecommendationsList
+     *
+     * @return current yourRecommendationsList
+     */
+    public static List<Movie> getYourRecommendationsList() {
+        return yourRecommendationsList;
     }
 
     /**
@@ -484,6 +523,11 @@ public class MovieListFragment extends Fragment {
                     yourRecommendationsAdapter.swapList(yourRecommendationsList);
                 }
                 break;
+            case SEARCH:
+                if (searchAdapter != null) {
+                    searchAdapter.swapList(searchMovieList);
+                }
+                break;
             default:
                 Log.e("MovieListFragment", "invalid page for updateAdapter");
         }
@@ -505,7 +549,7 @@ public class MovieListFragment extends Fragment {
      *
      * @return List of movies in current search movie list
      */
-    public static List getSearchMovieList() {
+    public static List<Movie> getSearchMovieList() {
         return searchMovieList;
     }
 
@@ -513,104 +557,36 @@ public class MovieListFragment extends Fragment {
      * Hides top toolbar
      */
     public void hideToolbar() {
-        if (mAdapter != searchAdapter) {
-            if (CurrentState.getOpenHeight() == 0) {
-                setHeights();
-            }
+        Log.d("toolbars", "mToolbar=" + mToolbar+ "mAppBar=" + mAppBar);
+        if (mToolbar != null) {
 
-            Log.e("MovieLFrag", "Hiding search");
-            getActivity().findViewById(R.id.app_bar).animate().translationY(-mToolbar.getHeight()).setInterpolator(
+            Log.e("MovieLFrag", "Hiding search " + mToolbar.getHeight());
+            mAppBar.animate().translationY(-mToolbar.getHeight()).setInterpolator(
                     new AccelerateInterpolator(2));
-            //getActivity().findViewById(R.id.toolbar).setVisibility(View.GONE);
-            final View mView = getActivity().findViewById(R.id.movie_list_view);
-            Animation expandAnimate = AnimateRecyclerHeight.getInstance(mView,
-                    CurrentState.getOpenHeight(), true);
-            mView.startAnimation(expandAnimate);
-            /*final int initialHeight = CurrentState.getClosedHeight();
 
-            Animation expandAnimation = new Animation()
-            {
-                @Override
-                protected void applyTransformation(float interpolatedTime, Transformation t) {
-                    if(interpolatedTime == 1){
-                        mView.setVisibility(View.GONE);
-                    }else{
-                        mView.getLayoutParams().height = initialHeight - (int)(
-                                initialHeight * interpolatedTime);
-                        mView.requestLayout();
-                    }
-                }
-
-                @Override
-                public boolean willChangeBounds() {
-                    return true;
-                }
-            };
-
-            // 1dp/ms
-            expandAnimation.setDuration((int)(initialHeight
-                    / mView.getContext().getResources().getDisplayMetrics().density));
-            mView.startAnimation(expandAnimation);*/
+            /*ViewGroup.MarginLayoutParams params
+                    = (ViewGroup.MarginLayoutParams) recyclerBox.getLayoutParams();
+            params.topMargin = 0;
+            recyclerBox.requestLayout();*/
         }
-        //getActivity().findViewById(R.id.content_main).animate().y(
-                //CurrentState.getClosedHeight()).setInterpolator(new AccelerateInterpolator(2));
-        /*getActivity().findViewById(R.id.main_frame_layout).animate().y(
-                CurrentState.getClosedHeight()).setInterpolator(new AccelerateInterpolator(2));
-        getActivity().findViewById(R.id.movie_list).animate().y(
-                CurrentState.getClosedHeight()).setInterpolator(new AccelerateInterpolator(2));
-
-        getActivity().findViewById(R.id.movie_detail_container).animate().y(
-                CurrentState.getClosedHeight()).setInterpolator(new AccelerateInterpolator(2));*/
-        //mViewPager.animate().y(CurrentState.getClosedHeight()).setInterpolator(
-                //new AccelerateInterpolator(2));
         Log.d("CurrentState", "closed height=" + CurrentState.getClosedHeight());
     }
-    //https://mzgreen.github.io/2015/02/15/How-to-hideshow-Toolbar-when-list-is-scroling(part1)/
 
     /**
      * Shows top toolbar
      */
     public void showToolbar() {
-        if (mAdapter != searchAdapter) {
-            //getActivity().findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
-            getActivity().findViewById(R.id.app_bar).animate().translationY(0).setInterpolator(
+        if (mToolbar != null && mAppBar != null) {
+            mAppBar.animate().translationY(0).setInterpolator(
                     new DecelerateInterpolator(2));
-            /*getActivity().findViewById(R.id.main_frame_layout).animate().y(
-                    CurrentState.getOpenHeight()).setInterpolator(new DecelerateInterpolator(2));*/
-            /*mViewPager.animate().y(CurrentState.getOpenHeight()).setInterpolator(
-                    new DecelerateInterpolator(2));*/
+
+            /*ViewGroup.MarginLayoutParams params
+                    = (ViewGroup.MarginLayoutParams) recyclerBox.getLayoutParams();
+            params.topMargin = R.dimen.app_bar_height;
+            recyclerBox.requestLayout();*/
             Log.d("CurrentState", "open height=" + CurrentState.getOpenHeight());
         }
     }
-
-    /**
-     * Sets current height values
-     */
-    public void setHeights() {
-        //set new height options
-        CurrentState.setOpenHeight(mViewPager.getHeight());
-        CurrentState.setClosedHeight(mViewPager.getHeight() + mToolbar.getHeight());
-        Log.d("CurrentState", "height=" + CurrentState.getOpenHeight() + " height="
-                + CurrentState.getClosedHeight());
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -641,74 +617,51 @@ public class MovieListFragment extends Fragment {
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             Context context = parent.getContext();
             oldPosition = 0;
-            //if (viewType == ITEM_TYPE) {                          //TODO: uncomment all this
+            if (viewType == ITEM_TYPE) {
                 itemView = LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.movie_list_content, parent, false);
                 return new MovieViewHolder(itemView);
-            /*} else if (viewType == HEADER_TYPE) {
+            } else if (viewType == HEADER_TYPE) {
                 itemView = LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.movie_list_content, parent, false);
+                        R.layout.recycler_header, parent, false);
                 Log.e("MLF", "header type");
                 return new MovieHeaderViewHolder(itemView);
             } else {
                 Log.e("MLF", "other type    ");
             }
             throw new RuntimeException("There is not type that matches this"
-                    + "viewtype, " + viewType); */
+                    + "viewtype, " + viewType);
         }
 
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder mHolder, int position) {
-            //if (!isPositionHeader(position)) {                    //TODO: uncomment
-                final MovieViewHolder holder = (MovieViewHolder) mHolder;
-                holder.mMovieInfo = movieList.get(position);        //TODO: subtract 1
+            if (!isPositionHeader(position)) {
+            final MovieViewHolder holder = (MovieViewHolder) mHolder;
+            holder.mMovieInfo = movieList.get(position - 1);
 
-                Log.d("MLFrag", "onBindViewHolder");
+            Log.d("MLFrag", "onBindViewHolder");
 
-                //holder.poster.setImageResource(mMovieInfo.poster);
-                holder.mMoviePosterView.setImageUrl(
-                        holder.mMovieInfo.getPosterURL(),
-                        SingletonMagic.getInstance(getContext()).getImageLoader());
-                holder.mMovieTitleView.setText(holder.mMovieInfo.getTitle());
-                String rating = holder.mMovieInfo.getRating() + "%";
-                holder.mMovieRatingView.setText(rating);
-                holder.mMovieDescriptionView.setText(holder.mMovieInfo.getDescription());
+            //holder.poster.setImageResource(mMovieInfo.poster);
+            holder.mMoviePosterView.setImageUrl(
+                    holder.mMovieInfo.getPosterURL(),
+                    SingletonMagic.getInstance(getContext()).getImageLoader());
+            holder.mMovieTitleView.setText(holder.mMovieInfo.getTitle());
+            String rating = holder.mMovieInfo.getRating() + "%";
+            holder.mMovieRatingView.setText(rating);
+            holder.mMovieDescriptionView.setText(holder.mMovieInfo.getDescription());
 
 
-                holder.mView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.d("MLFrag", "holder setOnClickListener");
-                        if (MovieListFragment.isTwoPane()) {
-                            Log.d("MLFrag", "TWO PANE PROBLEM!!!");
-                            Bundle arguments = new Bundle();
-                            arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
-                            MovieDetailFragment fragment = new MovieDetailFragment();
-                            fragment.setArguments(arguments);
-                            if (!fragment.isVisible()) {
-                                Log.d("MLFrag", "one pane");
-                                Context context = v.getContext();
-                                Intent intent = new Intent(context, MovieDetailActivity.class);
-                                intent.putExtra(MovieDetailFragment.ARG_ITEM_TITLE,
-                                        holder.mMovieInfo.getTitle());
-                                intent.putExtra(MovieDetailFragment.ARG_ITEM_ID,
-                                        holder.mMovieInfo.getID());
-                                intent.putExtra(MovieDetailFragment.ARG_ITEM_DESC,
-                                        holder.mMovieInfo.getDescription());
-                                intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
-                                        holder.mMovieInfo.getRating() + "%");
-                                Log.d("Placing", holder.mMovieInfo + " "
-                                        + holder.mMovieInfo.getTitle() + " "
-                                        + holder.mMovieInfo.getID() + " "
-                                        + holder.mMovieInfo.getDescription() + " "
-                                        + holder.mMovieInfo.getRating());
-
-                                context.startActivity(intent);
-                            }
-                        /*getFragmentManager().beginTransaction()
-                                .replace(R.id.content_main, fragment)
-                                .commit();*/
-                        } else {
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("MLFrag", "holder setOnClickListener");
+                    if (MovieListFragment.isTwoPane()) {
+                        Log.d("MLFrag", "TWO PANE PROBLEM!!!");
+                        Bundle arguments = new Bundle();
+                        arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
+                        MovieDetailFragment fragment = new MovieDetailFragment();
+                        fragment.setArguments(arguments);
+                        if (!fragment.isVisible()) {
                             Log.d("MLFrag", "one pane");
                             Context context = v.getContext();
                             Intent intent = new Intent(context, MovieDetailActivity.class);
@@ -719,13 +672,33 @@ public class MovieListFragment extends Fragment {
                             intent.putExtra(MovieDetailFragment.ARG_ITEM_DESC,
                                     holder.mMovieInfo.getDescription());
                             intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
-                                    holder.mMovieInfo.getRating());
+                                    holder.mMovieInfo.getRating() + "%");
+                            Log.d("Placing", holder.mMovieInfo + " "
+                                    + holder.mMovieInfo.getTitle() + " "
+                                    + holder.mMovieInfo.getID() + " "
+                                    + holder.mMovieInfo.getDescription() + " "
+                                    + holder.mMovieInfo.getRating());
 
                             context.startActivity(intent);
                         }
+                    } else {
+                        Log.d("MLFrag", "one pane");
+                        Context context = v.getContext();
+                        Intent intent = new Intent(context, MovieDetailActivity.class);
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_TITLE,
+                                holder.mMovieInfo.getTitle());
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID,
+                                holder.mMovieInfo.getID());
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_DESC,
+                                holder.mMovieInfo.getDescription());
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
+                                holder.mMovieInfo.getRating());
+
+                        context.startActivity(intent);
+                    }
                     }
                 });
-            //}
+            }
         }
 
         /**
@@ -744,8 +717,8 @@ public class MovieListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return getBasicItemCount();
-        } //TODO add 1
+            return getBasicItemCount() + 1;
+        }
 
         @Override
         public int getItemViewType(int position) {
@@ -873,8 +846,6 @@ public class MovieListFragment extends Fragment {
         }
     }
 
-
-
     /**
      *
      */
@@ -908,7 +879,7 @@ public class MovieListFragment extends Fragment {
                     scrolledY = 0;
                 } else if (scrolledY < -threshold && !isVisible) {
                     onShow();
-                    isVisible = false;
+                    isVisible = true;
                     scrolledY = 0;
                 }
             }
@@ -930,6 +901,72 @@ public class MovieListFragment extends Fragment {
         public abstract void onShow();
     }
 }
+
+
+    /**
+     * Abstract class for Hiding toolbar on scroll
+     */
+    /*public abstract class HidingScrollListener extends RecyclerView.OnScrollListener {
+        private int threshold;
+        private int oldY = 0;
+        private int scrolledY = 0;
+        private boolean isVisible = true;*/
+
+        /**
+         * Public constructor for HidingScrollListener
+         * @param newThreshold threshold to toggle content visibility at
+         */
+        /*public HidingScrollListener(int newThreshold) {
+            threshold = newThreshold;
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            int firstVisibleItem = ((LinearLayoutManager)
+                    recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+            Log.d("MovieListFrag", "scroll dx=" + dx + " dy=" + dy);
+            if (firstVisibleItem == 0) {
+                Log.d("MovieListFrag", "firstVisItem==0");
+                if (!isVisible) {
+                    Log.d("MovieListFrag", "firstvisitem show");
+                    onShow();
+                    isVisible = true;
+                }
+            } else {
+                Log.d("MovieListFrag", "scroll else " + isVisible + scrolledY + ">" + threshold);
+                if (scrolledY > threshold && isVisible) {
+                    Log.d("MovieListFrag", "scroll should hide");
+                    onHide();
+                    isVisible = false;
+                    scrolledY = 0;
+                } else if (scrolledY < -threshold && !isVisible) {
+                    Log.d("MovieListFrag", "scroll should show");
+                    onShow();
+                    isVisible = true;
+                    scrolledY = 0;
+                }
+            }
+
+            if ((isVisible && dy - oldY > 0)|| (!isVisible && (dy - oldY) < 0)) {
+                scrolledY += dy - oldY;
+            }
+            oldY = dy;
+        }*/
+
+
+        /**
+         * Handles hiding of content
+         */
+        //public abstract void onHide();
+
+        /**
+         * Handles showing of content
+         */
+        //public abstract void onShow();
+    /*}
+}*/
 
 
 ///////////////////////////////////////////////////////////////////////

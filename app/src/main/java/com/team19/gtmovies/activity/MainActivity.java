@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
@@ -17,7 +17,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,26 +28,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.team19.gtmovies.R;
-import com.team19.gtmovies.controller.ReviewController;
+import com.team19.gtmovies.abstractClasses.MovieControlActivity;
+import com.team19.gtmovies.controller.MovieControllerTask;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
-import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.fragment.MovieListFragment;
 import com.team19.gtmovies.pojo.Movie;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The Main Activity
@@ -56,20 +44,22 @@ import java.util.Map;
  * @author Matt McCoy
  * @version 3.0
  */
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends MovieControlActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     //protected static IOActions ioa;
     protected static View mainRootView;
     protected static NavigationView navigationView;
     protected static Toolbar mToolbar;
+    protected static LinearLayout criteriaBar;
     protected static DrawerLayout drawer;
     protected static MovieFragmentPagerAdapter movieFragmentPagerAdapter;
     protected static CriteriaActivity criteriaActivity;
-
     private static FragmentManager fragmentManager;
-    private static int currentPage;
-    private List<Movie> recommendations;
-    private boolean generalRecommendations = true;
+
+    private static final int SEARCH_REQUEST_CODE = 1;
+    private static final int LOGIN_REQUEST_CODE = 13;
+
+    private String secretQueryDoNotWorryAbout = "";
 
 /*
 // Meant for NyanCat
@@ -132,7 +122,7 @@ public class MainActivity extends AppCompatActivity
             //start loginactivity
             Log.println(Log.INFO, "GTMovies", "not signed in! starting LoginActivity.");
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivityForResult(intent, 13);
+            startActivityForResult(intent, LOGIN_REQUEST_CODE);
         }
         Log.w("GTMovies", "MAIN ACTIVITY ONCREATE!");
         setContentView(R.layout.activity_main);
@@ -143,8 +133,10 @@ public class MainActivity extends AppCompatActivity
         // Layout toolbar
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
-        findViewById(R.id.app_bar).animate().translationY(0).setInterpolator(
-                new DecelerateInterpolator(2));
+        if (findViewById(R.id.app_bar) != null) {
+            findViewById(R.id.app_bar).animate().translationY(0).setInterpolator(
+                    new DecelerateInterpolator(2));
+        }
 
         // Layout drawer
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -162,7 +154,6 @@ public class MainActivity extends AppCompatActivity
         // Populate lists of new movies and top rentals
         //getMovies();
         //new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
-        currentPage = 0;
         findViewById(R.id.criteria_bar).setVisibility(View.GONE);
         //getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
         //getMoviesFromAPI(SingletonMagic.NEW_MOVIE, null);
@@ -170,11 +161,19 @@ public class MainActivity extends AppCompatActivity
         // Setup tabs and SEARCH
         fragmentManager = getSupportFragmentManager();
         //criteriaActivity = (CriteriaActivity) findViewById(R.id.criteria_bar);
+        /*LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(findViewById(R.id.content_main);
+        params.setMargins(0, R.attr.actionBarSize - 1, 0,0);
+        ((RelativeLayout) findViewById(R.id.content_main)).setLayoutParams(params);*/
 
         // Setup tabs and search
         setupTabs();
         setupSearch();
 
+        Log.d("Actionbar", "size=" + R.attr.actionBarSize);
         // Place view
         MovieListFragment.setTabs();
         /*fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
@@ -196,13 +195,12 @@ public class MainActivity extends AppCompatActivity
         Log.i("GTMovies", "resultCode=" + resultCode);
         if (requestCode == UserProfileActivity.HEADER_NAME_UPDATED) {
             updateNavName();
-        }
-        if (requestCode == 13) {
+        } else if (requestCode == LOGIN_REQUEST_CODE) {
             if (resultCode == 1) {
                 if (CurrentState.getUser() == null) {
                     Log.e("GTMovies", "go log in!! >:(");
                     Intent intent = new Intent(this, LoginActivity.class);
-                    startActivityForResult(intent, 13);
+                    startActivityForResult(intent, LOGIN_REQUEST_CODE);
                 } else {
                     updateNavName();
                 }
@@ -219,6 +217,9 @@ public class MainActivity extends AppCompatActivity
                 Log.e("GTMovies", "MainActivity killed because IOActions NULL!\n DDEAAAAAATHHHH!!!!");
                 return;
             }
+        } else if (requestCode == SEARCH_REQUEST_CODE) {
+            findViewById(R.id.movie_list_view).setPadding(
+                    0, R.attr.actionBarSize, 0, 0);
         }
     }
 
@@ -290,7 +291,6 @@ public class MainActivity extends AppCompatActivity
 
                     @Override
                     public void onPageSelected(int position) {
-                        currentPage = position;
                         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
                     }
 
@@ -313,13 +313,12 @@ public class MainActivity extends AppCompatActivity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                currentPage = MovieListFragment.SEARCH;
                 Log.d("GTMovies", "break here");
                 //Log.d("GTMovies", "query: " + searchView.getQuery().toString());
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                intent.putExtra(SearchManager.QUERY, searchView.getQuery().toString());
-                intent.setAction(Intent.ACTION_SEARCH);
-                startActivity(intent);
+                String queryURI = Uri.encode(query);
+                findViewById(R.id.movie_list_view).setPadding(0, 0, 0, 0);
+                (new MovieControllerTask()).execute(MainActivity.this, MovieControllerTask.SEARCH_MOVIES,
+                        "q=" + queryURI, null, null);
                 Log.d("GTMovies", "skipped it");
                 return true;
             }
@@ -328,6 +327,7 @@ public class MainActivity extends AppCompatActivity
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
+
         });
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
     }
@@ -347,203 +347,102 @@ public class MainActivity extends AppCompatActivity
         } else {
             //recommendations = ReviewController.getRecommendations();
         }
-        new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
+        //new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
 
         majorButton.setOnClickListener(new View.OnClickListener() {
             boolean selected = false;
-
             @Override
             public void onClick(View v) {
                 Log.e("main", "major button onClick");
                 if (!selected) {
+                    new MovieControllerTask().execute(MainActivity.this,
+                            MovieControllerTask.UPDATE_RECOMMENDATIONS,
+                            MovieControllerTask.RECOMMENDATIONS_BY_MAJOR);
                     majorButton.setElevation(getResources().getDimension(R.dimen.raised_elevation));
+                    majorBackground.clearColorFilter();
                     majorBackground.setColorFilter(
                             ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary),
                             PorterDuff.Mode.LIGHTEN);
                     majorText.setTextColor(Color.WHITE);
-                    recommendations = ReviewController.getRecommendations(ReviewController.BY_MAJOR);
                     selected = true;
                 } else {
+                    new MovieControllerTask().execute(MainActivity.this,
+                            MovieControllerTask.UPDATE_RECOMMENDATIONS,
+                            MovieControllerTask.RECOMMENDATIONS_GENERAL);
                     majorButton.setElevation(getResources().getDimension(R.dimen.flat_elevation));
                     majorBackground.clearColorFilter();
+                    majorBackground.setColorFilter(
+                            ContextCompat.getColor(getApplicationContext(), R.color.White),
+                            PorterDuff.Mode.LIGHTEN);
                     majorText.setTextColor(ContextCompat.getColor(getApplicationContext(),
                             R.color.colorPrimary));
-                    recommendations = ReviewController.getRecommendations();
                     selected = false;
                 }
-                new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
             }
         });
     }
 
     /**
-     * Fills lists of movies for tabs.
+     * Sets up listener for major button
      */
-    public void getMovies() {
-        /*// Get the movies
-        List<Movie> newMovies = getMoviesFromAPI(SingletonMagic.NEW_MOVIE);
-        List<Movie> topRentals = getMoviesFromAPI(SingletonMagic.TOP_RENTAL);
-        List<Movie> recommendations = getRecommendations();
-        // Set the View
-        List<List<Movie>> listList = new ArrayList<>();
-        listList.add(newMovies);
-        listList.add(topRentals);
-        listList.add(recommendations);
-        listList.add(new ArrayList<Movie>()); //dummy arraylist for recommendations
-        MovieListFragment.fillTabMovieList(listList);
-        */
-    }
+    public void setupGenreButton() {
+        Log.d("main", "major button");
+        final RelativeLayout genreButton = (RelativeLayout) findViewById(R.id.genre_button);
+        final TextView genreText = (TextView) findViewById(R.id.genre_text);
+        final GradientDrawable genreBackground = (GradientDrawable) genreButton.getBackground();
 
-    /**
-     * Updates user interface
-     *
-     * @param page which tab to update
-     */
-    public void updateUI(int page) {
-        Log.i("GTMovies", "updateUI called");
-        MovieListFragment.updateAdapter(page);
-
-        findViewById(R.id.movie_detail_container).invalidate();
-        findViewById(R.id.movie_list_view).invalidate();
-        findViewById(R.id.movie_list).invalidate();
-        findViewById(R.id.view_pager).invalidate();
-        findViewById(R.id.main_linear_layout).invalidate();
-        findViewById(R.id.main_view2).invalidate();
-        findViewById(R.id.content_main).invalidate();
-    }
-
-    /**
-     * Obtains the movies from the API
-     *
-     * @param requestType differentiates new movies and top rental
-     * @param movieList   list of movies to get details about for recommendations
-     */
-    private void getMoviesFromAPI(final String requestType, final List<Movie> movieList) {
-        //initializing new movieArray to return
-        Log.d("getMoviesFromAPI", "request" + requestType);
-
-        // Creating the JSONRequest
-        JsonObjectRequest movieRequest = null;
-        if (requestType.equals(SingletonMagic.RECOMMENDATIONS)) {
-            Log.d("getMoviesFromAPI", "recommendations");
-            if (movieList == null || movieList.size() <= 0) {
-                return;
-            }
-
-            final Map<Integer, Movie> movieMap = new HashMap<>();
-
-            //Run for each of the recommended movies
-            for (final Movie movie : movieList) {
-
-                //create the request
-                String movieID = SingletonMagic.SEARCH + "/" + movie.getID();
-                final String urlRaw = String.format(
-                        SingletonMagic.BASE_URL, movieID, "", SingletonMagic.PROF_KEY);
-                movieRequest = new JsonObjectRequest(Request.Method.GET,
-                        urlRaw, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject resp) {
-                        if (resp == null) {
-                            Log.e("JSONRequest ERROR", "getMovie Null Response Received");
-                        }
-
-                        Movie mMovie = new Movie(resp);
-                        movieMap.put(mMovie.getID(), mMovie);
-
-                        //Check if last
-                        if (movieMap.size() >= movieList.size() - 3) {
-                            //Now update UI
-                            List<Movie> movieArray = new ArrayList<>();
-                            movieArray.addAll(movieMap.values());
-                            MovieListFragment.setYourRecommendationsList(movieArray);
-                            updateUI(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
-                        }
-
-                        Log.d("getMovie movie success", "rec movie:" + new Movie(resp));
-                        Log.d("getMovie volley success", "rec movie:" + urlRaw);
+        genreButton.setOnClickListener(new View.OnClickListener() {
+            boolean selected = false;
+            @Override
+            public void onClick(View v) {
+                Log.e("main", "major button onClick");
+                if (!selected) {
+                    if (findViewById(R.id.major_button).getElevation()
+                            == getResources().getDimension(R.dimen.raised_elevation)) {
+                        (new MovieControllerTask()).execute(MainActivity.this,
+                                MovieControllerTask.UPDATE_RECOMMENDATIONS,
+                                MovieControllerTask.RECOMMENDATIONS_BY_MAJOR_GENRE,
+                                null, null);
+                    } else {
+                        (new MovieControllerTask()).execute(MainActivity.this,
+                                MovieControllerTask.UPDATE_RECOMMENDATIONS,
+                                MovieControllerTask.RECOMMENDATIONS_BY_GENRE,
+                                null, null);
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("getMovie VOLLEY FAIL", "Couldn't getJSON. rec movie:" + urlRaw);
+                    genreButton.setElevation(getResources().getDimension(R.dimen.raised_elevation));
+                    genreBackground.clearColorFilter();
+                    genreBackground.setColorFilter(
+                            ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary),
+                            PorterDuff.Mode.LIGHTEN);
+                    genreText.setTextColor(Color.WHITE);
+                    selected = true;
+                } else {
+                    if (findViewById(R.id.major_button).getElevation()
+                            == getResources().getDimension(R.dimen.raised_elevation)) {
+                        (new MovieControllerTask()).execute(MainActivity.this,
+                                MovieControllerTask.UPDATE_RECOMMENDATIONS,
+                                MovieControllerTask.RECOMMENDATIONS_BY_MAJOR,
+                                null, null);
+                    } else {
+                        (new MovieControllerTask()).execute(MainActivity.this,
+                                MovieControllerTask.UPDATE_RECOMMENDATIONS,
+                                MovieControllerTask.RECOMMENDATIONS_GENERAL,
+                                null, null);
                     }
-                });
-                SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
+                    genreButton.setElevation(getResources().getDimension(R.dimen.flat_elevation));
+                    genreBackground.clearColorFilter();
+                    genreBackground.setColorFilter(
+                            ContextCompat.getColor(getApplicationContext(), R.color.White),
+                            PorterDuff.Mode.LIGHTEN);
+                    genreText.setTextColor(ContextCompat.getColor(getApplicationContext(),
+                            R.color.colorPrimary));
+                    selected = false;
+                }
             }
-        } else {
-            final List<Movie> movieArray = new ArrayList<>();
-            final String urlRaw = String.format(
-                    SingletonMagic.BASE_URL, requestType, "", SingletonMagic.PROF_KEY);
-
-            movieRequest = new JsonObjectRequest
-                    (Request.Method.GET, urlRaw, null, new Response.Listener<JSONObject>() {
-
-                        @Override
-                        public void onResponse(JSONObject resp) {
-                            if (resp == null) {
-                                Log.e("JSONRequest ERROR", "Null Response Received");
-                            }
-                            // put movies into a JSONArray
-                            JSONArray tmpMovies = null;
-                            try {
-                                tmpMovies = resp.getJSONArray("movies");
-                            } catch (JSONException e) {
-                                Log.e("JSON ERROR", "Error when getting movies in Main.");
-                            }
-                            if (tmpMovies == null) {
-                                Log.e("Movie Error", "movies JSONArray is null!");
-                            }
-                            for (int i = 0; i < tmpMovies.length(); i++) {
-                                try {
-                                    movieArray.add(new Movie(tmpMovies.getJSONObject(i)));
-                                } catch (JSONException e) {
-                                    Log.e("Movie Error", "Couldn't make Movie" + i + "in Main");
-                                }
-                            }
-
-                            //Create proper MovieListFragment
-                            String tab;
-                            if (requestType.equals(SingletonMagic.NEW_MOVIE)) {
-                                Log.d("JinuMain", "newMovieFragment");
-
-                                MovieListFragment.setNewMoviesList(movieArray);
-                                updateUI(MovieListFragment.NEW_MOVIES_TAB);
-                                //MovieListFragment.setTopRentalsList(movieArray);        //TODO: Remove
-                                /*movieListFragment = MovieListFragment.newInstance(
-                                MovieListFragment.NEW_MOVIES_TAB);)*/
-
-                                tab = "newMovies";
-                            } else if (requestType.equals(SingletonMagic.TOP_RENTAL)) {
-                                Log.d("JinuMain", "topRentalFragment");
-                                MovieListFragment.setTopRentalsList(movieArray);
-                                updateUI(MovieListFragment.TOP_RENTALS_TAB);
-                        /*movieListFragment = MovieListFragment.newInstance(
-                                MovieListFragment.TOP_RENTALS_TAB);*/
-                                tab = "topRentals";
-                            } else {
-                                Log.d("JinuMain", "nullFragment");
-                                //movieListFragment = null;
-                                tab = "nullFragment";
-                            }
-
-                            Log.d("Main", "getMoviesFromAPI tab " + tab + " calling updateUI");
-                            // Added the executePend....() thing to onScrollStateChanged
-                            //
-                            Log.d("JinuMain", "End of request");
-                        }
-                    }, new Response.ErrorListener() {
-
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("VOLLEY FAIL", "Couldn't getJSON");
-                        }
-                    });
-        }
-        // Access the RequestQueue through singleton class.
-        // Add Requests to RequestQueue
-        SingletonMagic.getInstance(this).addToRequestQueue(movieRequest);
+        });
     }
+
+
 
 
     /**
@@ -593,48 +492,23 @@ public class MainActivity extends AppCompatActivity
         //nothing
     }
 
-    /*@Override
-    protected void onStart() {
-        super.onStart();
-        getMovies();
-        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                MovieListFragment.newInstance(0)).commit();
-    }
-
     @Override
-    protected void onResume() {
-        super.onResume();
-        getMovies();
-        fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                MovieListFragment.newInstance(0)).commit();
-    }*/
-
-    private class UpdateUITask extends AsyncTask<Integer, Integer, Integer> {
-        private List<Movie> movieList;
-
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            switch (params[0]) {
-                case MovieListFragment.YOUR_RECOMMENDATIONS_TAB:
-                    getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
-                            recommendations);
-                    break;
-                default:
+    public void finishedGettingMovies(int requestType) {
+        //nothing
+        Log.e("Main", "finish called");
+        if (requestType == MovieControllerTask.SEARCH_MOVIES) {
+            if (secretQueryDoNotWorryAbout.equals("Matt McCoy")) {
+                List<Movie> list = MovieListFragment.getSearchMovieList();
+                list.add(new Movie(-1));
+                MovieListFragment.setSearchMovieList(list);
+                MovieListFragment.updateAdapter(MovieListFragment.SEARCH);
             }
-            for (int i = 0; i < 1; i++) {
-                Log.i("Useless", "What is Android? What is Android? What is Android? What is Android?");
-            }
-            for (int i = 0; i < 1; i++) {
-                Log.i("Useless", "Do Androids Dream of Electric Sheep?");
-            }
-            return params[0];
+            Log.e("Main", "request correct");
+            Intent intent = new Intent(this, SearchActivity.class);
+            intent.putExtra(SearchManager.QUERY,
+                    ((SearchView) findViewById(R.id.main_search_bar)).getQuery().toString());
+            intent.setAction(Intent.ACTION_SEARCH);
+            startActivityForResult(intent, SEARCH_REQUEST_CODE);
         }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            //super.onPostExecute(integer);
-        }
-
     }
-
 }

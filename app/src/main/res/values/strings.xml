@@ -18,6 +18,7 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_password_confim">Confirm password</string>
     <string name="promt_display_name">Display name</string>
+    <string name="prompt_email">Email</string>
     <string name="email">null</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_register">Register</string>
@@ -56,6 +57,7 @@
         based on your message history
     </string>
 
+    <!-- Strings for Drawer -->
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_default_display_name">John Smith</string>
     <string name="pref_account_delete">Make me an Admin</string>
@@ -134,11 +136,17 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <!-- Strings Related to Movie List -->
+    <string name="recycler_view">Movie List</string>
     <string name="title_movie_list">Movie</string>
     <string name="title_movie_detail">Movie Detail</string>
     <string name="default_movie_title">Movie Title</string>
     <string name="dummy_movie_rating">xx%</string>
     <string name="dummy_movie_description">Movie Description</string>
+
+
+    <!-- Strings Related to Profile -->
     <string name="name_prof_edit">Name:</string>
     <string name="major_prof_edit">Major:</string>
     <string name="edit_your_profile_here">Edit your profile here:</string>
@@ -146,6 +154,8 @@
     <string name="user_bio">Bio:</string>
     <string name="title_test_list">Items</string>
     <string name="title_admin">Community</string>
+
+    <!-- Strings Related to Movie Detail -->
     <string name="title_test_detail">TEST Detail</string>
     <string name="description">Description:</string>
     <string name="rating">Tomato Rating:</string>
@@ -154,7 +164,7 @@
     <string name="my_review">My Review:</string>
     <string name="score">Score:</string>
     <string name="ok">OK</string>
-    <string name="cancel">CANCEL</string>
+    <string name="cancel">Cancel</string>
 
 
     <string name="criteria_major">Major</string>
@@ -175,4 +185,6 @@
     <string name="delete_user">delete user</string>
     <string name="gtmov_tag">GTMovies</string>
     <string name="gtmovtag">GTMovies</string>
+
+    <string name="search">search</string>
 </resources>
