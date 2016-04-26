@@ -11,6 +11,10 @@
         android:fragment="com.team19.gtmovies.activity.SettingsActivity$AccountPreferenceFragment"
         android:icon="@drawable/ic_face_black_24dp"
         android:title="Account" />
+    <header
+        android:fragment="com.team19.gtmovies.activity.SettingsActivity$LanguagePreferenceFragment"
+        android:icon="@drawable/ic_language_black_24dp"
+        android:title="Language" />
 
     <!--<header-->
         <!--android:fragment="com.team19.gtmovies.activity.SettingsActivity$NotificationPreferenceFragment"-->

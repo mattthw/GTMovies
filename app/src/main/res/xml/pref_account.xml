@@ -11,9 +11,4 @@
         android:key="@string/pref_account_delete"
         android:summary="@string/pref_account_admin_summary"/>
 
-    <Preference
-        android:title="@string/pref_account_language"
-        android:key="@string/pref_account_language"
-        android:summary="@string/pref_account_language_summary"/>
-
 </PreferenceScreen>
