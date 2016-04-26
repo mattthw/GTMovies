@@ -34,6 +34,7 @@ import com.team19.gtmovies.controller.MovieControllerTask;
 import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.IOActions;
 import com.team19.gtmovies.fragment.MovieListFragment;
+import com.team19.gtmovies.pojo.Genre;
 import com.team19.gtmovies.pojo.Movie;
 
 import java.util.List;
@@ -58,8 +59,9 @@ public class MainActivity extends MovieControlActivity
 
     private static final int SEARCH_REQUEST_CODE = 1;
     private static final int LOGIN_REQUEST_CODE = 13;
+    private static final int GENRES_REQUEST_CODE = 14;
 
-    private String secretQueryDoNotWorryAbout = "";
+    private Genre currentGenre = null;
 
 /*
 // Meant for NyanCat
@@ -110,6 +112,8 @@ public class MainActivity extends MovieControlActivity
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mainRootView = findViewById(R.id.main_view);
         if (IOActions.getIOActionsInstance() == null) {
             Log.e("GTMovies", "IOActions.getIOActionsInstance == null !");
             // Go back to SplashScreenActivity
@@ -125,8 +129,6 @@ public class MainActivity extends MovieControlActivity
             startActivityForResult(intent, LOGIN_REQUEST_CODE);
         }
         Log.w("GTMovies", "MAIN ACTIVITY ONCREATE!");
-        setContentView(R.layout.activity_main);
-        mainRootView = findViewById(R.id.main_view);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimaryDark));
 
@@ -151,36 +153,15 @@ public class MainActivity extends MovieControlActivity
         //update header with current user's name
         updateNavName();
 
-        // Populate lists of new movies and top rentals
-        //getMovies();
-        //new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
         findViewById(R.id.criteria_bar).setVisibility(View.GONE);
-        //getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
-        //getMoviesFromAPI(SingletonMagic.NEW_MOVIE, null);
-        //getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
         // Setup tabs and SEARCH
         fragmentManager = getSupportFragmentManager();
-        //criteriaActivity = (CriteriaActivity) findViewById(R.id.criteria_bar);
-        /*LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(findViewById(R.id.content_main);
-        params.setMargins(0, R.attr.actionBarSize - 1, 0,0);
-        ((RelativeLayout) findViewById(R.id.content_main)).setLayoutParams(params);*/
 
         // Setup tabs and search
         setupTabs();
         setupSearch();
 
         Log.d("Actionbar", "size=" + R.attr.actionBarSize);
-        // Place view
-        MovieListFragment.setTabs();
-        /*fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                MovieListFragment.newInstance(0)).commit();*/
-        MovieListFragment.updateAdapter(MovieListFragment.NEW_MOVIES_TAB);
-        MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
-        MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
     }
 
     /**
@@ -218,8 +199,12 @@ public class MainActivity extends MovieControlActivity
                 return;
             }
         } else if (requestCode == SEARCH_REQUEST_CODE) {
-            findViewById(R.id.movie_list_view).setPadding(
-                    0, R.attr.actionBarSize, 0, 0);
+            MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
+        } else if (requestCode == GENRES_REQUEST_CODE) {
+            //do something
+            currentGenre = Genre.toGenre(data.getStringExtra(GenresListActivity.SELECTED_GENRE));
+            Log.d("Main", "second");
+            selectByGenre();
         }
     }
 
@@ -264,34 +249,14 @@ public class MainActivity extends MovieControlActivity
                         if (position == MovieListFragment.YOUR_RECOMMENDATIONS_TAB) {
                             criteriaBar.setVisibility(View.VISIBLE);
                             setupMajorButton();
+                            setupGenreButton();
                         } else {
                             criteriaBar.setVisibility(View.GONE);
                         }
-                        /*if (position == MovieListFragment.TOP_RENTALS_TAB) {
-                            if (!MovieListFragment.hasTopRentalsList()) {
-                                getMoviesFromAPI(SingletonMagic.TOP_RENTAL, null);
-                            }
-                        } else if (position == MovieListFragment.NEW_MOVIES_TAB) {// MovieListFragment.NEW_MOVIES_TAB:
-                                //MovieListFragment has already been displayed. Display again.
-                            case MovieListFragment.YOUR_RECOMMENDATIONS_TAB
-                                criteriaBar.setVisibility(View.VISIBLE);
-                                if (!MovieListFragment.hasYourRecommendationsList()) {
-                                    getMoviesFromAPI(SingletonMagic.RECOMMENDATIONS,
-                                            ReviewController.getRecommendations());
-                                } else {
-                                    movieListFragment = MovieListFragment.newInstance(position);
-                                    fragmentManager.beginTransaction().replace(R.id.main_frame_layout,
-                                            movieListFragment).commit();
-                                }
-                                break;
-                            default:
-                                Log.e("GTMovies", "Incorrect int for tab.");
-                        }*/
                     }
 
                     @Override
                     public void onPageSelected(int position) {
-                        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
                     }
 
                     @Override
@@ -315,10 +280,11 @@ public class MainActivity extends MovieControlActivity
             public boolean onQueryTextSubmit(String query) {
                 Log.d("GTMovies", "break here");
                 //Log.d("GTMovies", "query: " + searchView.getQuery().toString());
-                String queryURI = Uri.encode(query);
-                findViewById(R.id.movie_list_view).setPadding(0, 0, 0, 0);
-                (new MovieControllerTask()).execute(MainActivity.this, MovieControllerTask.SEARCH_MOVIES,
-                        "q=" + queryURI, null, null);
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                intent.putExtra(SearchManager.QUERY,
+                        ((SearchView) findViewById(R.id.main_search_bar)).getQuery().toString());
+                intent.setAction(Intent.ACTION_SEARCH);
+                startActivityForResult(intent, SEARCH_REQUEST_CODE);
                 Log.d("GTMovies", "skipped it");
                 return true;
             }
@@ -347,7 +313,6 @@ public class MainActivity extends MovieControlActivity
         } else {
             //recommendations = ReviewController.getRecommendations();
         }
-        //new UpdateUITask().execute(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
 
         majorButton.setOnClickListener(new View.OnClickListener() {
             boolean selected = false;
@@ -357,7 +322,8 @@ public class MainActivity extends MovieControlActivity
                 if (!selected) {
                     new MovieControllerTask().execute(MainActivity.this,
                             MovieControllerTask.UPDATE_RECOMMENDATIONS,
-                            MovieControllerTask.RECOMMENDATIONS_BY_MAJOR);
+                            MovieControllerTask.RECOMMENDATIONS_BY_MAJOR,
+                            null, null);
                     majorButton.setElevation(getResources().getDimension(R.dimen.raised_elevation));
                     majorBackground.clearColorFilter();
                     majorBackground.setColorFilter(
@@ -368,7 +334,8 @@ public class MainActivity extends MovieControlActivity
                 } else {
                     new MovieControllerTask().execute(MainActivity.this,
                             MovieControllerTask.UPDATE_RECOMMENDATIONS,
-                            MovieControllerTask.RECOMMENDATIONS_GENERAL);
+                            MovieControllerTask.RECOMMENDATIONS_GENERAL,
+                            null, null);
                     majorButton.setElevation(getResources().getDimension(R.dimen.flat_elevation));
                     majorBackground.clearColorFilter();
                     majorBackground.setColorFilter(
@@ -392,33 +359,17 @@ public class MainActivity extends MovieControlActivity
         final GradientDrawable genreBackground = (GradientDrawable) genreButton.getBackground();
 
         genreButton.setOnClickListener(new View.OnClickListener() {
-            boolean selected = false;
             @Override
             public void onClick(View v) {
-                Log.e("main", "major button onClick");
-                if (!selected) {
-                    if (findViewById(R.id.major_button).getElevation()
-                            == getResources().getDimension(R.dimen.raised_elevation)) {
-                        (new MovieControllerTask()).execute(MainActivity.this,
-                                MovieControllerTask.UPDATE_RECOMMENDATIONS,
-                                MovieControllerTask.RECOMMENDATIONS_BY_MAJOR_GENRE,
-                                null, null);
-                    } else {
-                        (new MovieControllerTask()).execute(MainActivity.this,
-                                MovieControllerTask.UPDATE_RECOMMENDATIONS,
-                                MovieControllerTask.RECOMMENDATIONS_BY_GENRE,
-                                null, null);
-                    }
-                    genreButton.setElevation(getResources().getDimension(R.dimen.raised_elevation));
-                    genreBackground.clearColorFilter();
-                    genreBackground.setColorFilter(
-                            ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary),
-                            PorterDuff.Mode.LIGHTEN);
-                    genreText.setTextColor(Color.WHITE);
-                    selected = true;
+                Log.e("main", "genre button onClick");
+                if (findViewById(R.id.genre_button).getElevation()
+                        == getResources().getDimension(R.dimen.flat_elevation)) {
+                    Log.d("Main", "first");
+                    startActivityForResult(new Intent(MainActivity.this, GenresListActivity.class),
+                            GENRES_REQUEST_CODE);
                 } else {
-                    if (findViewById(R.id.major_button).getElevation()
-                            == getResources().getDimension(R.dimen.raised_elevation)) {
+                    currentGenre = null;
+                    if (findViewById(R.id.major_button).getElevation() == getResources().getDimension(R.dimen.raised_elevation)) {
                         (new MovieControllerTask()).execute(MainActivity.this,
                                 MovieControllerTask.UPDATE_RECOMMENDATIONS,
                                 MovieControllerTask.RECOMMENDATIONS_BY_MAJOR,
@@ -436,10 +387,36 @@ public class MainActivity extends MovieControlActivity
                             PorterDuff.Mode.LIGHTEN);
                     genreText.setTextColor(ContextCompat.getColor(getApplicationContext(),
                             R.color.colorPrimary));
-                    selected = false;
                 }
             }
         });
+    }
+
+    private void selectByGenre() {
+        if (currentGenre == null) {
+            return;
+        }
+        final RelativeLayout genreButton = (RelativeLayout) findViewById(R.id.genre_button);
+        final TextView genreText = (TextView) findViewById(R.id.genre_text);
+        final GradientDrawable genreBackground = (GradientDrawable) genreButton.getBackground();
+        if (findViewById(R.id.major_button).getElevation()
+                == getResources().getDimension(R.dimen.raised_elevation)) {
+            (new MovieControllerTask()).execute(MainActivity.this,
+                    MovieControllerTask.UPDATE_RECOMMENDATIONS,
+                    MovieControllerTask.RECOMMENDATIONS_BY_MAJOR_GENRE,
+                    currentGenre, null);
+        } else {
+            (new MovieControllerTask()).execute(MainActivity.this,
+                    MovieControllerTask.UPDATE_RECOMMENDATIONS,
+                    MovieControllerTask.RECOMMENDATIONS_BY_GENRE,
+                    currentGenre, null);
+        }
+        genreButton.setElevation(getResources().getDimension(R.dimen.raised_elevation));
+        genreBackground.clearColorFilter();
+        genreBackground.setColorFilter(
+                ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary),
+                PorterDuff.Mode.LIGHTEN);
+        genreText.setTextColor(Color.WHITE);
     }
 
 
@@ -496,19 +473,5 @@ public class MainActivity extends MovieControlActivity
     public void finishedGettingMovies(int requestType) {
         //nothing
         Log.e("Main", "finish called");
-        if (requestType == MovieControllerTask.SEARCH_MOVIES) {
-            if (secretQueryDoNotWorryAbout.equals("Matt McCoy")) {
-                List<Movie> list = MovieListFragment.getSearchMovieList();
-                list.add(new Movie(-1));
-                MovieListFragment.setSearchMovieList(list);
-                MovieListFragment.updateAdapter(MovieListFragment.SEARCH);
-            }
-            Log.e("Main", "request correct");
-            Intent intent = new Intent(this, SearchActivity.class);
-            intent.putExtra(SearchManager.QUERY,
-                    ((SearchView) findViewById(R.id.main_search_bar)).getQuery().toString());
-            intent.setAction(Intent.ACTION_SEARCH);
-            startActivityForResult(intent, SEARCH_REQUEST_CODE);
-        }
     }
 }

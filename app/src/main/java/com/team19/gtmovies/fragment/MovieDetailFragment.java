@@ -105,7 +105,7 @@ public class MovieDetailFragment extends Fragment {
         } else {
             Log.println(Log.ERROR, "GTMovie", "No rating for movie");
         }
-        //userRatingView = ((TextView) rootView.findViewById(R.id.userRatingView));
+        userRatingView = ((TextView) rootView.findViewById(R.id.user_rating_contents));
         mainListView = (ListView) rootView.findViewById(R.id.commentListView);
         //if users have review this movie then it will exist
         //and we will get their averaged scores.

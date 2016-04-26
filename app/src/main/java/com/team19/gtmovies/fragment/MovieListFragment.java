@@ -2,6 +2,7 @@ package com.team19.gtmovies.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ import com.team19.gtmovies.data.CurrentState;
 import com.team19.gtmovies.data.SingletonMagic;
 import com.team19.gtmovies.pojo.Movie;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,16 +53,15 @@ public class MovieListFragment extends Fragment {
     private static List<Movie> newMoviesList = null;
     private static List<Movie> topRentalsList = null;
     private static List<Movie> yourRecommendationsList = null;
-    private static List<Movie> searchMovieList = null;
+    private static List<Movie> searchMovieList;
 
     private static boolean mTwoPane = false;
-    private static boolean tabs = false;
-    private boolean search = false;
     private static MovieRecyclerViewAdapter newMoviesAdapter;
     private static MovieRecyclerViewAdapter topRentalsAdapter;
     private static MovieRecyclerViewAdapter yourRecommendationsAdapter;
     private static MovieRecyclerViewAdapter searchAdapter;
-    //private static final MovieListFragment searchFragment = new MovieListFragment(3);
+
+    private static MovieListFragment searchFragment;
 
     private CoordinatorLayout mAppBar = null;
     private Toolbar mToolbar = null;
@@ -164,17 +165,22 @@ public class MovieListFragment extends Fragment {
             case 3: return searchFragment;
             default: return null;
         }*/
-        Log.d("MLFrag.newInstance", "page " + page + "\nstack:\n" + Arrays.toString(Thread.currentThread().getStackTrace()));
+        Log.d("MLFrag.newInstance", "page " + page + "\nstack:\n"
+                + Arrays.toString(Thread.currentThread().getStackTrace()));
         Bundle mBundle = new Bundle();
         mBundle.putInt(ARG_ITEM_ID, page);
         MovieListFragment fragment = new MovieListFragment();
         fragment.setArguments(mBundle);
+        if (page == SEARCH) {
+            searchFragment = fragment;
+        }
         return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("MovieListFrag", "called");
         for (int i = 0; i < 1; i++) {
             for (int j = 0; j < 1; j++) {
                 Log.v("Useless", "Taking a minute to think about what it all means");
@@ -211,23 +217,6 @@ public class MovieListFragment extends Fragment {
 
 
         mLayoutManager = new LinearLayoutManager(getActivity());
-
-        /*
-        if (search) {
-            if (searchMovieList != null) {
-                mAdapter = new MovieRecyclerViewAdapter(searchMovieList);
-            }
-            search = false;
-        } else if (getArguments() != null) {
-            Log.d("GTMovies: onCreateView", currentTab + "");
-            mAdapter = new MovieRecyclerViewAdapter(tabMovieList.get(getArguments().getInt(ARG_ITEM_ID)));
-            //Log.d("GTMovies", tabMovieList.get(currentTab).toString());
-            tabs = false;
-        } else if (getArguments() != null) {
-            Log.d("GTMovies: getargs", getArguments().toString());
-        } else {
-            Log.e("GTMovies:", "No bundle.");
-        }*/
         if (getArguments() != null) {
             switch (getArguments().getInt(ARG_ITEM_ID)) {
                 case NEW_MOVIES_TAB:
@@ -239,10 +228,10 @@ public class MovieListFragment extends Fragment {
                     }
                     newMoviesAdapter = new MovieRecyclerViewAdapter(newMoviesList);
                     mAdapter = newMoviesAdapter;
-                    if (getView() != null) {
+                    /*if (getView() != null) {
                         getView().findViewById(R.id.movie_list_view).setPadding(
                                 0, R.attr.actionBarSize, 0, 0);
-                    }
+                    }*/
                     Log.d("MLFrag", "newMoviesList " + mAdapter);
                     break;
                 case TOP_RENTALS_TAB:
@@ -254,10 +243,10 @@ public class MovieListFragment extends Fragment {
                     }
                     topRentalsAdapter = new MovieRecyclerViewAdapter(topRentalsList);
                     mAdapter = topRentalsAdapter;
-                    if (getView() != null) {
+                    /*if (getView() != null) {
                         getView().findViewById(R.id.movie_list_view).setPadding(
                                 0, R.attr.actionBarSize, 0, 0);
-                    }
+                    }*/
                     Log.d("MLFrag", "topRentalsList " + mAdapter);
                     break;
                 case YOUR_RECOMMENDATIONS_TAB:
@@ -269,23 +258,18 @@ public class MovieListFragment extends Fragment {
                     }
                     yourRecommendationsAdapter = new MovieRecyclerViewAdapter(yourRecommendationsList);
                     mAdapter = yourRecommendationsAdapter;
-                    if (getView() != null) {
-                        getView().findViewById(R.id.movie_list_view).setPadding(
-                                0, R.attr.actionBarSize, 0, 0);
-                    }
                     Log.d("MLFrag", "yourRecList " + mAdapter);
                     break;
                 case SEARCH:
                     Log.d("JinuMLFrag", "searchMovieList RecyclerViewAdapter");
-                    if (null == searchMovieList || searchMovieList.isEmpty()) {
+                    if (searchMovieList == null || searchMovieList.isEmpty()) {
                         Log.e("MovieListFragment", "searchMovieList is null or empty");
                     } else {
                         Log.d("MovieListFragment", "searchMovieList is ok " + searchMovieList);
                     }
-                    searchAdapter = new MovieRecyclerViewAdapter(searchMovieList);
-                    mAdapter = searchAdapter;
-                    if (getView() != null) {
-                        getView().findViewById(R.id.movie_list_view).setPadding(0, 0, 0, 0);
+                    if (searchAdapter == null) {
+                        searchAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+                        mAdapter = searchAdapter;
                     }
                     Log.d("MLFrag", "searchMovieList " + mAdapter);
                     break;
@@ -310,15 +294,24 @@ public class MovieListFragment extends Fragment {
 
         if (getActivity().findViewById(R.id.content_main) != null) {
             Log.d("MovieListFrag", "content main found");
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            /*LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT));
             params.setMargins(0, R.attr.actionBarSize - 1, 0,0);
             ((RelativeLayout) getActivity().findViewById(R.id.content_main)).setLayoutParams(
-                    params);
+                    params);*/
         }
         return rootView;
+    }
+
+    /**
+     * Getter for search instance
+     *
+     * @return search instance
+     */
+    public static MovieListFragment getSearchInstance() {
+        return searchFragment;
     }
 
     /*
@@ -355,6 +348,7 @@ public class MovieListFragment extends Fragment {
         Log.d("MLFrag", "getMovie setNewMovies " + list);
         if (list != null) {
             newMoviesList = list;
+            updateAdapter(NEW_MOVIES_TAB);
             return true;
         }
         return false;
@@ -370,6 +364,7 @@ public class MovieListFragment extends Fragment {
         Log.d("MLFrag", "getMovie setTopRentals " + list);
         if (list != null) {
             topRentalsList = list;
+            updateAdapter(TOP_RENTALS_TAB);
             return true;
         }
         return false;
@@ -385,6 +380,7 @@ public class MovieListFragment extends Fragment {
         Log.d("MLFrag", "getMovie setYourRecommendations " + list);
         if (list != null) {
             yourRecommendationsList = list;
+            updateAdapter(YOUR_RECOMMENDATIONS_TAB);
             return true;
         }
         return false;
@@ -399,7 +395,10 @@ public class MovieListFragment extends Fragment {
     public static boolean setSearchMovieList(List<Movie> list) {
         if (list != null) {
             searchMovieList = list;
+            updateAdapter(SEARCH);
             return true;
+        } else {
+            Log.e("MovieListFrag", "search movie list null");
         }
         return false;
     }
@@ -468,21 +467,6 @@ public class MovieListFragment extends Fragment {
         currentTab = position;
     }
 
-
-    /**
-     * Sets fragment to display search
-     */
-    public void setSearch() {
-        search = true;
-    }
-
-    /**
-     * Sets fragment to display tabs
-     */
-    public static void setTabs() {
-        tabs = true;
-    }
-
     /**
      * A getter for where or not able to display in two panes
      *
@@ -494,11 +478,67 @@ public class MovieListFragment extends Fragment {
 
     @Override
     public String toString() {
-        return super.toString() + " ARG_ITEM_ID=" + getArguments().getInt(ARG_ITEM_ID)
+        return super.toString() + " ARG_ITEM_ID="
+                + (getArguments() == null ? null : getArguments().getInt(ARG_ITEM_ID))
                 + " newMoviesList=" + hasNewMoviesList()
                 + " topRentalsList=" + hasTopRentalsList()
                 + " youRecommendationsList=" + hasYourRecommendationsList()
-                + "\ndisplay: " + toPrettyString(getArguments().getInt(ARG_ITEM_ID)) + "\n\n";
+                + "\ndisplay: "
+                + toPrettyString(getArguments() == null ? -1 : getArguments().getInt(ARG_ITEM_ID)) + "\n\n";
+    }
+
+    /**
+     * Updates array in ArrayList non-static, so can recreate adapter
+     *
+     * @param page page to change
+     */
+    public void updateAdapterNonStatic(int page) {
+        switch (page) {
+            case NEW_MOVIES_TAB:
+                if (newMoviesAdapter != null) {
+                    newMoviesAdapter.swapList(newMoviesList);
+                } else {
+                    newMoviesAdapter = new MovieRecyclerViewAdapter(newMoviesList);
+                    mAdapter = newMoviesAdapter;
+                    newMoviesAdapter.swapList(newMoviesList);
+                }
+                break;
+            case TOP_RENTALS_TAB:
+                if (topRentalsAdapter != null) {
+                    topRentalsAdapter.swapList(topRentalsList);
+                } else {
+                    topRentalsAdapter = new MovieRecyclerViewAdapter(topRentalsList);
+                    mAdapter = topRentalsAdapter;
+                    topRentalsAdapter.swapList(topRentalsList);
+                }
+                break;
+            case YOUR_RECOMMENDATIONS_TAB:
+                if (yourRecommendationsAdapter != null) {
+                    yourRecommendationsAdapter.swapList(yourRecommendationsList);
+                } else {
+                    yourRecommendationsAdapter = new MovieRecyclerViewAdapter(
+                            yourRecommendationsList);
+                    mAdapter = yourRecommendationsAdapter;
+                    yourRecommendationsAdapter.swapList(yourRecommendationsList);
+                }
+                break;
+            case SEARCH:
+                if (searchAdapter != null) {
+                    Log.e("MovieListFrag", "searchAdapter not null");
+                    mRecyclerView.setAdapter(searchAdapter);
+                    searchAdapter.swapList(searchMovieList);
+                } else {
+                    Log.e("MovieListFrag", "searchAdapter null");
+                    searchAdapter = new MovieRecyclerViewAdapter(searchMovieList);
+                    mRecyclerView.setAdapter(searchAdapter);
+                    mAdapter = searchAdapter;
+                    searchAdapter.swapList(searchMovieList);
+                    Log.e("MovieListFrag", "search=" + searchAdapter + "\nlist=" + searchMovieList);
+                }
+                break;
+            default:
+                Log.e("MovieListFragment", "invalid page for updateAdapter");
+        }
     }
 
     /**
@@ -525,7 +565,10 @@ public class MovieListFragment extends Fragment {
                 break;
             case SEARCH:
                 if (searchAdapter != null) {
+                    Log.d("MovieListFrag", "search list fine");
                     searchAdapter.swapList(searchMovieList);
+                } else {
+                    Log.e("MovieListFrag", "search list null");
                 }
                 break;
             default:
@@ -579,11 +622,6 @@ public class MovieListFragment extends Fragment {
         if (mToolbar != null && mAppBar != null) {
             mAppBar.animate().translationY(0).setInterpolator(
                     new DecelerateInterpolator(2));
-
-            /*ViewGroup.MarginLayoutParams params
-                    = (ViewGroup.MarginLayoutParams) recyclerBox.getLayoutParams();
-            params.topMargin = R.dimen.app_bar_height;
-            recyclerBox.requestLayout();*/
             Log.d("CurrentState", "open height=" + CurrentState.getOpenHeight());
         }
     }
@@ -617,13 +655,18 @@ public class MovieListFragment extends Fragment {
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             Context context = parent.getContext();
             oldPosition = 0;
-            if (viewType == ITEM_TYPE) {
+            if (viewType == ITEM_TYPE || movieList == searchMovieList) {
                 itemView = LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.movie_list_content, parent, false);
                 return new MovieViewHolder(itemView);
             } else if (viewType == HEADER_TYPE) {
-                itemView = LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.recycler_header, parent, false);
+                if (movieList == yourRecommendationsList) {
+                    itemView = LayoutInflater.from(parent.getContext()).inflate(
+                            R.layout.recycler_rec_header, parent, false);
+                } else {
+                    itemView = LayoutInflater.from(parent.getContext()).inflate(
+                            R.layout.recycler_header, parent, false);
+                }
                 Log.e("MLF", "header type");
                 return new MovieHeaderViewHolder(itemView);
             } else {
@@ -636,32 +679,56 @@ public class MovieListFragment extends Fragment {
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder mHolder, int position) {
             if (!isPositionHeader(position)) {
-            final MovieViewHolder holder = (MovieViewHolder) mHolder;
-            holder.mMovieInfo = movieList.get(position - 1);
+                final MovieViewHolder holder = (MovieViewHolder) mHolder;
+                if (movieList != searchMovieList) {
+                    holder.mMovieInfo = movieList.get(position - 1);
+                } else {
+                    holder.mMovieInfo = movieList.get(position);
+                }
 
-            Log.d("MLFrag", "onBindViewHolder");
+                Log.d("MLFrag", "onBindViewHolder");
 
-            //holder.poster.setImageResource(mMovieInfo.poster);
-            holder.mMoviePosterView.setImageUrl(
-                    holder.mMovieInfo.getPosterURL(),
-                    SingletonMagic.getInstance(getContext()).getImageLoader());
-            holder.mMovieTitleView.setText(holder.mMovieInfo.getTitle());
-            String rating = holder.mMovieInfo.getRating() + "%";
-            holder.mMovieRatingView.setText(rating);
-            holder.mMovieDescriptionView.setText(holder.mMovieInfo.getDescription());
+                //holder.poster.setImageResource(mMovieInfo.poster);
+                holder.mMoviePosterView.setImageUrl(
+                        holder.mMovieInfo.getPosterURL(),
+                        SingletonMagic.getInstance(getContext()).getImageLoader());
+                holder.mMovieTitleView.setText(holder.mMovieInfo.getTitle());
+                String rating = holder.mMovieInfo.getRating() + "%";
+                holder.mMovieRatingView.setText(rating);
+                holder.mMovieDescriptionView.setText(holder.mMovieInfo.getDescription());
 
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("MLFrag", "holder setOnClickListener");
-                    if (MovieListFragment.isTwoPane()) {
-                        Log.d("MLFrag", "TWO PANE PROBLEM!!!");
-                        Bundle arguments = new Bundle();
-                        arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
-                        MovieDetailFragment fragment = new MovieDetailFragment();
-                        fragment.setArguments(arguments);
-                        if (!fragment.isVisible()) {
+                holder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("MLFrag", "holder setOnClickListener");
+                        if (MovieListFragment.isTwoPane()) {
+                            Log.d("MLFrag", "TWO PANE PROBLEM!!!");
+                            Bundle arguments = new Bundle();
+                            arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mMovieInfo.getTitle());
+                            MovieDetailFragment fragment = new MovieDetailFragment();
+                            fragment.setArguments(arguments);
+                            if (!fragment.isVisible()) {
+                                Log.d("MLFrag", "one pane");
+                                Context context = v.getContext();
+                                Intent intent = new Intent(context, MovieDetailActivity.class);
+                                intent.putExtra(MovieDetailFragment.ARG_ITEM_TITLE,
+                                        holder.mMovieInfo.getTitle());
+                                intent.putExtra(MovieDetailFragment.ARG_ITEM_ID,
+                                        holder.mMovieInfo.getID());
+                                intent.putExtra(MovieDetailFragment.ARG_ITEM_DESC,
+                                        holder.mMovieInfo.getDescription());
+                                intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
+                                        holder.mMovieInfo.getRating() + "%");
+                                Log.d("Placing", holder.mMovieInfo + " "
+                                        + holder.mMovieInfo.getTitle() + " "
+                                        + holder.mMovieInfo.getID() + " "
+                                        + holder.mMovieInfo.getDescription() + " "
+                                        + holder.mMovieInfo.getRating());
+
+                                context.startActivity(intent);
+                            }
+                        } else {
                             Log.d("MLFrag", "one pane");
                             Context context = v.getContext();
                             Intent intent = new Intent(context, MovieDetailActivity.class);
@@ -672,30 +739,10 @@ public class MovieListFragment extends Fragment {
                             intent.putExtra(MovieDetailFragment.ARG_ITEM_DESC,
                                     holder.mMovieInfo.getDescription());
                             intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
-                                    holder.mMovieInfo.getRating() + "%");
-                            Log.d("Placing", holder.mMovieInfo + " "
-                                    + holder.mMovieInfo.getTitle() + " "
-                                    + holder.mMovieInfo.getID() + " "
-                                    + holder.mMovieInfo.getDescription() + " "
-                                    + holder.mMovieInfo.getRating());
+                                    holder.mMovieInfo.getRating());
 
                             context.startActivity(intent);
                         }
-                    } else {
-                        Log.d("MLFrag", "one pane");
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, MovieDetailActivity.class);
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_TITLE,
-                                holder.mMovieInfo.getTitle());
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID,
-                                holder.mMovieInfo.getID());
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_DESC,
-                                holder.mMovieInfo.getDescription());
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_RATE,
-                                holder.mMovieInfo.getRating());
-
-                        context.startActivity(intent);
-                    }
                     }
                 });
             }
@@ -717,7 +764,11 @@ public class MovieListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return getBasicItemCount() + 1;
+            if (movieList != searchMovieList) {
+                return getBasicItemCount() + 1;
+            } else {
+                return getBasicItemCount();
+            }
         }
 
         @Override
@@ -745,11 +796,18 @@ public class MovieListFragment extends Fragment {
          * @return true if changed, false if no action
          */
         public boolean swapList(List<Movie> list) {
-            if (movieList != null) {
-                movieList.clear();
-                movieList.addAll(list);
-                notifyDataSetChanged();
-                return true;
+            if (list != null) {
+                if (movieList != null) {
+                    movieList.clear();
+                    movieList.addAll(list);
+                    notifyDataSetChanged();
+                    return true;
+                } else {
+                    movieList = new ArrayList<>();
+                    movieList.addAll(list);
+                    notifyDataSetChanged();
+                    return true;
+                }
             }
             return false;
         }

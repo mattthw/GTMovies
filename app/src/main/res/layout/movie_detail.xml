@@ -64,7 +64,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/ratingView2"
+                android:id="@+id/user_rating_contents"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:layout_gravity="center|right"

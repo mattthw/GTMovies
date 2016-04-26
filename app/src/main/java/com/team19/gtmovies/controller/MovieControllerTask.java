@@ -228,9 +228,11 @@ public class MovieControllerTask extends AsyncTask<Object, Void, Void> {
                     MovieListFragment.setTopRentalsList(movieArray);
                     MovieListFragment.updateAdapter(MovieListFragment.TOP_RENTALS_TAB);
                 } else if (requestCode.equals(SingletonMagic.SEARCH)) {
-                    Log.d("MovieController", "search response");
-                    MovieListFragment.setSearchMovieList(movieArray);
-                    MovieListFragment.updateAdapter(MovieListFragment.SEARCH);
+                    Log.d("MovieController", "search response" + movieArray);
+                    MovieListFragment.getSearchInstance().setSearchMovieList(movieArray);
+                    Log.d("MovieController", "search list" + MovieListFragment.getSearchMovieList());
+                    MovieListFragment.getSearchInstance().updateAdapter(MovieListFragment.SEARCH);
+                    Log.d("MovieController", "search list2" + MovieListFragment.getSearchMovieList());
                 } else {
                     Log.d("JinuMain", "nullFragment");
                     //movieListFragment = null;
@@ -283,9 +285,12 @@ public class MovieControllerTask extends AsyncTask<Object, Void, Void> {
         if (requestType == MORE_RECOMMENDATIONS) {
             //add to current lists
             Log.d("MovieController", "called more_recs");
-        } else {
+        } else if (requestType == GET_ALL_MOVIES
+                || requestType == UPDATE_RECOMMENDATIONS) {
             Log.d("MovieController", "Should be calling this");
-            MovieListFragment.setYourRecommendationsList(recommendationsList);
+            List<Movie> movieList = new ArrayList<>(recommendationsMap.size());
+            movieList.addAll(recommendationsMap.values());
+            MovieListFragment.setYourRecommendationsList(movieList);
             MovieListFragment.updateAdapter(MovieListFragment.YOUR_RECOMMENDATIONS_TAB);
             visited[2] = true;
         }

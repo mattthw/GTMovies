@@ -4,11 +4,16 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -34,6 +39,8 @@ import java.util.List;
  * Activity to be searched
  */
 public class SearchActivity extends MovieControlActivity {
+    private static MovieListFragment searchFragment = null;
+    private static View searchRootView = null;
     private String query = "";
     private boolean nextable = true;
     private boolean prevable = false;
@@ -44,22 +51,14 @@ public class SearchActivity extends MovieControlActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MovieListFragment movieListFragment = MovieListFragment.newInstance(
-                MovieListFragment.SEARCH);
+        fragmentManager = getSupportFragmentManager();
         setContentView(R.layout.activity_search);
-
+        searchRootView = findViewById(R.id.search_root);
+        //searchFragment = (MovieListFragment) fragmentManager.getFragments().get(0);
+        searchFragment = MovieListFragment.newInstance(MovieListFragment.SEARCH);
         //findViewById(R.id.searchProgressBar).setVisibility(View.VISIBLE);
         Log.d("GTMovies", "Got to SEARCH");
-        fragmentManager = getSupportFragmentManager();
-
         handleIntent(getIntent());
-//        Intent intent = getIntent();
-//        if (SearchIntents.ACTION_SEARCH.equals(intent.getAction())) {
-//            String query = intent.getStringExtra(SearchManager.QUERY);
-//            // do the Search
-//        } else {
-//            handleIntent(getIntent());
-//        }
     }
 
     @Override
@@ -75,8 +74,9 @@ public class SearchActivity extends MovieControlActivity {
      */
     private void handleIntent(Intent intent) {
         //findViewById(R.id.searchProgressBar).setVisibility(View.VISIBLE);
+
         Log.d("GTMovies", "Got to handleIntent");
-        /*if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             Log.d("Search", "Old Route");
             query = intent.getStringExtra(SearchManager.QUERY);
         } else if (SearchIntents.ACTION_SEARCH.equals(intent.getAction())) {
@@ -85,7 +85,7 @@ public class SearchActivity extends MovieControlActivity {
         } else {
             // something is wrong just return
             return;
-        }*/
+        }
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -93,11 +93,15 @@ public class SearchActivity extends MovieControlActivity {
             actionBar.setTitle(query);
         }
 
+
+        String queryURI = Uri.encode(query);
+        (new MovieControllerTask()).execute(this, MovieControllerTask.SEARCH_MOVIES,
+                "q=" + queryURI, null, null);
+        Log.e("Main", "request correct");
         Log.e("GTMovies", "TabsSearch");
         Log.d("GTMovies", "line1");
         //fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
         //        movieListFragment).commit();
-        Log.d("GTMovies", "line2");
         /*String queryURI = Uri.encode(query);
 
         //(new MovieControllerTask()).execute(this, MovieControllerTask.SEARCH_MOVIES,
@@ -166,19 +170,16 @@ public class SearchActivity extends MovieControlActivity {
 
     @Override
     public void finishedGettingMovies(int requestType) {
-        /*if (query.equals("Matt McCoy")) {
-            List<Movie> list = MovieListFragment.getSearchMovieList();
-            list.add(new Movie(-1));
-            MovieListFragment.setSearchMovieList(list);
-        }*/
-        //MovieListFragment movieListFragment = MovieListFragment.newInstance(
-        //        MovieListFragment.SEARCH);
-        Log.d("GTMovies", "line1");
-        //fragmentManager.beginTransaction().replace(R.id.search_frame_layout,
-        //        movieListFragment).commit();
-        Log.d("GTMovies", "line2");
+        Log.d("SearchActivity", "line1" + MovieListFragment.getSearchMovieList());
+        searchFragment.setSearchMovieList(MovieListFragment.getSearchMovieList());
+        Log.d("Search", "" + searchFragment.getId());
+        //searchFragment.onCreateView(getLayoutInflater(), (ViewGroup) findViewById(R.id.search_fragment), getIntent().getExtras());
+        //searchFragment.updateAdapterNonStatic(MovieListFragment.SEARCH);
+        Log.d("SearchActivity", "line2" + MovieListFragment.getSearchMovieList());
+        //fragmentManager.beginTransaction().add(R.id.search_fragment, searchFragment);
+        fragmentManager.beginTransaction().replace(R.id.search_frame_layout, searchFragment).commit();
+        //searchFragment.updateAdapterNonStatic(MovieListFragment.SEARCH);
         //findViewById(R.id.searchProgressBar).setVisibility(View.GONE);
-
     }
 
 

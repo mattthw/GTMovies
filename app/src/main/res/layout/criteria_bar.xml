@@ -1,11 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:theme="@style/AppTheme.NoActionBar"
-    android:orientation="horizontal"
+    android:id="@+id/criteria_bar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:layout_gravity="center"
+    android:animateLayoutChanges="true"
+    android:background="@color/cardview_dark_background"
+    android:gravity="center_horizontal">
+    <RelativeLayout
+        android:id="@+id/major_button"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="4dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/chip_shape"
+        android:backgroundTint="@android:color/white">
 
+        <TextView
+            android:id="@+id/major_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:text="@string/criteria_major"/>
+    </RelativeLayout>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/genre_button"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="4dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/chip_shape"
+        android:backgroundTint="@android:color/white">
 
+        <TextView
+            android:id="@+id/genre_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:text="@string/criteria_genre"/>
+    </RelativeLayout>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rating_button"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="4dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/chip_shape"
+        android:backgroundTint="@android:color/white">
 
+        <TextView
+            android:id="@+id/rating_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:text="@string/criteria_rating"/>
+    </RelativeLayout>
 </LinearLayout>

@@ -120,10 +120,12 @@ public class ReviewController {
         List<Movie> byGenreList = new ArrayList<>();
 
         for (Movie movie : recommendationList) {
-            for (Genre genre : movie.getGenres()) {
-                if (genre.equals(searchGenre)) {
-                    byGenreList.add(movie);
-                    break;
+            if (movie.getGenres() != null) {
+                for (Genre genre : movie.getGenres()) {
+                    if (genre.equals(searchGenre)) {
+                        byGenreList.add(movie);
+                        break;
+                    }
                 }
             }
         }
@@ -166,10 +168,12 @@ public class ReviewController {
         List<Movie> byMajorGenreList = new ArrayList<>();
 
         for (Movie movie : recommendationList) {
-            for (Genre genre : movie.getGenres()) {
-                if (genre.equals(searchGenre)) {
-                    byMajorGenreList.add(movie);
-                    break;
+            if (movie.getGenres() != null) {
+                for (Genre genre : movie.getGenres()) {
+                    if (genre.equals(searchGenre)) {
+                        byMajorGenreList.add(movie);
+                        break;
+                    }
                 }
             }
         }
@@ -217,10 +221,12 @@ public class ReviewController {
 
         for (Movie movie : recommendationList) {
             if (movie.getMPAARating().equals(rating)) {
-                for (Genre genre : movie.getGenres()) {
-                    if (genre.equals(searchGenre)) {
-                        byGenreRatingList.add(movie);
-                        break;
+                if (movie.getGenres() != null) {
+                    for (Genre genre : movie.getGenres()) {
+                        if (genre.equals(searchGenre)) {
+                            byGenreRatingList.add(movie);
+                            break;
+                        }
                     }
                 }
             }
@@ -247,10 +253,12 @@ public class ReviewController {
 
         for (Movie movie : recommendationList) {
             if (movie.getMPAARating().equals(rating)) {
-                for (Genre genre : movie.getGenres()) {
-                    if (genre.equals(searchGenre)) {
-                        byGenreRatingList.add(movie);
-                        break;
+                if (movie.getGenres() != null) {
+                    for (Genre genre : movie.getGenres()) {
+                        if (genre.equals(searchGenre)) {
+                            byGenreRatingList.add(movie);
+                            break;
+                        }
                     }
                 }
             }
