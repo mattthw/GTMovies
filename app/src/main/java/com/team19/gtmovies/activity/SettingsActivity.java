@@ -311,6 +311,22 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     return true;
                 }
             });
+
+            button = findPreference(getString(R.string.pref_account_language));
+            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    String lang = LocaleHelper.getLanguage(getActivity().getApplicationContext());
+                    if (lang.equals("en")) {
+                        LocaleHelper.setLocale(getActivity().getApplicationContext(), "ko");
+                        Toast.makeText(getActivity(), "Korean", Toast.LENGTH_SHORT).show();
+                    } else {
+                        LocaleHelper.setLocale(getActivity().getApplicationContext(), "en");
+                        Toast.makeText(getActivity(), "English", Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+            });
         }
 
         @Override

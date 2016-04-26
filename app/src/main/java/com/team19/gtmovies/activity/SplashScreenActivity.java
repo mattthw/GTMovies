@@ -142,7 +142,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
         new UpdateUITask().execute(MovieListFragment.TOP_RENTALS_TAB);
 
-
+        LocaleHelper.onCreate(this, "en");
         /*mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
