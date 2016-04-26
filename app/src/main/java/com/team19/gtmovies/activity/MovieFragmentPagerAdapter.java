@@ -1,12 +1,14 @@
 package com.team19.gtmovies.activity;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
+import com.team19.gtmovies.R;
 import com.team19.gtmovies.fragment.MovieListFragment;
 
 import java.util.Arrays;
@@ -19,8 +21,9 @@ import java.util.Arrays;
  */
 public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     private static final int PAGE_COUNT = 3;
-    private static String tabTitles[] = new String[]{"New Movies",
-            "Top Rentals", "Your Recommendations"};
+//    private static String tabTitles[] = new String[]{"New Movie",
+//            "Top Rentals", "Your Recommendations"};
+    private static String tabTitles[];
     private MovieListFragment[] movieListFragments = new MovieListFragment[PAGE_COUNT];
     private static boolean change;
     private Context context;
@@ -40,6 +43,7 @@ public class MovieFragmentPagerAdapter extends FragmentPagerAdapter {
     public MovieFragmentPagerAdapter(FragmentManager fragmentManager, Context context1) {
         super(fragmentManager);
         this.context = context1;
+        tabTitles = context.getResources().getStringArray(R.array.tabs);
 
 //        for (int i = 0; i < 1; i++) {
 //            for (int j = 0; j < 1000; j++) {

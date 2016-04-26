@@ -58,7 +58,7 @@
         </activity>
         <activity
             android:name=".activity.UserProfileActivity"
-            android:label="User Profile"
+            android:label="@string/title_user_profile"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -89,7 +89,7 @@
         </activity>
         <activity
             android:name=".activity.SearchActivity"
-            android:label="Search"
+            android:label="@string/title_search"
             android:launchMode="singleTop"
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait">
@@ -104,7 +104,7 @@
         </activity>
         <activity
             android:name=".activity.UserListActivity"
-            android:label="Registered Users:"
+            android:label="@string/title_registered_users"
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
