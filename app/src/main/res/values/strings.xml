@@ -208,16 +208,19 @@
     <string name="title_language">Languages</string>
     <string name="english">en-Us</string>
     <string name="korean">ko-KO</string>
+    <string name="chinese">ch-CH</string>
     <string name="spanish">es-LA</string>
 
     <string-array name="languages">
         <item>English (US)</item>
         <item>Korean</item>
+        <item>Chinese</item>
         <item>Spanish (Latin America)</item>
     </string-array>
     <string-array name="languages_values">
         <item>@string/english</item>
         <item>@string/korean</item>
+        <item>@string/chinese</item>
         <item>@string/spanish</item>
     </string-array>
 </resources>

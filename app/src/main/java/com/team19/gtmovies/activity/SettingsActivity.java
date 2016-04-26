@@ -288,6 +288,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         Log.d("Settings", "korean");
                         LocaleHelper.setLocale(getActivity().getApplicationContext(), "ko");
                         Toast.makeText(getActivity(), "Korean", Toast.LENGTH_SHORT).show();
+                    } else if (newValue.equals(getString(R.string.chinese))) {
+                        LocaleHelper.setLocale(getActivity().getApplicationContext(), "zh");
+                        Toast.makeText(getActivity(), "Chinese", Toast.LENGTH_SHORT).show();
                     } else if (newValue.equals(getString(R.string.english))) {
                         Log.d("Settings", "english");
                         LocaleHelper.setLocale(getActivity().getApplicationContext(), "en");
