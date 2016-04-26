@@ -162,6 +162,15 @@
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
 
+    <string name="tab_new_movie">New Movies</string>
+    <string name="tab_top_rental">Top Rentals</string>
+    <string name="tab_recommendation">Your Recommendations</string>
+    <string-array name="tabs">
+        <item>@string/tab_new_movie</item>
+        <item>@string/tab_top_rental</item>
+        <item>@string/tab_recommendation</item>
+    </string-array>
+
 
     <string name="criteria_major">Major</string>
     <string name="criteria_genre">Genre</string>
