@@ -1,32 +1,32 @@
 <resources>
     <string name="app_name">GTMovies</string>
-    <string name="title_activity_login">로그인</string>
+    <string name="title_activity_login">登錄</string>
     <string name="title_activity_main">GTMovies</string>
 
     <!-- Strings for welcome -->
-    <string name="welcome_title">GTMovies에 오신걸 환영합니다!</string>
-    <string name="welcome_subheading">GTMovies에 오신걸 환영합니다!</string>
+    <string name="welcome_title">歡迎GTMovies!</string>
+    <string name="welcome_subheading">歡迎GTMovies!</string>
     <string name="welcometext">Go ahead and press continue to see what the buzz is all about.
     </string>
-    <string name="welcome_login">로그인</string>
-    <string name="welcome_register">회원 가입</string>
+    <string name="welcome_login">登錄</string>
+    <string name="welcome_register">创建帐号</string>
 
     <string name="splash_title">GTMovies</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_username">아이디</string>
-    <string name="prompt_password">비밀번호</string>
-    <string name="prompt_password_confim">비밀번호 확인</string>
-    <string name="promt_display_name">별명</string>
+    <string name="prompt_username">选择您的用户名</string>
+    <string name="prompt_password">设置密码</string>
+    <string name="prompt_password_confim">确认密码</string>
+    <string name="promt_display_name">姓名</string>
     <string name="email">null</string>
-    <string name="action_sign_in">로그인</string>
-    <string name="action_register">회원 가입</string>
+    <string name="action_sign_in">登錄</string>
+    <string name="action_register">创建帐号</string>
     <string name="action_cancel">취소</string>
-    <string name="action_sign_in_short">로그인</string>
-    <string name="error_invalid_email">이 아이디는 사용할 수 없습니다</string>
-    <string name="error_invalid_password">비밀번호가 너무 짧습니다</string>
-    <string name="error_incorrect_password">비밀번호가 틀렸습니다</string>
-    <string name="error_field_required">이 항목은 필수입니다</string>
+    <string name="action_sign_in_short">登錄</string>
+    <string name="error_invalid_email">该用户名已存在</string>
+    <string name="error_invalid_password">密碼太短</string>
+    <string name="error_incorrect_password">密碼不正確</string>
+    <string name="error_field_required">此处不能留空</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -34,37 +34,37 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="user_full_name">홍길동</string>
-    <string name="username">별명</string>
-    <string name="action_edit_profile">프로필 수정</string>
-    <string name="action_user_list">사용자 목록</string>
-    <string name="title_social">소셜</string>
-    <string name="action_users">사용자들</string>
-    <string name="title_account">계정</string>
-    <string name="action_settings">설정</string>
-    <string name="action_logout">로그아웃</string>
+    <string name="user_full_name">John Smith</string>
+    <string name="username">姓名</string>
+    <string name="action_edit_profile">編輯個人資料</string>
+    <string name="action_user_list">用戶列表</string>
+    <string name="title_social">社交網絡</string>
+    <string name="action_users">用戶</string>
+    <string name="title_account">帳戶</string>
+    <string name="action_settings">設置</string>
+    <string name="action_logout">登出</string>
 
-    <string name="title_activity_settings">설정</string>
-    <string name="title_user_profile">유저 프로필</string>
-    <string name="title_search">검색</string>
-    <string name="title_registered_users">등록된 유저:</string>
+    <string name="title_activity_settings">設置</string>
+    <string name="title_user_profile">用戶資料</string>
+    <string name="title_search">搜索</string>
+    <string name="title_registered_users">註冊用戶:</string>
 
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_header_general">일반</string>
+    <string name="pref_header_general">一般</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact
         based on your message history
     </string>
 
-    <string name="pref_title_display_name">별명</string>
+    <string name="pref_title_display_name">姓名</string>
     <string name="pref_default_display_name">John Smith</string>
-    <string name="pref_account_delete">어드민 권한</string>
-    <string name="pref_account_admin_summary">어드민 권한을 토글합니다</string>
-    <string name="pref_account_language">언어/語言/Language</string>
-    <string name="pref_account_language_summary">언어 설정을 바꿉니다</string>
+    <string name="pref_account_delete">管理員</string>
+    <string name="pref_account_admin_summary">作為授權管理員</string>
+    <string name="pref_account_language">語言/Language/언어</string>
+    <string name="pref_account_language_summary">改變語言設置</string>
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
         <item>Always</item>
@@ -140,31 +140,31 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
-    <string name="title_movie_list">영화</string>
-    <string name="title_movie_detail">영화 상세 정보</string>
-    <string name="default_movie_title">영화 제목</string>
+    <string name="title_movie_list">電影</string>
+    <string name="title_movie_detail">電影細節</string>
+    <string name="default_movie_title">電影標題</string>
     <string name="dummy_movie_rating">xx%</string>
-    <string name="dummy_movie_description">영화 줄거리</string>
-    <string name="name_prof_edit">이름:</string>
-    <string name="major_prof_edit">전공:</string>
+    <string name="dummy_movie_description">電影簡介</string>
+    <string name="name_prof_edit">姓名:</string>
+    <string name="major_prof_edit">主修:</string>
     <string name="edit_your_profile_here">Edit your profile here:</string>
-    <string name="save_profile">프로필 저장</string>
-    <string name="user_bio">나에 대해:</string>
+    <string name="save_profile">保存個人信息</string>
+    <string name="user_bio">關於我:</string>
     <string name="title_test_list">Items</string>
     <string name="title_admin">Community</string>
     <string name="title_test_detail">TEST Detail</string>
-    <string name="description">영화 줄거리:</string>
-    <string name="rating">평점:</string>
-    <string name="comments">평가:</string>
-    <string name="user_rating">사용자 평가:</string>
-    <string name="my_review">나의 평가:</string>
-    <string name="score">점수:</string>
-    <string name="ok">확인</string>
-    <string name="cancel">취소</string>
+    <string name="description">電影情節:</string>
+    <string name="rating">評分:</string>
+    <string name="comments">評論:</string>
+    <string name="user_rating">用戶評價:</string>
+    <string name="my_review">我評價:</string>
+    <string name="score">得分了:</string>
+    <string name="ok">好</string>
+    <string name="cancel">取消</string>
 
-    <string name="tab_new_movie">개봉 신작</string>
-    <string name="tab_top_rental">렌탈 순위</string>
-    <string name="tab_recommendation">추천 작품</string>
+    <string name="tab_new_movie">新電影</string>
+    <string name="tab_top_rental">熱門電影</string>
+    <string name="tab_recommendation">電影推薦</string>
     <string-array name="tabs">
         <item>@string/tab_new_movie</item>
         <item>@string/tab_top_rental</item>
@@ -172,9 +172,9 @@
     </string-array>
 
 
-    <string name="criteria_major">전공</string>
-    <string name="criteria_genre">장르</string>
-    <string name="criteria_rating">평점</string>
+    <string name="criteria_major">主修</string>
+    <string name="criteria_genre">類型</string>
+    <string name="criteria_rating">評分</string>
     <string-array name="criteria">
         <item>@string/criteria_major</item>
         <item>@string/criteria_genre</item>

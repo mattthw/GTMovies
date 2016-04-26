@@ -65,7 +65,7 @@
     <string name="pref_default_display_name">John Smith</string>
     <string name="pref_account_delete">Make me an Admin</string>
     <string name="pref_account_admin_summary">mimicks remote setting of admin status</string>
-    <string name="pref_account_language">Language/언어</string>
+    <string name="pref_account_language">Language/언어/語言</string>
     <string name="pref_account_language_summary">Changes Languages</string>
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">

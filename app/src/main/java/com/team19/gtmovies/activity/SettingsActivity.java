@@ -22,7 +22,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.team19.gtmovies.R;
@@ -233,7 +232,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            Log.d("THIS", "THISSSS");
             addPreferencesFromResource(R.xml.pref_account);
             setHasOptionsMenu(true);
 
